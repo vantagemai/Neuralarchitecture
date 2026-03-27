@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model DailyRecord {
+  id           String     @id @default(cuid())
+  date         String     @unique
+  gastoTotal   Float      @default(0)
+  receitaTotal Float      @default(0)
+  mer          Float      @default(0)
+  emq          Float      @default(0)
+  convTotal    Int        @default(0)
+  campaigns    Campaign[]
+  creatives    Creative[]
+  funnel       Funnel?
+  geo          Geo?
+  decisions    Decision?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Campaign {
+  id          String      @id @default(cuid())
+  recordId    String
+  record      DailyRecord @relation(fields: [recordId], references: [id], onDelete: Cascade)
+  name        String
+  region      String      @default("")
+  budget      Float       @default(0)
+  spent       Float       @default(0)
+  cpmr        Float       @default(0)
+  frequency   Float       @default(0)
+  hookRate    Float       @default(0)
+  holdRate    Float       @default(0)
+  conversions Int         @default(0)
+  cpa         Float       @default(0)
+  status      String      @default("OK")
+}
+
+model Creative {
+  id          String      @id @default(cuid())
+  recordId    String
+  record      DailyRecord @relation(fields: [recordId], references: [id], onDelete: Cascade)
+  name        String
+  pda         String      @default("")
+  daysRunning Int         @default(0)
+  spent       Float       @default(0)
+  hookRate    Float       @default(0)
+  holdRate    Float       @default(0)
+  conversions Int         @default(0)
+  cpa         Float       @default(0)
+  status      String      @default("Testing")
+}
+
+model Funnel {
+  id           String      @id @default(cuid())
+  recordId     String      @unique
+  record       DailyRecord @relation(fields: [recordId], references: [id], onDelete: Cascade)
+  cliques      Int         @default(0)
+  tbInicio     Int         @default(0)
+  taxaEntrada  Float       @default(0)
+  checkouts    Int         @default(0)
+  taxaCheckout Float       @default(0)
+  compras      Int         @default(0)
+  taxaConv     Float       @default(0)
+  ticket       Float       @default(0)
+  upsells      Int         @default(0)
+  taxaUpsell   Float       @default(0)
+}
+
+model Geo {
+  id         String      @id @default(cuid())
+  recordId   String      @unique
+  record     DailyRecord @relation(fields: [recordId], references: [id], onDelete: Cascade)
+  top1       String      @default("")
+  top2       String      @default("")
+  top3       String      @default("")
+  geoCaro    String      @default("")
+  excluidos  String      @default("")
+}
+
+model Decision {
+  id        String      @id @default(cuid())
+  recordId  String      @unique
+  record    DailyRecord @relation(fields: [recordId], references: [id], onDelete: Cascade)
+  pausados  String      @default("")
+  winners   String      @default("")
+  budgetAdj String      @default("")
+  novos     String      @default("")
+  obs       String      @default("")
+}

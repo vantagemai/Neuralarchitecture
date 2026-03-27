@@ -10,7 +10,6 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
-*.local
 
 # Editor directories and files
 .vscode/*
@@ -22,3 +21,16 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Next.js
+.next/
+out/
+
+# Prisma
+/generated/prisma
+prisma/kyoto.db
+prisma/kyoto.db-journal
+
+# Env
+.env.local
+.env
