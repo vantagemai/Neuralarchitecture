@@ -4050,7 +4050,7 @@ var header='══════════════════════�
 var text=header+el.innerText+'\n\n';
 if(navigator.clipboard){
 navigator.clipboard.writeText(text).then(function(){
-var btn=document.querySelector('button[onclick="arsCopyForDocs(''+pid+'')"]');
+var btn=document.querySelector('button[onclick="arsCopyForDocs(\''+pid+'\')"]');
 if(btn){var w=btn.textContent;btn.textContent='✓ Copiado';setTimeout(function(){btn.textContent=w;},2000);}
 });
 }
@@ -4076,7 +4076,7 @@ if(btn){var w=btn.textContent;btn.textContent='✓ Copiado';setTimeout(function(
 
 // ── ONBOARDING CHECK ──
 var _anyOutput=false;
-try{for(var _k in localStorage){if(_k.startsWith('ars_out*')){_anyOutput=true;break;}}}catch(e){}
+try{for(var _k in localStorage){if(_k.startsWith('ars_out_')){_anyOutput=true;break;}}}catch(e){}
 if(!_anyOutput){
 setTimeout(function(){
 var main=document.getElementById('arsMain');
