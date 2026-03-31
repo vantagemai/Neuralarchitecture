@@ -360,7 +360,15 @@ textarea.ra-input::placeholder{color:var(--text4)}
     </div>
     <div class="tb-right" style="display:flex;align-items:center;gap:10px">
       <button onclick="openSearch()" style="font-family:DM Mono,monospace;font-size:10px;color:var(--text-dim);padding:4px 10px;border:1px solid var(--border);border-radius:var(--r);background:transparent;cursor:pointer;transition:all .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-dim)'">🔍 Buscar (⌘K)</button>
+      <button onclick="document.getElementById('apiKeyBanner').style.display=document.getElementById('apiKeyBanner').style.display==='flex'?'none':'flex'" style="font-family:DM Mono,monospace;font-size:10px;color:var(--text4);padding:4px 10px;border:1px solid var(--border);border-radius:var(--r);background:transparent;cursor:pointer;transition:all .2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--text4)'">⬡ API</button>
     </div>
+  </div>
+  <div id="apiKeyBanner" style="display:none;align-items:center;gap:12px;padding:10px 24px;background:rgba(184,146,42,.08);border-bottom:1px solid rgba(184,146,42,.2);flex-shrink:0">
+    <span style="font-family:DM Mono,monospace;font-size:11px;color:var(--gold);letter-spacing:.06em">⬡ CONECTAR IA</span>
+    <span style="font-family:Lora,serif;font-size:12px;color:var(--text2)">Cole sua API Key da Anthropic para ativar os agentes:</span>
+    <input id="apiKeyInput" type="password" placeholder="sk-ant-..." style="flex:1;max-width:340px;background:var(--s2);border:1px solid var(--b2);border-radius:4px;padding:6px 10px;font-family:DM Mono,monospace;font-size:11px;color:var(--text);outline:none" />
+    <button onclick="var k=document.getElementById('apiKeyInput').value.trim();if(k){setApiKey(k);document.getElementById('apiKeyBanner').style.display='none';document.getElementById('apiKeyStatus').textContent='IA conectada';document.getElementById('apiKeyStatus').style.color='var(--teal)';}" style="padding:6px 14px;background:var(--gold);color:#07070A;border:none;border-radius:4px;font-family:DM Mono,monospace;font-size:10px;font-weight:500;cursor:pointer;letter-spacing:.06em">Salvar</button>
+    <span id="apiKeyStatus" style="font-family:DM Mono,monospace;font-size:10px;color:var(--text4)"></span>
   </div>
   <div class="content">
     <div id="tab-inicio" style="overflow-y:auto;height:100%;padding:48px;display:block"></div>
@@ -398,6 +406,24 @@ pins.forEach((inp, i) => {
   });
 });
 
+// ── API KEY ──
+function getApiKey(){
+  try{return localStorage.getItem('pos_api_key')||'';}catch(e){return '';}
+}
+function setApiKey(k){
+  try{localStorage.setItem('pos_api_key',k);}catch(e){}
+}
+function promptApiKey(){
+  var k=getApiKey();
+  if(k) return k;
+  var el=document.getElementById('apiKeyInput');
+  if(el&&el.value.trim()){
+    setApiKey(el.value.trim());
+    return el.value.trim();
+  }
+  return '';
+}
+
 function checkPin(val){
   if(val===CORRECT){
     document.getElementById('login').style.opacity='0';
@@ -406,6 +432,8 @@ function checkPin(val){
       document.getElementById('login').style.display='none';
       const app=document.getElementById('app');
       app.style.display='flex';
+      // Show API key setup if not set
+      if(!getApiKey()) document.getElementById('apiKeyBanner').style.display='flex';
     },400);
   } else {
     msg.textContent='Código inválido. Tente novamente.';
@@ -2302,7 +2330,8 @@ var SYS='Você é OZAKA, agente de vendas ao vivo da formação Position Ops 2.0
 var res=document.getElementById('psResult');
 if(!res)return;
 res.innerHTML='<div style="padding:14px;background:var(--s2);border:1px solid var(--b);border-radius:5px;display:flex;align-items:center;gap:10px"><div style="width:7px;height:7px;border-radius:50%;background:var(--gold);animation:pulse 1s infinite;flex-shrink:0"></div><span style="font-family:DM Mono,monospace;font-size:10px;color:var(--text3)">Processando…</span></div>';
-fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:SYS,messages:[{role:'user',content:prompt}]})})
+var _ak=getApiKey();if(!_ak){var r2=document.getElementById('psResult');if(r2)r2.innerHTML='<div style="padding:12px;font-family:DM Mono,monospace;font-size:11px;color:var(--gold)">Cole sua API Key no banner acima para ativar a IA.</div>';document.getElementById('apiKeyBanner').style.display='flex';return;}
+fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':_ak,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:SYS,messages:[{role:'user',content:prompt}]})})
 .then(function(r){return r.json();})
 .then(function(data){
 var txt=(data.content&&data.content[0]&&data.content[0].text)||'Erro.';
@@ -2376,9 +2405,10 @@ var OZAKA_CHAT_SYSTEM='Você é OZAKA, o agente de vendas ao vivo da formação 
 
 var historyForApi=chatHistory.slice(-10);
 
+var _ak2=getApiKey();if(!_ak2){var load=document.getElementById('ps-loading');if(load)load.remove();var eDiv=document.createElement('div');eDiv.innerHTML='<div style="font-family:DM Mono,monospace;font-size:11px;color:var(--gold);padding:8px">Cole sua API Key no banner acima para ativar a IA.</div>';msgs.appendChild(eDiv);document.getElementById('apiKeyBanner').style.display='flex';return;}
 fetch('https://api.anthropic.com/v1/messages',{
   method:'POST',
-  headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
+  headers:{'Content-Type':'application/json','x-api-key':_ak2,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
   body:JSON.stringify({
     model:'claude-sonnet-4-20250514',
     max_tokens:600,
@@ -4007,9 +4037,10 @@ if(!result)return;
 result.innerHTML='<div style="padding:16px;background:var(--s2);border:1px solid var(--b);border-radius:6px;display:flex;align-items:center;gap:10px"><div style="width:8px;height:8px;border-radius:50%;background:var(--gold);animation:pulse 1s infinite"></div><span style="font-family:DM Mono,monospace;font-size:10px;color:var(--text3)">OZAKA processando...</span></div>';
 
 var pid=activePrompt.id;
+var _ak3=getApiKey();if(!_ak3){var result=document.getElementById('arsResult');if(result)result.innerHTML='<div style="padding:12px;font-family:DM Mono,monospace;font-size:11px;color:var(--gold)">Cole sua API Key no banner acima para ativar a IA.</div>';document.getElementById('apiKeyBanner').style.display='flex';return;}
 fetch('https://api.anthropic.com/v1/messages',{
   method:'POST',
-  headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
+  headers:{'Content-Type':'application/json','x-api-key':_ak3,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
   body:JSON.stringify({
     model:'claude-sonnet-4-20250514',
     max_tokens:1500,
