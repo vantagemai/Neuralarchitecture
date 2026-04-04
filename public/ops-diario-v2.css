@@ -1,0 +1,94 @@
+/* ══════════════════════════════════════════════════════════════
+   OPS DIÁRIO V2 — CSS Integration Layer
+   All rules use .opsv2- prefix to avoid conflicts with portal CSS.
+   Appended AFTER portal CSS. No !important. No :root overrides.
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── BASE ────────────────────────────────────────────────────── */
+.opsv2-fade{animation:fadeIn .22s ease;}
+.opsv2-card{background:var(--surface,#101010);border:1px solid var(--border,rgba(255,255,255,.1));border-radius:14px;padding:22px;box-shadow:0 4px 20px rgba(0,0,0,.5);}
+.opsv2-card-gold{background:rgba(200,164,0,.08);border:1px solid rgba(200,164,0,.22);border-radius:14px;padding:18px;}
+
+/* ── CHANNEL CARDS ───────────────────────────────────────────── */
+.opsv2-ch-card{background:var(--elevated,#191919);border:1px solid var(--border,rgba(255,255,255,.1));border-radius:14px;padding:16px;transition:all .2s;}
+.opsv2-ch-card:focus-within{border-color:var(--red,#F11013);}
+.opsv2-ch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
+
+/* ── ACTIVITY CHART ──────────────────────────────────────────── */
+.opsv2-chart-wrap{background:var(--surface,#101010);border:1px solid var(--border,rgba(255,255,255,.1));border-radius:14px;padding:18px;margin-top:16px;}
+.opsv2-chart-period{padding:4px 10px;font-size:11px;font-weight:700;border-radius:6px;border:1px solid var(--border,rgba(255,255,255,.1));background:transparent;color:#888;cursor:pointer;font-family:var(--font-mono,'DM Mono',monospace);transition:all .15s;}
+.opsv2-chart-period:hover{border-color:var(--red,#F11013);color:var(--text-primary,#F5F5F5);}
+.opsv2-chart-period.active{background:rgba(241,16,19,.08);border-color:rgba(241,16,19,.22);color:var(--red,#F11013);}
+.opsv2-insight-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:14px;}
+
+/* ── PIPELINE / FUNNEL ───────────────────────────────────────── */
+.opsv2-funnel-bar{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.opsv2-funnel-label{width:130px;font-size:12px;color:#888;font-family:var(--font-mono,'DM Mono',monospace);text-align:right;flex-shrink:0;}
+.opsv2-funnel-track{flex:1;height:20px;background:var(--overlay,#222);border-radius:4px;overflow:hidden;position:relative;}
+.opsv2-funnel-fill{height:100%;border-radius:4px;transition:width .8s cubic-bezier(.22,1,.36,1);display:flex;align-items:center;padding-left:8px;}
+.opsv2-funnel-val{font-size:10px;font-weight:700;font-family:var(--font-mono,'DM Mono',monospace);color:#fff;white-space:nowrap;}
+.opsv2-funnel-pct{width:44px;font-size:11px;font-family:var(--font-mono,'DM Mono',monospace);color:#888;text-align:right;flex-shrink:0;}
+
+/* ── OPPORTUNITY CARDS ───────────────────────────────────────── */
+.opsv2-opp-card{background:var(--elevated,#191919);border:1px solid var(--border,rgba(255,255,255,.1));border-radius:10px;padding:14px;margin-bottom:8px;}
+.opsv2-opp-card.pending{border-color:rgba(200,164,0,.22);}
+.opsv2-opp-card.confirmed{border-color:rgba(0,200,100,.22);}
+.opsv2-opp-card.discrepancy{border-color:rgba(241,16,19,.22);}
+.opsv2-opp-inputs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;}
+
+/* ── BONUS BAR ───────────────────────────────────────────────── */
+.opsv2-bonus-bar{height:8px;background:var(--overlay,#222);border-radius:4px;overflow:hidden;margin-top:6px;display:flex;gap:1px;}
+.opsv2-bonus-released{height:100%;background:#00C864;border-radius:3px 0 0 3px;transition:width .6s;}
+.opsv2-bonus-blocked{height:100%;background:#C8A400;opacity:.5;transition:width .6s;}
+
+/* ── IDENTITY / NI ───────────────────────────────────────────── */
+.opsv2-ni-hero{position:relative;border-radius:14px;overflow:hidden;min-height:220px;background:var(--elevated,#191919);display:flex;align-items:flex-end;}
+.opsv2-ni-hero-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(.4);}
+.opsv2-ni-hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(241,16,19,.12) 0%,rgba(0,0,0,.85) 100%);}
+.opsv2-ni-hero-content{position:relative;z-index:1;padding:24px;width:100%;}
+.opsv2-ni-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;}
+.opsv2-ni-upload{border:2px dashed var(--border,rgba(255,255,255,.1));border-radius:14px;aspect-ratio:4/3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:all .2s;background:var(--elevated,#191919);}
+.opsv2-ni-upload:hover{border-color:var(--red,#F11013);background:rgba(241,16,19,.08);}
+.opsv2-ni-upload.has-img{border-style:solid;border-color:var(--border,rgba(255,255,255,.1));padding:0;overflow:hidden;}
+.opsv2-ni-upload img{width:100%;height:100%;object-fit:cover;display:block;}
+.opsv2-ni-onboard{background:linear-gradient(135deg,rgba(241,16,19,.08),rgba(200,164,0,.06));border:1px solid rgba(241,16,19,.22);border-radius:14px;padding:14px 16px;margin-bottom:16px;cursor:pointer;transition:all .2s;}
+.opsv2-ni-onboard:hover{background:linear-gradient(135deg,rgba(241,16,19,.14),rgba(200,164,0,.10));}
+
+/* ── MOTIVATIONAL ────────────────────────────────────────────── */
+.opsv2-motive-high{background:rgba(0,200,100,.07);border:1px solid rgba(0,200,100,.22);color:#00C864;border-radius:14px;padding:16px;font-size:14px;line-height:1.7;font-style:italic;}
+.opsv2-motive-mid{background:rgba(200,164,0,.08);border:1px solid rgba(200,164,0,.22);color:#FFD130;border-radius:14px;padding:16px;font-size:14px;line-height:1.7;font-style:italic;}
+.opsv2-motive-low{background:rgba(241,16,19,.08);border:1px solid rgba(241,16,19,.22);color:#F11013;border-radius:14px;padding:16px;font-size:14px;line-height:1.7;font-style:italic;}
+
+/* ── HEAD NOTE ───────────────────────────────────────────────── */
+.opsv2-headnote{background:var(--elevated,#191919);border:1px solid var(--border,rgba(255,255,255,.1));border-radius:10px;padding:12px 14px;margin-bottom:10px;}
+
+/* ── PROGRESS BARS ───────────────────────────────────────────── */
+.opsv2-prog{height:5px;background:var(--overlay,#222);border-radius:3px;overflow:hidden;margin-top:8px;}
+.opsv2-prog.tall{height:7px;}
+.opsv2-prog-fill{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(.22,1,.36,1);}
+
+/* ── COMMISSION PREVIEW ──────────────────────────────────────── */
+.opsv2-comm-preview{background:rgba(0,200,100,.08);border:1px solid rgba(0,200,100,.22);border-radius:10px;padding:16px;margin-top:14px;}
+
+/* ── SALE ROW ────────────────────────────────────────────────── */
+.opsv2-sale-row{display:flex;align-items:center;gap:10px;padding:13px 16px;background:rgba(0,200,100,.04);border:1px solid rgba(0,200,100,.22);border-radius:10px;margin-bottom:8px;}
+.opsv2-sale-row:hover{background:rgba(0,200,100,.07);}
+
+/* ── QUOTE / ANCHOR ──────────────────────────────────────────── */
+.opsv2-quote{border-left:3px solid var(--red,#F11013);padding:13px 18px;background:rgba(241,16,19,.08);border-radius:0 10px 10px 0;font-style:italic;font-size:14px;line-height:1.8;}
+
+/* ── DAY SEGMENTS ────────────────────────────────────────────── */
+.opsv2-day-segs{display:flex;gap:8px;}
+.opsv2-day-seg{background:var(--elevated,#191919);border:1px solid var(--border,rgba(255,255,255,.1));border-radius:10px;padding:10px 14px;text-align:center;min-width:52px;}
+.opsv2-day-seg-val{font-family:var(--font-mono,'DM Mono',monospace);font-size:22px;font-weight:700;color:#FFD130;line-height:1;}
+.opsv2-day-seg-lbl{font-size:9px;color:#888;text-transform:uppercase;letter-spacing:.08em;margin-top:2px;}
+
+/* ── SETUP NUMBER BADGE ──────────────────────────────────────── */
+.opsv2-setup-num{background:var(--red,#F11013);color:#fff;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
+
+/* ── PLAN BADGE ──────────────────────────────────────────────── */
+.opsv2-plan-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-family:var(--font-mono,'DM Mono',monospace);}
+
+/* ── RESPONSIVE ──────────────────────────────────────────────── */
+@media(max-width:720px){.opsv2-ni-layout{grid-template-columns:1fr;}}
+@media(max-width:640px){.opsv2-opp-inputs{grid-template-columns:1fr 1fr;}}
