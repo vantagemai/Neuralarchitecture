@@ -11,7 +11,7 @@ import { ExtratosPage } from './pages/ExtratosPage';
 import { TimePage } from './pages/TimePage';
 import { IdentidadePage } from './pages/IdentidadePage';
 import { ConfigPage } from './pages/ConfigPage';
-import { PlaceholderPage } from './pages/PlaceholderPage';
+import { TvPage } from './pages/TvPage';
 
 function App() {
   const [user, setUser] = useState<{ name: string; role: string } | null>(() => {
@@ -53,7 +53,7 @@ function App() {
           <Route path="time" element={<TimePage />} />
           <Route path="identidade" element={<IdentidadePage />} />
           <Route path="config" element={<ConfigPage />} />
-          <Route path="tv" element={<PlaceholderPage title="Painel TV" description="Acesse painel-tv.html para a versão fullscreen." />} />
+          <Route path="tv" element={<TvPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

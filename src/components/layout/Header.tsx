@@ -1,4 +1,5 @@
-import { Bell, Search, LogOut } from 'lucide-react';
+import { Bell, Search, LogOut, Camera } from 'lucide-react';
+import { useRef } from 'react';
 
 interface HeaderProps {
   userName: string;
@@ -8,12 +9,37 @@ interface HeaderProps {
 }
 
 export function Header({ userName, userRole, userAvatar, onLogout }: HeaderProps) {
+  const fileRef = useRef<HTMLInputElement>(null);
   const initials = userName
     .split(' ')
     .map(n => n[0])
     .join('')
     .toUpperCase()
     .slice(0, 2);
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxW = 200;
+        let w = img.width, h = img.height;
+        if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d')?.drawImage(img, 0, 0, w, h);
+        const b64 = canvas.toDataURL('image/jpeg', 0.7);
+        localStorage.setItem('vantagem_avatar', b64);
+        window.location.reload();
+      };
+      img.src = ev.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const avatar = userAvatar || localStorage.getItem('vantagem_avatar') || null;
 
   const now = new Date();
   const dateStr = now.toLocaleDateString('pt-BR', {
@@ -59,17 +85,23 @@ export function Header({ userName, userRole, userAvatar, onLogout }: HeaderProps
             <div className="text-sm font-semibold text-t1">{userName}</div>
             <div className="text-[10px] text-t3 uppercase tracking-wider">{userRole}</div>
           </div>
-          {userAvatar ? (
-            <img
-              src={userAvatar}
-              alt={userName}
-              className="w-9 h-9 rounded-full object-cover border-2 border-vred/30"
-            />
-          ) : (
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-xs font-bold">
-              {initials}
+          <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
+          <button
+            onClick={() => fileRef.current?.click()}
+            className="relative group"
+            title="Clique para alterar foto"
+          >
+            {avatar ? (
+              <img src={avatar} alt={userName} className="w-9 h-9 rounded-full object-cover border-2 border-vred/30" />
+            ) : (
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-xs font-bold">
+                {initials}
+              </div>
+            )}
+            <div className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <Camera size={12} className="text-white" />
             </div>
-          )}
+          </button>
           <button
             onClick={onLogout}
             className="p-2 rounded-lg text-t4 hover:text-vred hover:bg-vred/5 transition-colors"
