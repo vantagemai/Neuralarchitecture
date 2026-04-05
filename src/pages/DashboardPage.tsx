@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { getUsers, getTodayFills, getMonthSales, calcScore, db, today, fmt$, CHANNELS, type FillData } from '../lib/store';
+import { ShoutoutFeed } from '../components/ops/ShoutoutFeed';
 
 const MEDALS = ['🥇', '🥈', '🥉'];
 const roleVariant = (r: string) => r === 'Setter' ? 'purp' as const : r === 'Founder' ? 'red' as const : 'gold' as const;
@@ -252,6 +253,12 @@ export function DashboardPage() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Shoutouts */}
+      <div>
+        <h2 className="text-[15px] font-bold mb-3">💬 Reconhecimentos</h2>
+        <ShoutoutFeed />
       </div>
 
       {/* Recent sales */}

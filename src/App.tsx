@@ -13,6 +13,7 @@ import { IdentidadePage } from './pages/IdentidadePage';
 import { ConfigPage } from './pages/ConfigPage';
 import { TvPage } from './pages/TvPage';
 import { BadgesPage } from './pages/BadgesPage';
+import { DesafiosPage } from './pages/DesafiosPage';
 import { ToastContainer } from './components/ui/Toast';
 import { ConfettiContainer } from './components/ui/Confetti';
 
@@ -70,6 +71,7 @@ function App() {
           <Route path="ranking" element={<RankingPage />} />
           <Route path="identidade" element={<IdentidadePage />} />
           <Route path="badges" element={<BadgesPage />} />
+          <Route path="desafios" element={<DesafiosPage />} />
           <Route path="tv" element={<TvPage />} />
           {/* Manager+ only */}
           {isManager && <Route path="pipeline" element={<PipelinePage />} />}

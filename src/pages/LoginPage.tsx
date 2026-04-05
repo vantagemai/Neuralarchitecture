@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { Eye, EyeOff, LogIn, UserPlus } from 'lucide-react';
 import type { UserSession } from '../App';
+import { db } from '../lib/store';
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 interface LoginPageProps {
   onLogin: (user: UserSession) => void;
@@ -23,10 +26,17 @@ export function LoginPage({ onLogin }: LoginPageProps) {
         setError('Preencha todos os campos');
         return;
       }
-      // Save to localStorage for demo
-      const users = JSON.parse(localStorage.getItem('vops_ops_users') || '[]');
+      if (!EMAIL_REGEX.test(email.trim())) {
+        setError('Email invalido');
+        return;
+      }
+      if (password.trim().length < 4) {
+        setError('Senha deve ter no minimo 4 caracteres');
+        return;
+      }
+      const users = db.get<any[]>('ops_users') || [];
       if (users.find((u: { email: string }) => u.email === email.toLowerCase())) {
-        setError('Email já cadastrado');
+        setError('Email ja cadastrado');
         return;
       }
       const newUser = {
@@ -40,14 +50,14 @@ export function LoginPage({ onLogin }: LoginPageProps) {
         createdAt: Date.now(),
       };
       users.push(newUser);
-      localStorage.setItem('vops_ops_users', JSON.stringify(users));
+      db.set('ops_users', users);
       onLogin({ id: newUser.id, name: newUser.name, role: newUser.role, email: newUser.email });
     } else {
       if (!email.trim() || !password.trim()) {
         setError('Preencha email e senha');
         return;
       }
-      const users = JSON.parse(localStorage.getItem('vops_ops_users') || '[]');
+      const users = db.get<any[]>('ops_users') || [];
       const user = users.find(
         (u: { email: string; password: string; active: boolean }) =>
           u.email === email.toLowerCase().trim() && u.password === password && u.active

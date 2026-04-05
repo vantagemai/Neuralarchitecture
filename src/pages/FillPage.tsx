@@ -27,6 +27,9 @@ export function FillPage() {
   const score = Object.values(channels).reduce((t, ch) => t + (parseInt(ch.a) || 0), 0);
 
   const updateChannel = useCallback((chId: string, field: 'a' | 'b', value: string) => {
+    // Prevent negative values
+    const num = parseInt(value);
+    if (value !== '' && num < 0) return;
     setChannels(prev => ({
       ...prev,
       [chId]: { ...prev[chId], [field]: value }
