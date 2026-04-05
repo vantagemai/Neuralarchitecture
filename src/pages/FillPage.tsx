@@ -1,11 +1,11 @@
 import { useState, useCallback } from 'react';
 import { Send, RefreshCw, CheckCircle2 } from 'lucide-react';
-import { db, today, CHANNELS, type FillData, type ChannelData } from '../lib/store';
+import { db, today, CHANNELS, getSession, type FillData, type ChannelData } from '../lib/store';
 import { Badge } from '../components/ui/Badge';
 
 export function FillPage() {
-  const session = JSON.parse(localStorage.getItem('vantagem_session') || '{}');
-  const userId = session.name?.replace(/\s/g, '_').toLowerCase() || 'anon';
+  const session = getSession();
+  const userId = session?.id || 'anon';
   const fillKey = `ops_fill_${today()}_${userId}`;
 
   const [channels, setChannels] = useState<Record<string, ChannelData>>(() => {
@@ -32,8 +32,8 @@ export function FillPage() {
     setSaving(true);
     const fill: FillData = {
       userId,
-      userName: session.name || 'Anônimo',
-      userRole: session.role || 'Setter',
+      userName: session?.name || 'Anônimo',
+      userRole: session?.role || 'Setter',
       channels,
       obs,
       score,

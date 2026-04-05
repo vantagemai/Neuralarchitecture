@@ -13,16 +13,22 @@ import { IdentidadePage } from './pages/IdentidadePage';
 import { ConfigPage } from './pages/ConfigPage';
 import { TvPage } from './pages/TvPage';
 
+export interface UserSession {
+  id: string;
+  name: string;
+  role: string;
+  email: string;
+}
+
 function App() {
-  const [user, setUser] = useState<{ name: string; role: string } | null>(() => {
+  const [user, setUser] = useState<UserSession | null>(() => {
     const saved = localStorage.getItem('vantagem_session');
     return saved ? JSON.parse(saved) : null;
   });
 
-  const handleLogin = (name: string, role: string) => {
-    const session = { name, role };
-    localStorage.setItem('vantagem_session', JSON.stringify(session));
-    setUser(session);
+  const handleLogin = (u: UserSession) => {
+    localStorage.setItem('vantagem_session', JSON.stringify(u));
+    setUser(u);
   };
 
   const handleLogout = () => {
@@ -33,6 +39,10 @@ function App() {
   if (!user) {
     return <LoginPage onLogin={handleLogin} />;
   }
+
+  // Role-based route filtering
+  const isHead = user.role === 'Head' || user.role === 'Founder';
+  const isManager = isHead || user.role === 'Partner';
 
   return (
     <BrowserRouter basename="/Neuralarchitecture">
@@ -46,14 +56,16 @@ function App() {
         }>
           <Route index element={<DashboardPage />} />
           <Route path="fill" element={<FillPage />} />
-          <Route path="pipeline" element={<PipelinePage />} />
-          <Route path="ranking" element={<RankingPage />} />
           <Route path="vendas" element={<VendasPage />} />
-          <Route path="extratos" element={<ExtratosPage />} />
-          <Route path="time" element={<TimePage />} />
+          <Route path="ranking" element={<RankingPage />} />
           <Route path="identidade" element={<IdentidadePage />} />
-          <Route path="config" element={<ConfigPage />} />
           <Route path="tv" element={<TvPage />} />
+          {/* Manager+ only */}
+          {isManager && <Route path="pipeline" element={<PipelinePage />} />}
+          {isManager && <Route path="extratos" element={<ExtratosPage />} />}
+          {/* Head/Founder only */}
+          {isHead && <Route path="time" element={<TimePage />} />}
+          {isHead && <Route path="config" element={<ConfigPage />} />}
         </Route>
       </Routes>
     </BrowserRouter>

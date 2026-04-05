@@ -59,8 +59,7 @@ export function DashboardPage() {
 
   // Team sorted by score
   const teamData = users.map(u => {
-    const uid = u.name.replace(/\s/g, '_').toLowerCase();
-    const fill = fills.find(f => f.userId === uid);
+    const fill = fills.find(f => f.userId === u.id || f.userName === u.name);
     return {
       name: u.name,
       role: u.role,

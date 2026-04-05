@@ -3,22 +3,35 @@ import {
   LayoutDashboard, ClipboardList, Target, Trophy, DollarSign,
   BarChart3, Users, Flame, Settings, Tv, ChevronLeft, ChevronRight, X
 } from 'lucide-react';
+import { getSession } from '../../lib/store';
 
-const NAV = [
+type Role = 'all' | 'manager' | 'head';
+interface NavItem { to: string; icon: typeof LayoutDashboard; label: string; minRole?: Role }
+
+const NAV: NavItem[] = [
   { to: '/',           icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/fill',       icon: ClipboardList,   label: 'Fill Diário' },
-  { to: '/pipeline',   icon: Target,          label: 'Pipeline' },
-  { to: '/ranking',    icon: Trophy,          label: 'Ranking' },
   { to: '/vendas',     icon: DollarSign,      label: 'Vendas' },
-  { to: '/extratos',   icon: BarChart3,       label: 'Extratos' },
-  { to: '/time',       icon: Users,           label: 'Time' },
+  { to: '/ranking',    icon: Trophy,          label: 'Ranking' },
   { to: '/identidade', icon: Flame,           label: 'Identidade' },
+  { to: '/pipeline',   icon: Target,          label: 'Pipeline',  minRole: 'manager' },
+  { to: '/extratos',   icon: BarChart3,       label: 'Extratos',  minRole: 'manager' },
+  { to: '/time',       icon: Users,           label: 'Time',      minRole: 'head' },
 ];
 
-const BOTTOM = [
+const BOTTOM: NavItem[] = [
   { to: '/tv',       icon: Tv,       label: 'Painel TV' },
-  { to: '/config',   icon: Settings, label: 'Config' },
+  { to: '/config',   icon: Settings, label: 'Config', minRole: 'head' },
 ];
+
+function hasAccess(minRole: Role | undefined, userRole: string): boolean {
+  if (!minRole || minRole === 'all') return true;
+  const isHead = userRole === 'Head' || userRole === 'Founder';
+  const isManager = isHead || userRole === 'Partner';
+  if (minRole === 'head') return isHead;
+  if (minRole === 'manager') return isManager;
+  return true;
+}
 
 interface SidebarProps {
   collapsed: boolean;
@@ -28,6 +41,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: SidebarProps) {
+  const userRole = getSession()?.role || 'Setter';
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all duration-150 min-h-[44px] ${
       isActive
@@ -61,7 +75,7 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
         <div className="text-[10px] text-t4 uppercase tracking-[0.12em] px-3 mb-2 font-semibold">
           {collapsed ? '•' : 'Menu Principal'}
         </div>
-        {NAV.map(({ to, icon: Icon, label }) => (
+        {NAV.filter(item => hasAccess(item.minRole, userRole)).map(({ to, icon: Icon, label }) => (
           <NavLink key={to} to={to} end={to === '/'} className={linkClass} title={label} onClick={onMobileClose}>
             <Icon size={18} className="shrink-0" />
             {!collapsed && <span>{label}</span>}
@@ -71,7 +85,7 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
 
       {/* Bottom nav */}
       <div className="px-3 py-3 border-t border-b1 space-y-1">
-        {BOTTOM.map(({ to, icon: Icon, label }) => (
+        {BOTTOM.filter(item => hasAccess(item.minRole, userRole)).map(({ to, icon: Icon, label }) => (
           <NavLink key={to} to={to} className={linkClass} title={label} onClick={onMobileClose}>
             <Icon size={18} className="shrink-0" />
             {!collapsed && <span>{label}</span>}

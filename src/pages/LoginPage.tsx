@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Eye, EyeOff, LogIn, UserPlus } from 'lucide-react';
+import type { UserSession } from '../App';
 
 interface LoginPageProps {
-  onLogin: (name: string, role: string) => void;
+  onLogin: (user: UserSession) => void;
 }
 
 export function LoginPage({ onLogin }: LoginPageProps) {
@@ -40,7 +41,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
       };
       users.push(newUser);
       localStorage.setItem('vops_ops_users', JSON.stringify(users));
-      onLogin(newUser.name, newUser.role);
+      onLogin({ id: newUser.id, name: newUser.name, role: newUser.role, email: newUser.email });
     } else {
       if (!email.trim() || !password.trim()) {
         setError('Preencha email e senha');
@@ -55,7 +56,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
         setError('Email ou senha incorretos');
         return;
       }
-      onLogin(user.name, user.role);
+      onLogin({ id: user.id, name: user.name, role: user.role, email: user.email });
     }
   };
 

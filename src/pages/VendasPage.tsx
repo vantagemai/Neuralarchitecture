@@ -14,7 +14,7 @@ export function VendasPage() {
   const session = JSON.parse(localStorage.getItem('vantagem_session') || '{}');
   const users = getUsers().filter(u => u.active && u.role === 'Setter');
   const sales = getMonthSales();
-  const mySales = sales.filter(s => s.sellerName === session.name);
+  const mySales = sales.filter(s => s.sellerId === session.id || s.sellerName === session.name);
 
   const totalSetupComm = mySales.reduce((t, s) => t + (s.sellerSetupComm || 0), 0);
   const totalRecComm = mySales.reduce((t, s) => t + (s.sellerRecComm || 0), 0);
@@ -30,7 +30,7 @@ export function VendasPage() {
     db.set(saleKey, {
       id: saleKey,
       date: today(),
-      sellerId: session.name?.replace(/\s/g, '_').toLowerCase(),
+      sellerId: session.id || session.name?.replace(/\s/g, '_').toLowerCase(),
       sellerName: session.name,
       sellerRole: session.role,
       setterId: setter?.id || null,

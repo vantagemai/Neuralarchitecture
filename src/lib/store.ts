@@ -39,6 +39,14 @@ export const db = {
   },
 };
 
+// Session helper — single source of truth for current user
+export function getSession(): { id: string; name: string; role: string; email: string } | null {
+  try {
+    const raw = localStorage.getItem('vantagem_session');
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+
 // Helpers
 export const today = () => new Date().toISOString().split('T')[0];
 export const currentMonth = () => new Date().toISOString().slice(0, 7);
