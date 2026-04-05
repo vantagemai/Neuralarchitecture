@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Save, Shield, Trophy, Volume2, Cloud, CloudOff } from 'lucide-react';
+import { Save, Shield, Trophy, Volume2, Cloud, CloudOff, Users } from 'lucide-react';
 import { db } from '../lib/store';
 import { playSuccess } from '../lib/sounds';
 import { isOnline } from '../lib/supabase';
 import { pushLocalToSupabase, hydrateFromSupabase } from '../lib/supabaseSync';
+import { runDemoSeed } from '../lib/demoSeed';
 
 const PLANS = [
   { key: 'SETTER',   label: 'Setter',   setup: '10%', rec: '3%',  color: '#9B7FE0' },
@@ -125,6 +126,28 @@ export function ConfigPage() {
             <Cloud size={14} /> Baixar Nuvem → Local
           </button>
         </div>
+      </div>
+
+      {/* Demo Seed */}
+      <div className="bg-surface border border-b1 rounded-xl p-6">
+        <div className="flex items-center gap-2 mb-4">
+          <Users size={18} className="text-vpurp" />
+          <h2 className="text-[15px] font-bold">Dados Demo</h2>
+        </div>
+        <p className="text-xs text-t3 mb-4">Popula o sistema com 10 membros realistas, vendas, fills, pipeline, shoutouts, XP, streaks, conquistas e metas. Ideal para demonstracao.</p>
+        <button
+          onClick={async () => {
+            setSaved('Gerando dados demo...');
+            const result = await runDemoSeed();
+            playSuccess();
+            setSaved(`Demo criado! ${result.users} membros, ${result.sales} vendas, ${result.fills} fills`);
+            setTimeout(() => setSaved(''), 5000);
+          }}
+          className="flex items-center gap-2 bg-vpurp/15 hover:bg-vpurp/25 text-vpurp border border-vpurp/20 font-bold px-4 py-2.5 rounded-lg transition-colors"
+        >
+          <Users size={14} /> Gerar Time Demo (10 membros)
+        </button>
+        <p className="text-[10px] text-t4 mt-2">Senha de todos: demo123</p>
       </div>
 
       {/* Sound Effects */}
