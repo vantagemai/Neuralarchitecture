@@ -1,8 +1,11 @@
 import { useState } from 'react';
-import { UserPlus, Trash2, Pencil, X, Check } from 'lucide-react';
+import { UserPlus, Trash2, Pencil, X, Check, Target } from 'lucide-react';
 import { db, getUsers, type UserData } from '../lib/store';
 import { Badge } from '../components/ui/Badge';
 import { showToast } from '../components/ui/Toast';
+import { getGoals, setGoals, type UserGoals } from '../lib/goals';
+import { getTotalXp } from '../lib/xp';
+import { getStreak } from '../lib/streaks';
 
 const ROLES = ['Setter', 'Vendedor', 'Partner', 'Founder'];
 const roleVariant = (r: string) => r === 'Setter' ? 'purp' as const : r === 'Founder' ? 'red' as const : r === 'Partner' ? 'blue' as const : 'gold' as const;
@@ -18,6 +21,8 @@ export function TimePage() {
   const [msg, setMsg] = useState('');
 
   // Editing state
+  const [goalsId, setGoalsId] = useState<string | null>(null);
+  const [editGoals, setEditGoals] = useState<UserGoals>({ dailyContacts: 50, dailyScore: 50, monthlySales: 5, monthlyRevenue: 5000 });
   const [editId, setEditId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
   const [editRole, setEditRole] = useState('');
@@ -165,6 +170,7 @@ export function TimePage() {
                     </div>
                   ) : (
                     /* View mode */
+                    <>
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-full bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-[10px] font-bold shrink-0">
                         {u.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
@@ -174,6 +180,11 @@ export function TimePage() {
                         <div className="text-[11px] text-t4 font-mono">{u.email}</div>
                       </div>
                       <Badge variant={roleVariant(u.role)}>{u.role}</Badge>
+                      <span className="text-[10px] text-t4 font-mono">{getTotalXp(u.id)} XP</span>
+                      {getStreak(u.id).current > 0 && <span className="text-[10px] text-orange-400">🔥{getStreak(u.id).current}</span>}
+                      <button onClick={() => { setGoalsId(goalsId === u.id ? null : u.id); setEditGoals(getGoals(u.id)); }} className="p-2 text-t4 hover:text-vgold transition-colors" title="Metas">
+                        <Target size={14} />
+                      </button>
                       <button onClick={() => startEdit(u)} className="p-2 text-t4 hover:text-vblue transition-colors" title="Editar">
                         <Pencil size={14} />
                       </button>
@@ -181,7 +192,40 @@ export function TimePage() {
                         <Trash2 size={14} />
                       </button>
                     </div>
-                  )}
+                    {/* Goals panel */}
+                    {goalsId === u.id && (
+                      <div className="mt-3 pt-3 border-t border-b1 animate-in">
+                        <div className="text-[10px] text-t3 uppercase font-bold mb-2">Metas de {u.name.split(' ')[0]}</div>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                          <div>
+                            <label className="text-[9px] text-t4 uppercase">Contatos/dia</label>
+                            <input type="number" value={editGoals.dailyContacts} onChange={e => setEditGoals({ ...editGoals, dailyContacts: parseInt(e.target.value) || 0 })}
+                              className="mt-0.5 w-full bg-elevated border border-b1 rounded-lg px-2 py-1.5 text-center font-mono text-xs outline-none focus:border-vred/40" />
+                          </div>
+                          <div>
+                            <label className="text-[9px] text-t4 uppercase">Score/dia</label>
+                            <input type="number" value={editGoals.dailyScore} onChange={e => setEditGoals({ ...editGoals, dailyScore: parseInt(e.target.value) || 0 })}
+                              className="mt-0.5 w-full bg-elevated border border-b1 rounded-lg px-2 py-1.5 text-center font-mono text-xs outline-none focus:border-vred/40" />
+                          </div>
+                          <div>
+                            <label className="text-[9px] text-t4 uppercase">Vendas/mes</label>
+                            <input type="number" value={editGoals.monthlySales} onChange={e => setEditGoals({ ...editGoals, monthlySales: parseInt(e.target.value) || 0 })}
+                              className="mt-0.5 w-full bg-elevated border border-b1 rounded-lg px-2 py-1.5 text-center font-mono text-xs outline-none focus:border-vred/40" />
+                          </div>
+                          <div>
+                            <label className="text-[9px] text-t4 uppercase">Receita/mes ($)</label>
+                            <input type="number" value={editGoals.monthlyRevenue} onChange={e => setEditGoals({ ...editGoals, monthlyRevenue: parseInt(e.target.value) || 0 })}
+                              className="mt-0.5 w-full bg-elevated border border-b1 rounded-lg px-2 py-1.5 text-center font-mono text-xs outline-none focus:border-vred/40" />
+                          </div>
+                        </div>
+                        <button onClick={() => { setGoals(editGoals, u.id); setGoalsId(null); showToast('success', `Metas de ${u.name.split(' ')[0]} salvas`); }}
+                          className="mt-2 text-xs bg-vgold/15 text-vgold border border-vgold/20 font-bold px-3 py-1.5 rounded-lg hover:bg-vgold/25 transition-colors">
+                          Salvar Metas
+                        </button>
+                      </div>
+                    )}
+                  </>
+                )}
                 </div>
               ))}
             </div>

@@ -1,14 +1,16 @@
 import { useState, useCallback } from 'react';
-import { Send, RefreshCw, CheckCircle2 } from 'lucide-react';
+import { Send, RefreshCw, CheckCircle2, Target, Flame } from 'lucide-react';
 import { db, today, CHANNELS, getSession, type FillData, type ChannelData } from '../lib/store';
 import { Badge } from '../components/ui/Badge';
 import { awardFillXp } from '../lib/xp';
 import { updateStreak } from '../lib/streaks';
+import { getStreak } from '../lib/streaks';
 import { checkAchievements } from '../lib/achievements';
 import { showToast } from '../components/ui/Toast';
 import { triggerConfetti } from '../components/ui/Confetti';
 import { playSuccess, playAchievement } from '../lib/sounds';
 import { addNotification } from '../lib/notifications';
+import { getGoalProgress } from '../lib/goals';
 
 export function FillPage() {
   const session = getSession();
@@ -122,6 +124,65 @@ export function FillPage() {
           </span>
         </div>
       )}
+
+      {/* Goal progress */}
+      {(() => {
+        const gp = getGoalProgress();
+        const streak = getStreak();
+        return (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="bg-surface border border-b1 rounded-xl p-3">
+              <div className="flex items-center gap-1.5 mb-1">
+                <Target size={12} className="text-vred" />
+                <span className="text-[10px] text-t3 uppercase font-bold">Contatos</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-sm font-bold">{score}/{gp.dailyContacts.target}</span>
+                <span className={`text-[10px] font-bold ${gp.dailyContacts.pct >= 100 ? 'text-vgreen' : 'text-t4'}`}>{gp.dailyContacts.pct}%</span>
+              </div>
+              <div className="h-1 bg-overlay rounded-full overflow-hidden mt-1">
+                <div className={`h-full rounded-full transition-all ${gp.dailyContacts.pct >= 100 ? 'bg-vgreen' : 'bg-vred'}`} style={{ width: `${Math.min(100, Math.round((score / gp.dailyContacts.target) * 100))}%` }} />
+              </div>
+            </div>
+            <div className="bg-surface border border-b1 rounded-xl p-3">
+              <div className="flex items-center gap-1.5 mb-1">
+                <Target size={12} className="text-vpurp" />
+                <span className="text-[10px] text-t3 uppercase font-bold">Score</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-sm font-bold">{score}/{gp.dailyScore.target}</span>
+                <span className={`text-[10px] font-bold ${gp.dailyScore.pct >= 100 ? 'text-vgreen' : 'text-t4'}`}>{Math.min(100, Math.round((score / gp.dailyScore.target) * 100))}%</span>
+              </div>
+              <div className="h-1 bg-overlay rounded-full overflow-hidden mt-1">
+                <div className={`h-full rounded-full transition-all ${gp.dailyScore.pct >= 100 ? 'bg-vgreen' : 'bg-vpurp'}`} style={{ width: `${Math.min(100, Math.round((score / gp.dailyScore.target) * 100))}%` }} />
+              </div>
+            </div>
+            <div className="bg-surface border border-b1 rounded-xl p-3">
+              <div className="flex items-center gap-1.5 mb-1">
+                <Flame size={12} className="text-orange-400" />
+                <span className="text-[10px] text-t3 uppercase font-bold">Streak</span>
+              </div>
+              <div className="font-mono text-sm font-bold text-orange-400">
+                {streak.current > 0 ? `🔥 ${streak.current}d` : 'Comece hoje!'}
+              </div>
+              <div className="text-[10px] text-t4 mt-0.5">Recorde: {streak.best}d</div>
+            </div>
+            <div className="bg-surface border border-b1 rounded-xl p-3">
+              <div className="flex items-center gap-1.5 mb-1">
+                <Target size={12} className="text-vgreen" />
+                <span className="text-[10px] text-t3 uppercase font-bold">Vendas Mes</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-sm font-bold">{gp.monthlySales.current}/{gp.monthlySales.target}</span>
+                <span className={`text-[10px] font-bold ${gp.monthlySales.pct >= 100 ? 'text-vgreen' : 'text-t4'}`}>{gp.monthlySales.pct}%</span>
+              </div>
+              <div className="h-1 bg-overlay rounded-full overflow-hidden mt-1">
+                <div className={`h-full rounded-full transition-all ${gp.monthlySales.pct >= 100 ? 'bg-vgreen' : 'bg-vgreen/60'}`} style={{ width: `${gp.monthlySales.pct}%` }} />
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Channel cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
