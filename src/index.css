@@ -95,3 +95,33 @@ body {
   50% { box-shadow: 0 0 12px 4px rgba(241, 16, 19, 0.2); }
 }
 .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+
+/* TV Panel transitions */
+@keyframes panelSlideIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.animate-panel-in { animation: panelSlideIn 0.4s ease-out; }
+
+@keyframes saleBanner {
+  0% { opacity: 0; transform: scale(0.9); }
+  10% { opacity: 1; transform: scale(1.02); }
+  20% { opacity: 1; transform: scale(1); }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.animate-sale-banner { animation: saleBanner 30s ease-out forwards; }
+
+@keyframes saleGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0,200,100,.3); }
+  50% { box-shadow: 0 0 20px 8px rgba(0,200,100,.15); }
+}
+.animate-sale-glow { animation: saleGlow 2s ease-in-out infinite; }
+
+/* Marquee ticker */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee { animation: marquee 30s linear infinite; }
+.animate-marquee:hover { animation-play-state: paused; }

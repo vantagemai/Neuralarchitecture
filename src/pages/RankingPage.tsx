@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Badge } from '../components/ui/Badge';
-import { CHANNELS, getTodayFills, getMonthSales, getUsers, calcScore, fmt$, getSession } from '../lib/store';
+import { CHANNELS, getTodayFills, getMonthSales, getUsers, calcScore, fmt$, getSession, db } from '../lib/store';
 import { getTotalXp } from '../lib/xp';
 import { getStreak } from '../lib/streaks';
 import { getLevel, getLevelByXp } from '../lib/levels';
@@ -36,14 +36,23 @@ export function RankingPage() {
   }).sort((a, b) => b.score - a.score);
 
   // Revenue ranking from real sales
-  const revMap: Record<string, { id: string; name: string; role: string; comm: number; sales: number }> = {};
+  const revMap: Record<string, { id: string; name: string; role: string; comm: number; sales: number; avatar: string | null }> = {};
   sales.forEach(s => {
     const id = s.sellerId || s.sellerName;
-    if (!revMap[id]) revMap[id] = { id, name: s.sellerName, role: s.sellerRole, comm: 0, sales: 0 };
+    if (!revMap[id]) revMap[id] = {
+      id, name: s.sellerName, role: s.sellerRole, comm: 0, sales: 0,
+      avatar: localStorage.getItem(`vantagem_avatar_${s.sellerId}`) || null,
+    };
     revMap[id].comm += (s.sellerSetupComm || 0) + (s.sellerRecComm || 0);
     revMap[id].sales++;
   });
   const revData = Object.values(revMap).sort((a, b) => b.comm - a.comm);
+
+  // Prizes config
+  const cfg = db.get<{ awards?: { prizes?: Record<string, string> } }>('ops_config');
+  const prizes = cfg?.awards?.prizes || {};
+
+  const getPercentile = (rank: number, total: number) => total > 0 && rank > 0 ? Math.round(((total - rank + 1) / total) * 100) : 0;
 
   // XP ranking across all users
   const xpData = users.map(u => {
@@ -61,6 +70,11 @@ export function RankingPage() {
   const maxScore = actData[0]?.score || 1;
   const maxComm = revData[0]?.comm || 1;
   const maxXp = xpData[0]?.xp || 1;
+
+  // My position
+  const myActRank = actData.findIndex(a => a.id === session?.id) + 1;
+  const myRevRank = revData.findIndex(r => r.id === session?.id) + 1;
+  const myXpRank = xpData.findIndex(x => x.id === session?.id) + 1;
 
   // My stats for comparison
   const myXp = getTotalXp();
@@ -97,7 +111,7 @@ export function RankingPage() {
       </div>
 
       {/* My stats bar */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
         <div className="bg-surface border border-b1 rounded-xl p-3 text-center">
           <div className="text-sm">{myLevel.icon}</div>
           <div className={`text-xs font-bold ${myLevel.color}`}>{myLevel.name}</div>
@@ -110,6 +124,15 @@ export function RankingPage() {
         </div>
         <div className="bg-surface border border-b1 rounded-xl p-3 text-center">
           <div className="font-mono text-sm font-bold text-vpurp">{myBadges} badges</div>
+        </div>
+        <div className="bg-surface border border-b1 rounded-xl p-3 text-center">
+          <div className="text-[10px] text-t3 uppercase">Posicao</div>
+          <div className="font-mono text-sm font-bold text-vred">
+            {tab === 'activity' && myActRank > 0 ? `#${myActRank}` : tab === 'revenue' && myRevRank > 0 ? `#${myRevRank}` : myXpRank > 0 ? `#${myXpRank}` : '—'}
+            <span className="text-[10px] text-t4 ml-1">
+              top {tab === 'activity' ? getPercentile(myActRank, actData.length) : tab === 'revenue' ? getPercentile(myRevRank, revData.length) : getPercentile(myXpRank, xpData.length)}%
+            </span>
+          </div>
         </div>
       </div>
 
@@ -181,15 +204,16 @@ export function RankingPage() {
                     <span className="w-7 text-center text-lg">
                       {MEDALS[i] || <span className="text-xs text-t4 font-mono">#{i + 1}</span>}
                     </span>
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-vgreen to-emerald-700 flex items-center justify-center text-white text-[10px] font-bold shrink-0">
-                      {person.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                    </div>
+                    {renderAvatar(person.name, person.avatar)}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-semibold truncate">{person.name}</span>
                         <Badge variant={roleVariant(person.role)}>{person.role}</Badge>
                       </div>
-                      <div className="text-[10px] text-t4 mt-0.5">{person.sales} venda(s)</div>
+                      <div className="text-[10px] text-t4 mt-0.5">
+                        {person.sales} venda(s)
+                        {i === 0 && prizes.top_closer && <span className="ml-2 text-vgold">🏆 {prizes.top_closer}</span>}
+                      </div>
                     </div>
                     <span className="font-mono font-bold text-vgreen">{fmt$(person.comm)}</span>
                   </div>
