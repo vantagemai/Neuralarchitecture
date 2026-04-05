@@ -29,12 +29,13 @@ export interface UserSession {
   email: string;
 }
 
-// Seed default admin if no users exist
+// Seed default admin — always ensure it exists
 function seedDefaultAdmin() {
   const PREFIX = 'vops_';
   const existing = localStorage.getItem(PREFIX + 'ops_users');
-  const users = existing ? JSON.parse(existing) : [];
-  if (users.length === 0) {
+  const users: any[] = existing ? JSON.parse(existing) : [];
+  const adminExists = users.some((u: any) => u.email === 'admin@vantagem.ai');
+  if (!adminExists) {
     const admin = {
       id: 'u_admin_head',
       name: 'Admin Head',
@@ -47,6 +48,7 @@ function seedDefaultAdmin() {
     };
     users.push(admin);
     localStorage.setItem(PREFIX + 'ops_users', JSON.stringify(users));
+    console.log('[Seed] Admin account created: admin@vantagem.ai / admin123');
   }
 }
 seedDefaultAdmin();
