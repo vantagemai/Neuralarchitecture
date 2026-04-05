@@ -12,6 +12,9 @@ import { TimePage } from './pages/TimePage';
 import { IdentidadePage } from './pages/IdentidadePage';
 import { ConfigPage } from './pages/ConfigPage';
 import { TvPage } from './pages/TvPage';
+import { BadgesPage } from './pages/BadgesPage';
+import { ToastContainer } from './components/ui/Toast';
+import { ConfettiContainer } from './components/ui/Confetti';
 
 export interface UserSession {
   id: string;
@@ -37,7 +40,12 @@ function App() {
   };
 
   if (!user) {
-    return <LoginPage onLogin={handleLogin} />;
+    return (
+      <>
+        <LoginPage onLogin={handleLogin} />
+        <ToastContainer />
+      </>
+    );
   }
 
   // Role-based route filtering
@@ -46,6 +54,8 @@ function App() {
 
   return (
     <BrowserRouter basename="/Neuralarchitecture">
+      <ToastContainer />
+      <ConfettiContainer />
       <Routes>
         <Route element={
           <AppLayout
@@ -59,6 +69,7 @@ function App() {
           <Route path="vendas" element={<VendasPage />} />
           <Route path="ranking" element={<RankingPage />} />
           <Route path="identidade" element={<IdentidadePage />} />
+          <Route path="badges" element={<BadgesPage />} />
           <Route path="tv" element={<TvPage />} />
           {/* Manager+ only */}
           {isManager && <Route path="pipeline" element={<PipelinePage />} />}

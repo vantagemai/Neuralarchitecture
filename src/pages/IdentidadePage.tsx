@@ -1,15 +1,16 @@
 import { useState } from 'react';
-import { Flame, Car, Home, Dumbbell, Sparkles, Heart, Save } from 'lucide-react';
-import { db, today, fmt$ } from '../lib/store';
+import { Flame, Car, Home, Dumbbell, Sparkles, Heart, Save, Camera } from 'lucide-react';
+import { db, today, fmt$, getSession, getMonthSales } from '../lib/store';
 
 interface NIProfile {
   metaM: number; meta180: number; car: string; home: string; body: string;
   style: string; impact: string; anchor: string; startDate: string;
+  images?: Record<string, string>; // base64 images for car/home/body/style
 }
 
 export function IdentidadePage() {
-  const session = JSON.parse(localStorage.getItem('vantagem_session') || '{}');
-  const userId = session.name?.replace(/\s/g, '_').toLowerCase() || 'anon';
+  const session = getSession() || { id: 'anon', name: 'Anon', role: 'Setter', email: '' };
+  const userId = session.id || 'anon';
   const profileKey = `ni_profile_${userId}`;
 
   const [profile, setProfile] = useState<NIProfile | null>(() => db.get(profileKey));
@@ -24,6 +25,29 @@ export function IdentidadePage() {
     anchor: profile?.anchor || '',
   });
 
+  const [images, setImages] = useState<Record<string, string>>(profile?.images || {});
+
+  const handleImageUpload = (key: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxW = 300;
+        let w = img.width, h = img.height;
+        if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d')?.drawImage(img, 0, 0, w, h);
+        const b64 = canvas.toDataURL('image/jpeg', 0.6);
+        setImages(prev => ({ ...prev, [key]: b64 }));
+      };
+      img.src = ev.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  };
+
   const save = () => {
     const metaM = parseFloat(form.metaM) || 0;
     if (!metaM) { alert('Defina sua meta mensal'); return; }
@@ -32,6 +56,7 @@ export function IdentidadePage() {
       car: form.car, home: form.home, body: form.body,
       style: form.style, impact: form.impact, anchor: form.anchor,
       startDate: profile?.startDate || today(),
+      images,
     };
     db.set(profileKey, p);
     setProfile(p);
@@ -88,8 +113,20 @@ export function IdentidadePage() {
               <label className="flex items-center gap-2 text-[11px] text-t3 uppercase tracking-wider font-semibold">
                 {f.icon} {f.label}
               </label>
-              <input value={form[f.key as keyof typeof form]} onChange={e => setForm({ ...form, [f.key]: e.target.value })} placeholder={f.ph}
-                className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-vred/40" />
+              <div className="flex gap-3 mt-1">
+                <input value={form[f.key as keyof typeof form]} onChange={e => setForm({ ...form, [f.key]: e.target.value })} placeholder={f.ph}
+                  className="flex-1 bg-elevated border border-b1 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-vred/40" />
+                <label className="relative cursor-pointer shrink-0">
+                  <input type="file" accept="image/*" className="hidden" onChange={e => handleImageUpload(f.key, e)} />
+                  {images[f.key] ? (
+                    <img src={images[f.key]} alt={f.label} className="w-10 h-10 rounded-lg object-cover border border-b1" />
+                  ) : (
+                    <div className="w-10 h-10 rounded-lg bg-elevated border border-dashed border-b3 flex items-center justify-center text-t4 hover:border-vred/40 hover:text-vred transition-colors">
+                      <Camera size={14} />
+                    </div>
+                  )}
+                </label>
+              </div>
             </div>
           ))}
           <div>
@@ -109,13 +146,10 @@ export function IdentidadePage() {
 
   // Dashboard view
   const days = daysProgress(profile.startDate);
-  // Real financial progress from sales data
-  const allSales = Object.keys(localStorage)
-    .filter(k => k.startsWith('vops_ops_sale_'))
-    .map(k => { try { return JSON.parse(localStorage.getItem(k)!); } catch { return null; } })
-    .filter(Boolean);
-  const mySales = allSales.filter((s: any) => s.sellerName === session.name);
-  const revenue = mySales.reduce((t: number, s: any) => t + (s.sellerSetupComm || 0) + (s.sellerRecComm || 0), 0);
+  // Real financial progress from sales data (using proper db.list)
+  const allSales = getMonthSales();
+  const mySales = allSales.filter(s => s.sellerName === session.name || s.sellerId === session.id);
+  const revenue = mySales.reduce((t, s) => t + (s.sellerSetupComm || 0) + (s.sellerRecComm || 0), 0);
   const fp = profile.metaM > 0 ? Math.min(100, Math.round((revenue / profile.metaM) * 100)) : 0;
 
   return (
@@ -154,14 +188,18 @@ export function IdentidadePage() {
           <h2 className="text-sm font-bold text-t3 uppercase tracking-wider mb-4">Minha vida construída</h2>
           <div className="space-y-3">
             {[
-              { icon: '🚗', val: profile.car },
-              { icon: '🏠', val: profile.home },
-              { icon: '💪', val: profile.body },
-              { icon: '✨', val: profile.style },
-              { icon: '❤️', val: profile.impact },
+              { icon: '🚗', val: profile.car, imgKey: 'car' },
+              { icon: '🏠', val: profile.home, imgKey: 'home' },
+              { icon: '💪', val: profile.body, imgKey: 'body' },
+              { icon: '✨', val: profile.style, imgKey: 'style' },
+              { icon: '❤️', val: profile.impact, imgKey: '' },
             ].filter(x => x.val).map((x, i) => (
               <div key={i} className="flex items-center gap-3 text-sm">
-                <span className="text-lg">{x.icon}</span>
+                {x.imgKey && profile.images?.[x.imgKey] ? (
+                  <img src={profile.images[x.imgKey]} alt="" className="w-8 h-8 rounded-lg object-cover" />
+                ) : (
+                  <span className="text-lg">{x.icon}</span>
+                )}
                 <span className="text-t2">{x.val}</span>
               </div>
             ))}

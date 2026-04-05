@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, ClipboardList, Target, Trophy, DollarSign,
-  BarChart3, Users, Flame, Settings, Tv, ChevronLeft, ChevronRight, X
+  BarChart3, Users, Flame, Settings, Tv, ChevronLeft, ChevronRight, X, Award
 } from 'lucide-react';
 import { getSession } from '../../lib/store';
 
@@ -14,6 +14,7 @@ const NAV: NavItem[] = [
   { to: '/vendas',     icon: DollarSign,      label: 'Vendas' },
   { to: '/ranking',    icon: Trophy,          label: 'Ranking' },
   { to: '/identidade', icon: Flame,           label: 'Identidade' },
+  { to: '/badges',     icon: Award,           label: 'Conquistas' },
   { to: '/pipeline',   icon: Target,          label: 'Pipeline',  minRole: 'manager' },
   { to: '/extratos',   icon: BarChart3,       label: 'Extratos',  minRole: 'manager' },
   { to: '/time',       icon: Users,           label: 'Time',      minRole: 'head' },

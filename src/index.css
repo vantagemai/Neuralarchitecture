@@ -40,3 +40,27 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 .animate-in { animation: fadeIn 0.25s ease-out; }
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-slide-up { animation: slideUp 0.3s ease-out; }
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.animate-slide { animation: slideIn 0.2s ease-out; }
+
+@keyframes confettiFall {
+  0% { opacity: 1; transform: translateY(0) translateX(0) rotate(0deg); }
+  100% { opacity: 0; transform: translateY(100vh) translateX(var(--drift, 20px)) rotate(720deg); }
+}
+.animate-confetti-fall { animation: confettiFall 2.5s ease-in forwards; }
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(241, 16, 19, 0.4); }
+  50% { box-shadow: 0 0 12px 4px rgba(241, 16, 19, 0.2); }
+}
+.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }

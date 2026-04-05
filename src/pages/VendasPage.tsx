@@ -2,7 +2,11 @@ import { useState } from 'react';
 import { Plus, X } from 'lucide-react';
 import { KpiCard } from '../components/ui/KpiCard';
 import { DollarSign, Target, TrendingUp } from 'lucide-react';
-import { db, today, getMonthSales, getUsers, fmt$ } from '../lib/store';
+import { db, today, getMonthSales, getUsers, getSession, fmt$ } from '../lib/store';
+import { awardSaleXp } from '../lib/xp';
+import { checkAchievements } from '../lib/achievements';
+import { showToast } from '../components/ui/Toast';
+import { triggerConfetti } from '../components/ui/Confetti';
 
 export function VendasPage() {
   const [showForm, setShowForm] = useState(false);
@@ -11,7 +15,7 @@ export function VendasPage() {
   const [setterId, setSetterId] = useState('');
   const [saved, setSaved] = useState('');
 
-  const session = JSON.parse(localStorage.getItem('vantagem_session') || '{}');
+  const session = getSession() || { id: 'anon', name: 'Anon', role: 'Setter', email: '' };
   const users = getUsers().filter(u => u.active && u.role === 'Setter');
   const sales = getMonthSales();
   const mySales = sales.filter(s => s.sellerId === session.id || s.sellerName === session.name);
@@ -43,6 +47,20 @@ export function VendasPage() {
       setterRecComm: setter ? Math.round(r * 0.05) : 0,
       ts: Date.now(),
     });
+
+    // Award XP for sale
+    const xpGained = awardSaleXp();
+    showToast('xp', `+${xpGained} XP`, 'Venda registrada!');
+    triggerConfetti();
+
+    // Check achievements
+    const newAch = checkAchievements();
+    for (const ach of newAch) {
+      setTimeout(() => showToast('achievement', `${ach.icon} ${ach.name}`, ach.description), 500);
+    }
+
+    // Notify header to refresh XP
+    document.dispatchEvent(new Event('xp-update'));
 
     setSaved(`Venda salva! Comissão: ${fmt$(Math.round(s * 0.5 + r * 0.4))}`);
     setTimeout(() => { setSaved(''); setShowForm(false); }, 2000);

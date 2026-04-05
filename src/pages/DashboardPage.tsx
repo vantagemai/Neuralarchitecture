@@ -67,6 +67,7 @@ export function DashboardPage() {
       filled: !!fill,
       time: fill ? new Date(fill.ts).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '',
       channels: fill?.channels || {},
+      obs: fill?.obs || '',
     };
   }).sort((a, b) => b.score - a.score);
 
@@ -190,17 +191,24 @@ export function DashboardPage() {
                       <Badge variant={roleVariant(member.role)}>{member.role}</Badge>
                     </div>
                     {member.filled && (
-                      <div className="flex gap-2 mt-1">
-                        {CHANNELS.map(ch => {
-                          const val = member.channels[ch.id];
-                          const v = typeof val === 'object' ? (val as any).a : val;
-                          return (
-                            <span key={ch.id} className="text-[10px] text-t4">
-                              {ch.icon} <span className="font-mono">{v || 0}</span>
-                            </span>
-                          );
-                        })}
-                      </div>
+                      <>
+                        <div className="flex gap-2 mt-1">
+                          {CHANNELS.map(ch => {
+                            const val = member.channels[ch.id];
+                            const v = typeof val === 'object' ? (val as any).a : val;
+                            return (
+                              <span key={ch.id} className="text-[10px] text-t4">
+                                {ch.icon} <span className="font-mono">{v || 0}</span>
+                              </span>
+                            );
+                          })}
+                        </div>
+                        {member.obs && (
+                          <div className="text-[10px] text-t3 mt-1 italic truncate max-w-[300px]" title={member.obs}>
+                            💬 {member.obs}
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
                   <div className="text-right">

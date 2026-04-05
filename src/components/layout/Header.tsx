@@ -1,5 +1,9 @@
-import { Bell, Search, LogOut, Camera, Menu } from 'lucide-react';
+import { Bell, Search, LogOut, Camera, Menu, Flame, Zap } from 'lucide-react';
 import { useRef, useState } from 'react';
+import { getSession } from '../../lib/store';
+import { getTotalXp } from '../../lib/xp';
+import { getStreak } from '../../lib/streaks';
+import { getLevel, getNextLevel } from '../../lib/levels';
 
 interface HeaderProps {
   userName: string;
@@ -10,9 +14,18 @@ interface HeaderProps {
   onAvatarChange?: (b64: string) => void;
 }
 
+function avatarKey(): string {
+  const session = getSession();
+  return `vantagem_avatar_${session?.id || 'anon'}`;
+}
+
 export function Header({ userName, userRole, onLogout, onToggleSidebar, onAvatarChange }: HeaderProps) {
   const fileRef = useRef<HTMLInputElement>(null);
-  const [avatar, setAvatar] = useState(() => localStorage.getItem('vantagem_avatar') || null);
+  const [avatar, setAvatar] = useState(() => localStorage.getItem(avatarKey()) || null);
+  const [xp, setXp] = useState(() => getTotalXp());
+  const streak = getStreak();
+  const level = getLevel();
+  const { next, progress } = getNextLevel();
   const initials = userName
     .split(' ')
     .map(n => n[0])
@@ -34,7 +47,7 @@ export function Header({ userName, userRole, onLogout, onToggleSidebar, onAvatar
         canvas.width = w; canvas.height = h;
         canvas.getContext('2d')?.drawImage(img, 0, 0, w, h);
         const b64 = canvas.toDataURL('image/jpeg', 0.7);
-        localStorage.setItem('vantagem_avatar', b64);
+        localStorage.setItem(avatarKey(), b64);
         setAvatar(b64);
         onAvatarChange?.(b64);
       };
@@ -42,6 +55,13 @@ export function Header({ userName, userRole, onLogout, onToggleSidebar, onAvatar
     };
     reader.readAsDataURL(file);
   };
+
+  // Refresh XP on visibility change (when returning from fill/vendas)
+  const refreshXp = () => setXp(getTotalXp());
+  if (typeof document !== 'undefined') {
+    document.removeEventListener('xp-update', refreshXp);
+    document.addEventListener('xp-update', refreshXp);
+  }
 
   const now = new Date();
   const dateStr = now.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' });
@@ -71,6 +91,34 @@ export function Header({ userName, userRole, onLogout, onToggleSidebar, onAvatar
 
       {/* Right */}
       <div className="flex items-center gap-3 sm:gap-4">
+        {/* XP + Level + Streak indicators */}
+        <div className="hidden md:flex items-center gap-3">
+          {/* Level badge */}
+          <div className="flex items-center gap-1.5 bg-elevated border border-b1 rounded-lg px-2.5 py-1.5" title={`Level: ${level.name} (${xp} XP)`}>
+            <span className="text-sm">{level.icon}</span>
+            <span className={`text-[11px] font-bold ${level.color}`}>{level.name}</span>
+            {next && (
+              <div className="w-12 h-1 bg-overlay rounded-full overflow-hidden ml-1">
+                <div className="h-full bg-vred rounded-full transition-all" style={{ width: `${progress}%` }} />
+              </div>
+            )}
+          </div>
+
+          {/* XP counter */}
+          <div className="flex items-center gap-1 text-[11px] font-mono font-bold text-vgold" title={`${xp} XP total`}>
+            <Zap size={12} />
+            {xp.toLocaleString()}
+          </div>
+
+          {/* Streak flame */}
+          {streak.current > 0 && (
+            <div className="flex items-center gap-1 text-[11px] font-mono font-bold text-orange-400" title={`${streak.current} dias consecutivos`}>
+              <Flame size={12} />
+              {streak.current}d
+            </div>
+          )}
+        </div>
+
         <span className="text-[11px] text-t3 font-mono hidden md:block">
           {dateStr} · {timeStr}
         </span>

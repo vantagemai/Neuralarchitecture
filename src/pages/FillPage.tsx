@@ -2,6 +2,11 @@ import { useState, useCallback } from 'react';
 import { Send, RefreshCw, CheckCircle2 } from 'lucide-react';
 import { db, today, CHANNELS, getSession, type FillData, type ChannelData } from '../lib/store';
 import { Badge } from '../components/ui/Badge';
+import { awardFillXp } from '../lib/xp';
+import { updateStreak } from '../lib/streaks';
+import { checkAchievements } from '../lib/achievements';
+import { showToast } from '../components/ui/Toast';
+import { triggerConfetti } from '../components/ui/Confetti';
 
 export function FillPage() {
   const session = getSession();
@@ -40,6 +45,39 @@ export function FillPage() {
       ts: Date.now(),
     };
     db.set(fillKey, fill);
+
+    // Calculate totals for XP
+    const totalContacts = Object.values(channels).reduce((t, ch) => t + (parseInt(ch.a) || 0), 0);
+    const totalResponses = Object.values(channels).reduce((t, ch) => t + (parseInt(ch.b) || 0), 0);
+
+    // Award XP
+    const xpGained = awardFillXp(totalContacts, totalResponses);
+    if (xpGained > 0) {
+      showToast('xp', `+${xpGained} XP`, 'Fill diario registrado');
+    }
+
+    // Update streak
+    const { streak, isNew, milestone } = updateStreak();
+    if (isNew && streak.current > 1) {
+      showToast('streak', `${streak.current} dias seguidos!`, 'Streak atualizado');
+    }
+    if (milestone) {
+      showToast('achievement', `Streak ${milestone}d!`, 'Milestone desbloqueado');
+      triggerConfetti();
+    }
+
+    // Check achievements
+    const newAch = checkAchievements();
+    for (const ach of newAch) {
+      setTimeout(() => {
+        showToast('achievement', `${ach.icon} ${ach.name}`, ach.description);
+        triggerConfetti();
+      }, 500);
+    }
+
+    // Notify header to refresh XP
+    document.dispatchEvent(new Event('xp-update'));
+
     setTimeout(() => {
       setSaving(false);
       setSaved(true);
