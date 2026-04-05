@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Heart, Send } from 'lucide-react';
 import { db, getSession, getUsers } from '../../lib/store';
+import { broadcastNotification } from '../../lib/notifications';
 
 interface Shoutout {
   id: string;
@@ -19,6 +20,18 @@ const EMOJIS = ['🔥', '💪', '🎯', '👑', '🚀', '⭐'];
 function getShoutouts(): Shoutout[] {
   const keys = db.list('ops_shoutout_');
   return keys.map(k => db.get<Shoutout>(k)).filter(Boolean).sort((a, b) => (b as Shoutout).ts - (a as Shoutout).ts) as Shoutout[];
+}
+
+function Avatar({ userId, name }: { userId: string; name: string }) {
+  const url = localStorage.getItem(`vantagem_avatar_${userId}`);
+  const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  return url ? (
+    <img src={url} alt={name} className="w-8 h-8 rounded-full object-cover border border-b1 shrink-0" />
+  ) : (
+    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-[10px] font-bold shrink-0">
+      {initials}
+    </div>
+  );
 }
 
 export function ShoutoutFeed() {
@@ -49,6 +62,11 @@ export function ShoutoutFeed() {
     setShoutouts([s, ...shoutouts]);
     setMessage('');
     setToId('');
+    // Notify recipient
+    broadcastNotification(
+      { type: 'shoutout', title: `${session?.name} te reconheceu!`, detail: message.trim(), icon: emoji },
+      session?.id
+    );
   };
 
   const addReaction = (shoutout: Shoutout, reactionEmoji: string) => {
@@ -77,6 +95,7 @@ export function ShoutoutFeed() {
     <div className="space-y-4">
       {/* Compose */}
       <div className="bg-surface border border-b1 rounded-xl p-4">
+        <div className="text-[10px] text-t4 uppercase tracking-wider font-bold mb-3">Reconhecer alguem</div>
         <div className="flex gap-3 mb-3">
           <select value={toId} onChange={e => setToId(e.target.value)}
             className="flex-1 bg-elevated border border-b1 rounded-lg px-3 py-2 text-sm outline-none cursor-pointer">
@@ -96,7 +115,7 @@ export function ShoutoutFeed() {
         </div>
         <div className="flex gap-2">
           <input value={message} onChange={e => setMessage(e.target.value)}
-            placeholder="Ex: Mandou bem na call hoje!"
+            placeholder="Mandou bem na call hoje!"
             onKeyDown={e => e.key === 'Enter' && handleSend()}
             className="flex-1 bg-elevated border border-b1 rounded-lg px-3 py-2 text-sm outline-none focus:border-vred/40" />
           <button onClick={handleSend} disabled={!toId || !message.trim()}
@@ -115,27 +134,31 @@ export function ShoutoutFeed() {
       ) : (
         <div className="space-y-2">
           {shoutouts.slice(0, 10).map(s => (
-            <div key={s.id} className="bg-surface border border-b1 rounded-xl px-4 py-3">
+            <div key={s.id} className="bg-surface border border-b1 rounded-xl px-4 py-3 hover:border-b3 transition-colors animate-in">
               <div className="flex items-start gap-3">
-                <span className="text-xl mt-0.5">{s.emoji}</span>
+                <Avatar userId={s.fromId} name={s.fromName} />
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm">
+                  <div className="flex items-center gap-1.5 text-sm">
                     <span className="font-bold">{s.fromName}</span>
-                    <span className="text-t3"> → </span>
+                    <span className="text-t4">→</span>
+                    <Avatar userId={s.toId} name={s.toName} />
                     <span className="font-bold text-vred">{s.toName}</span>
-                    <span className="text-t4 text-[10px] ml-2 font-mono">{relativeTime(s.ts)}</span>
+                    <span className="text-xl ml-0.5">{s.emoji}</span>
+                    <span className="text-t4 text-[10px] ml-auto font-mono shrink-0">{relativeTime(s.ts)}</span>
                   </div>
-                  <p className="text-sm text-t2 mt-0.5">{s.message}</p>
+                  <div className="bg-elevated/50 rounded-lg px-3 py-2 mt-1.5 border-l-2 border-l-vred/30">
+                    <p className="text-sm text-t2">{s.message}</p>
+                  </div>
                   {/* Reactions */}
-                  <div className="flex gap-1 mt-2">
+                  <div className="flex gap-1.5 mt-2">
                     {EMOJIS.slice(0, 4).map(e => {
                       const count = s.reactions[e] || 0;
                       return (
                         <button key={e} onClick={() => addReaction(s, e)}
-                          className={`text-xs px-2 py-0.5 rounded-full transition-colors ${
+                          className={`text-xs px-2.5 py-1 rounded-full transition-all hover:scale-105 ${
                             count > 0 ? 'bg-vred/10 border border-vred/20' : 'bg-elevated hover:bg-muted border border-transparent'
                           }`}>
-                          {e} {count > 0 && <span className="font-mono ml-0.5">{count}</span>}
+                          {e} {count > 0 && <span className="font-mono ml-0.5 font-bold">{count}</span>}
                         </button>
                       );
                     })}

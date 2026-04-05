@@ -11,11 +11,11 @@ interface KpiCardProps {
 }
 
 const COLORS = {
-  red:     { bg: 'bg-vred/8',  border: 'border-vred/15',  text: 'text-vred',   icon: 'bg-vred/12 text-vred' },
-  green:   { bg: 'bg-vgreen/8', border: 'border-vgreen/15', text: 'text-vgreen', icon: 'bg-vgreen/12 text-vgreen' },
-  gold:    { bg: 'bg-vgold/8',  border: 'border-vgold/15',  text: 'text-vgold',  icon: 'bg-vgold/12 text-vgold' },
-  purp:    { bg: 'bg-vpurp/8',  border: 'border-vpurp/15',  text: 'text-vpurp',  icon: 'bg-vpurp/12 text-vpurp' },
-  blue:    { bg: 'bg-vblue/8',  border: 'border-vblue/15',  text: 'text-vblue',  icon: 'bg-vblue/12 text-vblue' },
+  red:     { bg: 'bg-gradient-to-br from-vred/10 to-vred/5',  border: 'border-vred/15',  text: 'text-vred',   icon: 'bg-vred/12 text-vred' },
+  green:   { bg: 'bg-gradient-to-br from-vgreen/10 to-vgreen/5', border: 'border-vgreen/15', text: 'text-vgreen', icon: 'bg-vgreen/12 text-vgreen' },
+  gold:    { bg: 'bg-gradient-to-br from-vgold/10 to-vgold/5',  border: 'border-vgold/15',  text: 'text-vgold',  icon: 'bg-vgold/12 text-vgold' },
+  purp:    { bg: 'bg-gradient-to-br from-vpurp/10 to-vpurp/5',  border: 'border-vpurp/15',  text: 'text-vpurp',  icon: 'bg-vpurp/12 text-vpurp' },
+  blue:    { bg: 'bg-gradient-to-br from-vblue/10 to-vblue/5',  border: 'border-vblue/15',  text: 'text-vblue',  icon: 'bg-vblue/12 text-vblue' },
   default: { bg: 'bg-surface',  border: 'border-b1',        text: 'text-t1',     icon: 'bg-elevated text-t2' },
 };
 
