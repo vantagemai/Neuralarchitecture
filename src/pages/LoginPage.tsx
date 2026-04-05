@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Eye, EyeOff, LogIn, UserPlus } from 'lucide-react';
+import { Eye, EyeOff, LogIn, UserPlus, Sun, Moon } from 'lucide-react';
 import type { UserSession } from '../App';
 import { db } from '../lib/store';
+import { getTheme, toggleTheme } from '../lib/theme';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -202,9 +203,18 @@ export function LoginPage({ onLogin }: LoginPageProps) {
           </form>
         </div>
 
-        <p className="text-center text-[10px] text-t4 mt-8 font-mono tracking-wider">
-          v2.0 · Vantagem.ai · Sistemas de Escala
-        </p>
+        <div className="flex items-center justify-center gap-3 mt-8">
+          <p className="text-[10px] text-t4 font-mono tracking-wider">
+            v2.0 · Vantagem.ai · Sistemas de Escala
+          </p>
+          <button
+            onClick={() => { toggleTheme(); setError(''); }}
+            className="p-1.5 rounded-lg text-t4 hover:text-t2 hover:bg-elevated transition-colors"
+            title="Alternar tema"
+          >
+            {getTheme() === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -24,7 +24,7 @@ export function KpiCard({ label, value, icon: Icon, trend, trendLabel, color = '
   const isUp = trend && trend > 0;
 
   return (
-    <div className={`rounded-xl border p-5 transition-all duration-200 hover:border-b3 ${
+    <div className={`rounded-xl border p-5 transition-all duration-200 hover:border-b3 hover:-translate-y-0.5 card-shadow ${
       highlight ? `${c.bg} ${c.border}` : `bg-surface ${c.border}`
     }`}>
       <div className="flex items-start justify-between mb-3">

@@ -11,6 +11,20 @@ import { ShoutoutFeed } from '../components/ops/ShoutoutFeed';
 import { getScorecard } from '../lib/scorecard';
 import { getGoalProgress } from '../lib/goals';
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
+import { getTheme } from '../lib/theme';
+
+// Theme-aware chart colors
+function chartColors() {
+  const dark = getTheme() === 'dark';
+  return {
+    grid: dark ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.07)',
+    tick: dark ? '#6B6B76' : '#7A7A88',
+    tooltipBg: dark ? '#17171C' : '#FFFFFF',
+    tooltipBorder: dark ? '1px solid rgba(255,255,255,.1)' : '1px solid rgba(0,0,0,.1)',
+    tooltipLabel: dark ? '#A8A8B0' : '#4A4A55',
+    polarGrid: dark ? 'rgba(255,255,255,.08)' : 'rgba(0,0,0,.08)',
+  };
+}
 
 const MEDALS = ['🥇', '🥈', '🥉'];
 const roleVariant = (r: string) => r === 'Setter' ? 'purp' as const : r === 'Founder' ? 'red' as const : 'gold' as const;
@@ -127,18 +141,20 @@ export function DashboardPage() {
             <Activity size={16} className="text-vred" />
             <h2 className="text-sm font-bold">Atividade — Últimos 7 dias</h2>
           </div>
+          {(() => { const cc = chartColors(); return (
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={activityTrend}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,.05)" />
-              <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#6B6B76' }} />
-              <YAxis tick={{ fontSize: 10, fill: '#6B6B76' }} />
+              <CartesianGrid strokeDasharray="3 3" stroke={cc.grid} />
+              <XAxis dataKey="label" tick={{ fontSize: 10, fill: cc.tick }} />
+              <YAxis tick={{ fontSize: 10, fill: cc.tick }} />
               <Tooltip
-                contentStyle={{ background: '#17171C', border: '1px solid rgba(255,255,255,.1)', borderRadius: 8, fontSize: 12 }}
-                labelStyle={{ color: '#A8A8B0' }}
+                contentStyle={{ background: cc.tooltipBg, border: cc.tooltipBorder, borderRadius: 8, fontSize: 12 }}
+                labelStyle={{ color: cc.tooltipLabel }}
               />
               <Bar dataKey="score" fill="#F11013" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
+          ); })()}
         </div>
 
         {/* Sales trend */}
@@ -147,18 +163,20 @@ export function DashboardPage() {
             <DollarSign size={16} className="text-vgreen" />
             <h2 className="text-sm font-bold">Comissões — Últimos 7 dias</h2>
           </div>
+          {(() => { const cc = chartColors(); return (
           <ResponsiveContainer width="100%" height={180}>
             <LineChart data={salesTrend}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,.05)" />
-              <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#6B6B76' }} />
-              <YAxis tick={{ fontSize: 10, fill: '#6B6B76' }} />
+              <CartesianGrid strokeDasharray="3 3" stroke={cc.grid} />
+              <XAxis dataKey="label" tick={{ fontSize: 10, fill: cc.tick }} />
+              <YAxis tick={{ fontSize: 10, fill: cc.tick }} />
               <Tooltip
-                contentStyle={{ background: '#17171C', border: '1px solid rgba(255,255,255,.1)', borderRadius: 8, fontSize: 12 }}
+                contentStyle={{ background: cc.tooltipBg, border: cc.tooltipBorder, borderRadius: 8, fontSize: 12 }}
                 formatter={(value: any) => ['$' + value, 'Comissão']}
               />
               <Line type="monotone" dataKey="comissao" stroke="#00C864" strokeWidth={2} dot={{ fill: '#00C864', r: 3 }} />
             </LineChart>
           </ResponsiveContainer>
+          ); })()}
         </div>
       </div>
 
@@ -181,14 +199,16 @@ export function DashboardPage() {
                 <h2 className="text-sm font-bold">Scorecard Pessoal</h2>
                 <span className="font-mono text-2xl font-bold text-vred">{sc.overall}<span className="text-xs text-t4">/100</span></span>
               </div>
+              {(() => { const cc = chartColors(); return (
               <ResponsiveContainer width="100%" height={180}>
                 <RadarChart data={radarData}>
-                  <PolarGrid stroke="rgba(255,255,255,.08)" />
-                  <PolarAngleAxis dataKey="metric" tick={{ fontSize: 10, fill: '#6B6B76' }} />
+                  <PolarGrid stroke={cc.polarGrid} />
+                  <PolarAngleAxis dataKey="metric" tick={{ fontSize: 10, fill: cc.tick }} />
                   <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
                   <Radar dataKey="value" stroke="#F11013" fill="#F11013" fillOpacity={0.2} strokeWidth={2} />
                 </RadarChart>
               </ResponsiveContainer>
+              ); })()}
             </div>
 
             {/* Goals progress */}
