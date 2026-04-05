@@ -3,6 +3,14 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AppLayout } from './components/layout/AppLayout';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { FillPage } from './pages/FillPage';
+import { PipelinePage } from './pages/PipelinePage';
+import { RankingPage } from './pages/RankingPage';
+import { VendasPage } from './pages/VendasPage';
+import { ExtratosPage } from './pages/ExtratosPage';
+import { TimePage } from './pages/TimePage';
+import { IdentidadePage } from './pages/IdentidadePage';
+import { ConfigPage } from './pages/ConfigPage';
 import { PlaceholderPage } from './pages/PlaceholderPage';
 
 function App() {
@@ -27,7 +35,7 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/Neuralarchitecture">
       <Routes>
         <Route element={
           <AppLayout
@@ -37,15 +45,15 @@ function App() {
           />
         }>
           <Route index element={<DashboardPage />} />
-          <Route path="fill" element={<PlaceholderPage title="Fill Diário" description="Registre sua atividade diária por canal: Cold Call, Instagram, WhatsApp, Calls e Visitas." />} />
-          <Route path="pipeline" element={<PlaceholderPage title="Pipeline" description="Funil de oportunidades: Geradas → Qualificadas → Em Fechamento → Vendas." />} />
-          <Route path="ranking" element={<PlaceholderPage title="Ranking" description="Ranking duplo: Atividade (score de prospecção) vs Resultado (comissão gerada)." />} />
-          <Route path="vendas" element={<PlaceholderPage title="Vendas" description="Registre vendas, calcule comissões automaticamente, atribua setters." />} />
-          <Route path="extratos" element={<PlaceholderPage title="Extratos" description="Comissões detalhadas por pessoa, por mês, com filtros." />} />
-          <Route path="time" element={<PlaceholderPage title="Time" description="Gerencie colaboradores: adicionar, editar função, definir plano de comissão." />} />
-          <Route path="identidade" element={<PlaceholderPage title="Identidade 180 Dias" description="Configure sua visão de vida, metas financeiras, e acompanhe seu progresso." />} />
-          <Route path="tv" element={<PlaceholderPage title="Painel TV" description="Tela fullscreen para o escritório com ranking em tempo real." />} />
-          <Route path="config" element={<PlaceholderPage title="Configurações" description="PINs de acesso, premiações, tabela de comissões." />} />
+          <Route path="fill" element={<FillPage />} />
+          <Route path="pipeline" element={<PipelinePage />} />
+          <Route path="ranking" element={<RankingPage />} />
+          <Route path="vendas" element={<VendasPage />} />
+          <Route path="extratos" element={<ExtratosPage />} />
+          <Route path="time" element={<TimePage />} />
+          <Route path="identidade" element={<IdentidadePage />} />
+          <Route path="config" element={<ConfigPage />} />
+          <Route path="tv" element={<PlaceholderPage title="Painel TV" description="Acesse painel-tv.html para a versão fullscreen." />} />
         </Route>
       </Routes>
     </BrowserRouter>
