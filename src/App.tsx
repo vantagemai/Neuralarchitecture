@@ -29,6 +29,28 @@ export interface UserSession {
   email: string;
 }
 
+// Seed default admin if no users exist
+function seedDefaultAdmin() {
+  const PREFIX = 'vops_';
+  const existing = localStorage.getItem(PREFIX + 'ops_users');
+  const users = existing ? JSON.parse(existing) : [];
+  if (users.length === 0) {
+    const admin = {
+      id: 'u_admin_head',
+      name: 'Admin Head',
+      email: 'admin@vantagem.ai',
+      password: 'admin123',
+      role: 'Head',
+      plan: 'FOUNDER',
+      active: true,
+      createdAt: Date.now(),
+    };
+    users.push(admin);
+    localStorage.setItem(PREFIX + 'ops_users', JSON.stringify(users));
+  }
+}
+seedDefaultAdmin();
+
 function App() {
   const [user, setUser] = useState<UserSession | null>(() => {
     const saved = localStorage.getItem('vantagem_session');
