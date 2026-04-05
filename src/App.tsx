@@ -4,7 +4,7 @@ import { AppLayout } from './components/layout/AppLayout';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { FillPage } from './pages/FillPage';
-import { PipelinePage } from './pages/PipelinePage';
+import { PremiacoesPage } from './pages/PremiacoesPage';
 import { RankingPage } from './pages/RankingPage';
 import { VendasPage } from './pages/VendasPage';
 import { ExtratosPage } from './pages/ExtratosPage';
@@ -150,7 +150,7 @@ function App() {
           <Route path="desafios" element={<DesafiosPage />} />
           <Route path="tv" element={<TvPage />} />
           {/* Manager+ only */}
-          {isManager && <Route path="pipeline" element={<PipelinePage />} />}
+          <Route path="premiacoes" element={<PremiacoesPage />} />
           {isManager && <Route path="extratos" element={<ExtratosPage />} />}
           {isManager && <Route path="coaching" element={<CoachingPage />} />}
           {/* Head/Founder only */}
