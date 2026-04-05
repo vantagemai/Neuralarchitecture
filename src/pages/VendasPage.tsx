@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, X, Pencil, Trash2 } from 'lucide-react';
+import { Plus, X, Pencil, Trash2, Download } from 'lucide-react';
 import { KpiCard } from '../components/ui/KpiCard';
 import { DollarSign, Target, TrendingUp } from 'lucide-react';
 import { db, today, getMonthSales, getUsers, getSession, fmt$, type SaleData } from '../lib/store';
@@ -7,6 +7,9 @@ import { awardSaleXp } from '../lib/xp';
 import { checkAchievements } from '../lib/achievements';
 import { showToast } from '../components/ui/Toast';
 import { triggerConfetti } from '../components/ui/Confetti';
+import { broadcastNotification } from '../lib/notifications';
+import { playSale } from '../lib/sounds';
+import { exportSalesCSV } from '../lib/export';
 
 const MIN_SETUP = 97;
 const MAX_SETUP = 2997;
@@ -71,6 +74,11 @@ export function VendasPage() {
       const xpGained = awardSaleXp();
       showToast('xp', `+${xpGained} XP`, 'Venda registrada!');
       triggerConfetti();
+      playSale();
+      broadcastNotification({
+        type: 'sale', title: `${session.name} fechou uma venda!`,
+        detail: `Setup $${s} + Rec $${r}/mes`, icon: '💰'
+      }, session.id);
       const newAch = checkAchievements();
       for (const ach of newAch) {
         setTimeout(() => showToast('achievement', `${ach.icon} ${ach.name}`, ach.description), 500);
@@ -119,12 +127,17 @@ export function VendasPage() {
           <h1 className="text-2xl font-bold">Vendas</h1>
           <p className="text-sm text-t3 mt-1">Registre vendas e acompanhe comissoes</p>
         </div>
+        <div className="flex items-center gap-2">
+        <button onClick={() => exportSalesCSV()} className="flex items-center gap-1.5 bg-elevated border border-b1 rounded-lg px-3 py-2.5 text-sm text-t3 hover:text-t1 hover:border-b3 transition-colors">
+          <Download size={14} /> CSV
+        </button>
         <button
           onClick={openNewForm}
           className="flex items-center gap-2 bg-vgreen hover:bg-emerald-600 text-white font-bold px-5 py-2.5 rounded-lg transition-colors"
         >
           {showForm ? <><X size={16} /> Fechar</> : <><Plus size={16} /> Nova Venda</>}
         </button>
+        </div>
       </div>
 
       {/* KPIs */}

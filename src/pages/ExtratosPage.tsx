@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { getUsers, getMonthSales, currentMonth, fmt$ } from '../lib/store';
 import { Badge } from '../components/ui/Badge';
 import { KpiCard } from '../components/ui/KpiCard';
-import { DollarSign, BarChart3 } from 'lucide-react';
+import { DollarSign, BarChart3, Download } from 'lucide-react';
+import { exportCommissionsCSV, exportSalesCSV } from '../lib/export';
 
 const roleVariant = (r: string) => r === 'Setter' ? 'purp' as const : r === 'Founder' ? 'red' as const : 'gold' as const;
 
@@ -39,8 +40,8 @@ export function ExtratosPage() {
         <p className="text-sm text-t3 mt-1">Comissões detalhadas por membro</p>
       </div>
 
-      {/* Filters */}
-      <div className="flex gap-3 flex-wrap">
+      {/* Filters + Export */}
+      <div className="flex gap-3 flex-wrap items-center">
         <select value={uid} onChange={e => setUid(e.target.value)}
           className="bg-elevated border border-b1 rounded-lg px-4 py-2 text-sm outline-none cursor-pointer">
           <option value="all">Todos</option>
@@ -50,6 +51,12 @@ export function ExtratosPage() {
           className="bg-elevated border border-b1 rounded-lg px-4 py-2 text-sm outline-none cursor-pointer">
           {months.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
         </select>
+        <button onClick={() => exportCommissionsCSV(ym)} className="flex items-center gap-1.5 bg-elevated border border-b1 rounded-lg px-4 py-2 text-sm text-t3 hover:text-t1 hover:border-b3 transition-colors">
+          <Download size={14} /> Exportar CSV
+        </button>
+        <button onClick={() => exportSalesCSV(ym)} className="flex items-center gap-1.5 bg-elevated border border-b1 rounded-lg px-4 py-2 text-sm text-t3 hover:text-t1 hover:border-b3 transition-colors">
+          <Download size={14} /> Vendas CSV
+        </button>
       </div>
 
       {/* Summary */}

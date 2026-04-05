@@ -7,6 +7,8 @@ import { updateStreak } from '../lib/streaks';
 import { checkAchievements } from '../lib/achievements';
 import { showToast } from '../components/ui/Toast';
 import { triggerConfetti } from '../components/ui/Confetti';
+import { playSuccess, playAchievement } from '../lib/sounds';
+import { addNotification } from '../lib/notifications';
 
 export function FillPage() {
   const session = getSession();
@@ -57,6 +59,8 @@ export function FillPage() {
     const xpGained = awardFillXp(totalContacts, totalResponses);
     if (xpGained > 0) {
       showToast('xp', `+${xpGained} XP`, 'Fill diario registrado');
+      playSuccess();
+      addNotification({ type: 'badge', title: `+${xpGained} XP ganho`, detail: `${totalContacts} contatos, ${totalResponses} respostas`, icon: '⚡' });
     }
 
     // Update streak
@@ -75,6 +79,7 @@ export function FillPage() {
       setTimeout(() => {
         showToast('achievement', `${ach.icon} ${ach.name}`, ach.description);
         triggerConfetti();
+        playAchievement();
       }, 500);
     }
 

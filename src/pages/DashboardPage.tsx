@@ -8,6 +8,9 @@ import {
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { getUsers, getTodayFills, getMonthSales, calcScore, db, today, fmt$, CHANNELS, type FillData } from '../lib/store';
 import { ShoutoutFeed } from '../components/ops/ShoutoutFeed';
+import { getScorecard } from '../lib/scorecard';
+import { getGoalProgress } from '../lib/goals';
+import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
 
 const MEDALS = ['🥇', '🥈', '🥉'];
 const roleVariant = (r: string) => r === 'Setter' ? 'purp' as const : r === 'Founder' ? 'red' as const : 'gold' as const;
@@ -158,6 +161,64 @@ export function DashboardPage() {
           </ResponsiveContainer>
         </div>
       </div>
+
+      {/* Scorecard + Goals */}
+      {(() => {
+        const sc = getScorecard();
+        const gp = getGoalProgress();
+        const radarData = [
+          { metric: 'Atividade', value: sc.activity },
+          { metric: 'Receita', value: sc.revenue },
+          { metric: 'Consistencia', value: sc.consistency },
+          { metric: 'XP', value: sc.xp },
+          { metric: 'Badges', value: sc.badges },
+        ];
+        return (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Scorecard */}
+            <div className="bg-surface border border-b1 rounded-xl p-5">
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-sm font-bold">Scorecard Pessoal</h2>
+                <span className="font-mono text-2xl font-bold text-vred">{sc.overall}<span className="text-xs text-t4">/100</span></span>
+              </div>
+              <ResponsiveContainer width="100%" height={180}>
+                <RadarChart data={radarData}>
+                  <PolarGrid stroke="rgba(255,255,255,.08)" />
+                  <PolarAngleAxis dataKey="metric" tick={{ fontSize: 10, fill: '#6B6B76' }} />
+                  <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
+                  <Radar dataKey="value" stroke="#F11013" fill="#F11013" fillOpacity={0.2} strokeWidth={2} />
+                </RadarChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Goals progress */}
+            <div className="bg-surface border border-b1 rounded-xl p-5">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-sm font-bold">Metas</h2>
+                <span className="font-mono text-sm font-bold text-vgold">{gp.overall}% geral</span>
+              </div>
+              <div className="space-y-3">
+                {[
+                  { label: 'Contatos hoje', ...gp.dailyContacts, color: 'bg-vred' },
+                  { label: 'Score hoje', ...gp.dailyScore, color: 'bg-vpurp' },
+                  { label: 'Vendas mes', ...gp.monthlySales, color: 'bg-vgreen' },
+                  { label: 'Receita mes', ...gp.monthlyRevenue, color: 'bg-vgold' },
+                ].map(g => (
+                  <div key={g.label}>
+                    <div className="flex justify-between text-xs mb-1">
+                      <span className="text-t3">{g.label}</span>
+                      <span className="font-mono text-t2">{g.current}/{g.target} ({g.pct}%)</span>
+                    </div>
+                    <div className="h-1.5 bg-overlay rounded-full overflow-hidden">
+                      <div className={`h-full ${g.color} rounded-full transition-all duration-1000`} style={{ width: `${g.pct}%` }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Team + Alerts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

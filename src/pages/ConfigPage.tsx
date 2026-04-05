@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Save, Shield, Trophy } from 'lucide-react';
+import { Save, Shield, Trophy, Volume2 } from 'lucide-react';
 import { db } from '../lib/store';
+import { playSuccess } from '../lib/sounds';
 
 const PLANS = [
   { key: 'SETTER',   label: 'Setter',   setup: '10%', rec: '3%',  color: '#9B7FE0' },
@@ -19,8 +20,9 @@ const PRIZES = [
 ];
 
 export function ConfigPage() {
-  const cfg = db.get<{ headPin?: string; awards?: { prizes?: Record<string, string> } }>('ops_config') || {};
+  const cfg = db.get<{ headPin?: string; soundEnabled?: boolean; awards?: { prizes?: Record<string, string> } }>('ops_config') || {};
   const [pin, setPin] = useState(cfg.headPin || '1111');
+  const [soundEnabled, setSoundEnabled] = useState(cfg.soundEnabled !== false);
   const [prizes, setPrizes] = useState<Record<string, string>>(cfg.awards?.prizes || {});
   const [saved, setSaved] = useState('');
 
@@ -82,6 +84,31 @@ export function ConfigPage() {
           <div className="mt-4 text-xs text-t4 border-t border-b1 pt-3">
             Setter bônus: 10 leads qualificados = $100 bloqueado · 1 venda = $100 liberado
           </div>
+        </div>
+      </div>
+
+      {/* Sound Effects */}
+      <div className="bg-surface border border-b1 rounded-xl p-6">
+        <div className="flex items-center gap-2 mb-4">
+          <Volume2 size={18} className="text-vblue" />
+          <h2 className="text-[15px] font-bold">Som</h2>
+        </div>
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-sm font-medium">Efeitos sonoros</div>
+            <div className="text-xs text-t4">Sons de celebracao ao fechar venda, subir de nivel, etc.</div>
+          </div>
+          <button
+            onClick={() => {
+              const newVal = !soundEnabled;
+              setSoundEnabled(newVal);
+              db.set('ops_config', { ...cfg, soundEnabled: newVal });
+              if (newVal) playSuccess();
+            }}
+            className={`w-12 h-6 rounded-full transition-colors relative ${soundEnabled ? 'bg-vgreen' : 'bg-muted'}`}
+          >
+            <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${soundEnabled ? 'translate-x-6' : 'translate-x-0.5'}`} />
+          </button>
         </div>
       </div>
 

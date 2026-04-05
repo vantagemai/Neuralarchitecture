@@ -14,8 +14,10 @@ import { ConfigPage } from './pages/ConfigPage';
 import { TvPage } from './pages/TvPage';
 import { BadgesPage } from './pages/BadgesPage';
 import { DesafiosPage } from './pages/DesafiosPage';
+import { CoachingPage } from './pages/CoachingPage';
 import { ToastContainer } from './components/ui/Toast';
 import { ConfettiContainer } from './components/ui/Confetti';
+import { OnboardingTour, shouldShowOnboarding } from './components/ui/OnboardingTour';
 
 export interface UserSession {
   id: string;
@@ -30,9 +32,15 @@ function App() {
     return saved ? JSON.parse(saved) : null;
   });
 
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
   const handleLogin = (u: UserSession) => {
     localStorage.setItem('vantagem_session', JSON.stringify(u));
     setUser(u);
+    // Check onboarding after login
+    setTimeout(() => {
+      if (shouldShowOnboarding()) setShowOnboarding(true);
+    }, 500);
   };
 
   const handleLogout = () => {
@@ -57,6 +65,7 @@ function App() {
     <BrowserRouter basename="/Neuralarchitecture">
       <ToastContainer />
       <ConfettiContainer />
+      {showOnboarding && <OnboardingTour onClose={() => setShowOnboarding(false)} />}
       <Routes>
         <Route element={
           <AppLayout
@@ -76,6 +85,7 @@ function App() {
           {/* Manager+ only */}
           {isManager && <Route path="pipeline" element={<PipelinePage />} />}
           {isManager && <Route path="extratos" element={<ExtratosPage />} />}
+          {isManager && <Route path="coaching" element={<CoachingPage />} />}
           {/* Head/Founder only */}
           {isHead && <Route path="time" element={<TimePage />} />}
           {isHead && <Route path="config" element={<ConfigPage />} />}
