@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel TV — Vantagem.ai OPS</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080808;--s1:#101010;--s2:#191919;--border:rgba(255,255,255,.09);--red:#F11013;--gold:#FFD130;--green:#00C864;--purp:#9B7FE0;--txt:#F5F5F5;--dim:#888;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--txt);font-family:'DM Sans',sans-serif;min-height:100vh;overflow:hidden;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.tv{width:100vw;height:100vh;display:grid;grid-template-rows:auto 1fr auto;padding:24px 32px;gap:16px;}
+.tv-header{display:flex;align-items:center;justify-content:space-between;}
+.tv-logo{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:.06em;color:var(--red);}
+.tv-logo span{color:var(--txt);}
+.tv-live{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:12px;color:var(--green);}
+.tv-live-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;}
+.tv-body{display:grid;grid-template-columns:1fr 1fr;gap:20px;overflow:hidden;}
+.tv-col{display:flex;flex-direction:column;gap:12px;overflow:hidden;}
+.tv-section{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:18px;flex:1;overflow:hidden;}
+.tv-section-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.04em;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.tv-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);}
+.tv-row:last-child{border:none;}
+.tv-medal{font-size:20px;width:28px;text-align:center;}
+.tv-name{flex:1;font-weight:600;font-size:14px;}
+.tv-val{font-family:'DM Mono',monospace;font-weight:700;font-size:16px;min-width:70px;text-align:right;}
+.tv-bar{height:6px;background:var(--s2);border-radius:3px;overflow:hidden;margin-top:4px;}
+.tv-bar-fill{height:100%;border-radius:3px;transition:width 2s cubic-bezier(.22,1,.36,1);}
+.tv-footer{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--dim);font-family:'DM Mono',monospace;}
+.tv-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px;}
+.tv-kpi-box{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;}
+.tv-kpi-val{font-family:'DM Mono',monospace;font-size:clamp(20px,3vw,32px);font-weight:700;line-height:1;}
+.tv-kpi-lbl{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-top:6px;}
+.tv-prize{background:rgba(200,164,0,.08);border:1px solid rgba(200,164,0,.22);border-radius:10px;padding:10px 14px;margin-bottom:6px;display:flex;align-items:center;gap:10px;}
+.tv-prize-icon{font-size:20px;}
+.tv-prize-name{font-weight:600;font-size:12px;flex:1;}
+.tv-prize-val{font-size:12px;color:var(--gold);font-family:'DM Mono',monospace;}
+.tv-marquee{overflow:hidden;white-space:nowrap;}
+.tv-marquee-inner{display:inline-block;animation:marquee 30s linear infinite;}
+@keyframes marquee{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
+</style>
+</head>
+<body>
+<div class="tv" id="tv">
+  <div class="tv-header">
+    <div class="tv-logo"><span>VANTAGEM</span>.ai <span style="font-size:18px;color:var(--dim);margin-left:12px;">OPS DIÁRIO</span></div>
+    <div class="tv-live"><div class="tv-live-dot"></div> AO VIVO <span id="tv-time" style="color:var(--dim);margin-left:8px;"></span></div>
+  </div>
+  <div id="tv-body" class="tv-body">
+    <div style="display:flex;align-items:center;justify-content:center;color:var(--dim);font-family:'DM Mono',monospace;font-size:14px;grid-column:1/-1;">Carregando dados...</div>
+  </div>
+  <div class="tv-footer">
+    <span id="tv-updated">Atualizado: —</span>
+    <span id="tv-marquee" class="tv-marquee"></span>
+    <span>Vantagem.ai OPS v2</span>
+  </div>
+</div>
+
+<script>
+// ── Storage bridge (same as portal) ──
+var DB={
+  async get(k){try{var r=await window.storage.get(k,true);return r?JSON.parse(r.value):null;}catch{return null;}},
+  async list(p){try{var r=await window.storage.list(p,true);return r?r.keys:[];}catch{return[];}}
+};
+var today=()=>new Date().toISOString().split('T')[0];
+var month=()=>new Date().toISOString().slice(0,7);
+var fmt$=n=>'$'+(parseFloat(n)||0).toFixed(0);
+var fmtDate=d=>{if(!d)return'';var p=d.split('-');return p[2]+'/'+p[1]+'/'+p[0];};
+var medals=['🥇','🥈','🥉'];
+
+function calcScore(f){
+  if(!f||!f.channels)return 0;
+  var t=0;for(var k in f.channels){var v=f.channels[k];t+=parseInt(typeof v==='object'?(v.a||0):v)||0;}return t;
+}
+
+async function loadTV(){
+  var users=(await DB.get('ops_users'))||[];
+  var active=users.filter(u=>u.active&&u.role!=='head');
+
+  // Today fills
+  var fillKeys=await DB.list('ops_fill_'+today()+'_');
+  var fills=(await Promise.all(fillKeys.map(k=>DB.get(k)))).filter(Boolean);
+  var fm={};fills.forEach(f=>fm[f.userId]=f);
+
+  // Month sales
+  var saleKeys=await DB.list('ops_sale_');
+  var allSales=(await Promise.all(saleKeys.map(k=>DB.get(k)))).filter(Boolean);
+  var monthSales=allSales.filter(s=>s.date&&s.date.startsWith(month()));
+  var todaySales=allSales.filter(s=>s.date===today());
+
+  // Awards config
+  var cfg=(await DB.get('ops_config'))||{};
+  var prizes=(cfg.awards&&cfg.awards.prizes)||{};
+
+  // KPIs
+  var totalScore=fills.reduce((s,f)=>s+calcScore(f),0);
+  var totalSalesMonth=monthSales.length;
+  var totalComm=monthSales.reduce((s,x)=>s+(x.sellerSetupComm||x.founderSetupComm||0)+(x.sellerRecComm||x.founderMrrComm||0),0);
+  var filledPct=active.length>0?Math.round(fills.length/active.length*100):0;
+
+  // Activity ranking (today)
+  var actSorted=[...fills].sort((a,b)=>calcScore(b)-calcScore(a)).slice(0,8);
+
+  // Revenue ranking (month)
+  var revMap={};
+  monthSales.forEach(s=>{
+    var id=s.sellerId||s.founderId;
+    if(!revMap[id])revMap[id]={name:s.sellerName||s.founderName,comm:0,cnt:0};
+    revMap[id].comm+=(s.sellerSetupComm||s.founderSetupComm||0)+(s.sellerRecComm||s.founderMrrComm||0);
+    revMap[id].cnt++;
+  });
+  var revSorted=Object.values(revMap).sort((a,b)=>b.comm-a.comm).slice(0,8);
+  var maxAct=actSorted.length?calcScore(actSorted[0]):1;
+  var maxRev=revSorted.length?revSorted[0].comm:1;
+
+  // Prize labels
+  var prizeLabels={top_closer:'🏆 Top Closer',top_setter:'🎯 Top Setter',iron_streak:'🔥 Iron Streak',first10:'📱 First 10',diamond:'💎 Diamond Month',century:'🚀 Century Club',setter_elite:'👑 Setter Elite',consistency:'🎖️ Consistência'};
+  var activePrizes=Object.entries(prizes).filter(([k,v])=>v).slice(0,6);
+
+  var actRows=actSorted.map((f,i)=>{
+    var score=calcScore(f);
+    var pct=Math.round(score/maxAct*100);
+    return`<div class="tv-row" style="animation:fadeIn .3s ease ${i*.08}s both;">
+      <div class="tv-medal">${medals[i]||'#'+(i+1)}</div>
+      <div class="tv-name">${f.userName||'—'}</div>
+      <div class="tv-val" style="color:var(--red);">${score} pts</div>
+    </div>
+    <div class="tv-bar"><div class="tv-bar-fill" style="width:${pct}%;background:linear-gradient(90deg,#F11013,#ff4040);"></div></div>`;
+  }).join('')||'<div style="text-align:center;padding:20px;color:var(--dim);">Sem dados hoje</div>';
+
+  var revRows=revSorted.map((r,i)=>{
+    var pct=Math.round(r.comm/maxRev*100);
+    return`<div class="tv-row" style="animation:fadeIn .3s ease ${i*.08}s both;">
+      <div class="tv-medal">${medals[i]||'#'+(i+1)}</div>
+      <div class="tv-name">${r.name||'—'} <span style="font-size:11px;color:var(--dim);">(${r.cnt})</span></div>
+      <div class="tv-val" style="color:var(--green);">${fmt$(r.comm)}</div>
+    </div>
+    <div class="tv-bar"><div class="tv-bar-fill" style="width:${pct}%;background:linear-gradient(90deg,#00a050,var(--green));"></div></div>`;
+  }).join('')||'<div style="text-align:center;padding:20px;color:var(--dim);">Sem vendas no mês</div>';
+
+  var prizesHTML=activePrizes.map(([k,v])=>{
+    var label=prizeLabels[k]||k;
+    return`<div class="tv-prize"><div class="tv-prize-icon">${label.split(' ')[0]}</div><div class="tv-prize-name">${label.split(' ').slice(1).join(' ')}</div><div class="tv-prize-val">${v}</div></div>`;
+  }).join('')||'<div style="text-align:center;padding:12px;color:var(--dim);font-size:12px;">Configure prêmios em Config</div>';
+
+  document.getElementById('tv-body').innerHTML=`
+    <div class="tv-col">
+      <div class="tv-kpi">
+        <div class="tv-kpi-box"><div class="tv-kpi-val" style="color:${filledPct>=100?'var(--green)':'var(--red)'};">${filledPct}%</div><div class="tv-kpi-lbl">Fill Hoje</div></div>
+        <div class="tv-kpi-box"><div class="tv-kpi-val" style="color:var(--red);">${totalScore}</div><div class="tv-kpi-lbl">Score Total</div></div>
+        <div class="tv-kpi-box"><div class="tv-kpi-val" style="color:var(--gold);">${totalSalesMonth}</div><div class="tv-kpi-lbl">Vendas Mês</div></div>
+        <div class="tv-kpi-box"><div class="tv-kpi-val" style="color:var(--green);">${fmt$(totalComm)}</div><div class="tv-kpi-lbl">Comissões</div></div>
+      </div>
+      <div class="tv-section">
+        <div class="tv-section-title" style="color:var(--red);">📊 ATIVIDADE — HOJE</div>
+        ${actRows}
+      </div>
+    </div>
+    <div class="tv-col">
+      <div class="tv-section" style="flex:0 0 auto;">
+        <div class="tv-section-title" style="color:var(--gold);">🏆 PREMIAÇÕES ATIVAS</div>
+        ${prizesHTML}
+      </div>
+      <div class="tv-section">
+        <div class="tv-section-title" style="color:var(--green);">💰 RECEITA — MÊS</div>
+        ${revRows}
+      </div>
+    </div>`;
+
+  document.getElementById('tv-updated').textContent='Atualizado: '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+
+  // Marquee with today's highlights
+  var highlights=[];
+  if(todaySales.length)highlights.push('💰 '+todaySales.length+' venda(s) hoje');
+  if(fills.length)highlights.push('📋 '+fills.length+'/'+active.length+' preencheram');
+  if(actSorted.length)highlights.push('🥇 '+actSorted[0].userName+' lidera com '+calcScore(actSorted[0])+' pts');
+  var mq=document.getElementById('tv-marquee');
+  if(mq&&highlights.length)mq.innerHTML='<div class="tv-marquee-inner">'+highlights.join('  ·  ')+'  ·  '+'</div>';
+}
+
+// Clock
+function updateClock(){
+  var el=document.getElementById('tv-time');
+  if(el)el.textContent=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+
+// Auto-refresh every 30s
+async function init(){
+  updateClock();setInterval(updateClock,1000);
+  await loadTV();
+  setInterval(loadTV,30000);
+}
+init();
+</script>
+</body>
+</html>
