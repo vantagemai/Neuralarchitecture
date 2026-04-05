@@ -3,15 +3,18 @@ import { KpiCard } from '../components/ui/KpiCard';
 import { Badge } from '../components/ui/Badge';
 import {
   DollarSign, Users, Target, TrendingUp,
-  AlertTriangle, CheckCircle2, Clock, Activity
+  AlertTriangle, CheckCircle2, Clock, Activity, Flame
 } from 'lucide-react';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
-import { getUsers, getTodayFills, getMonthSales, calcScore, db, today, fmt$, CHANNELS, type FillData } from '../lib/store';
+import { getUsers, getTodayFills, getMonthSales, calcScore, db, today, fmt$, CHANNELS, type FillData, getSession } from '../lib/store';
 import { ShoutoutFeed } from '../components/ops/ShoutoutFeed';
 import { getScorecard } from '../lib/scorecard';
 import { getGoalProgress } from '../lib/goals';
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
 import { getTheme } from '../lib/theme';
+import { getStreak } from '../lib/streaks';
+import { getLevel } from '../lib/levels';
+import { getTotalXp } from '../lib/xp';
 
 // Theme-aware chart colors
 function chartColors() {
@@ -105,23 +108,45 @@ export function DashboardPage() {
   }
 
   const now = new Date();
+  const session = getSession();
   const greeting = now.getHours() < 12 ? 'Bom dia' : now.getHours() < 18 ? 'Boa tarde' : 'Boa noite';
+  const myLevel = getLevel();
+  const myStreak = getStreak();
+  const myXp = getTotalXp();
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-t1">Operations Dashboard</h1>
-          <p className="text-sm text-t3 mt-1">
-            {greeting} · {now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="flex items-center gap-1.5 text-xs text-vgreen">
-            <span className="w-2 h-2 rounded-full bg-vgreen animate-pulse" />
-            Ao vivo
-          </span>
+      {/* Hero header */}
+      <div className="bg-gradient-to-r from-vred/8 via-surface to-surface border border-b1 rounded-2xl px-6 py-5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            {(() => {
+              const avatar = localStorage.getItem(`vantagem_avatar_${session?.id || ''}`);
+              const initials = (session?.name || 'U').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+              return avatar ? (
+                <img src={avatar} alt="" className="w-14 h-14 rounded-2xl object-cover border-2 border-vred/20" />
+              ) : (
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-lg font-bold">{initials}</div>
+              );
+            })()}
+            <div>
+              <h1 className="text-2xl font-bold">{greeting}, {session?.name?.split(' ')[0] || 'Usuario'}</h1>
+              <div className="flex items-center gap-3 mt-1">
+                <span className={`text-xs font-bold ${myLevel.color}`}>{myLevel.icon} {myLevel.name}</span>
+                <span className="text-xs font-mono text-vgold">{myXp.toLocaleString()} XP</span>
+                {myStreak.current > 0 && <span className="text-xs text-orange-400 flex items-center gap-0.5"><Flame size={11} />{myStreak.current}d</span>}
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-t3 font-mono hidden sm:block">
+              {now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
+            </span>
+            <span className="flex items-center gap-1.5 text-xs text-vgreen bg-vgreen/8 px-2.5 py-1 rounded-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-vgreen animate-pulse" />
+              Ao vivo
+            </span>
+          </div>
         </div>
       </div>
 
@@ -264,9 +289,16 @@ export function DashboardPage() {
                   <span className="w-7 text-center text-lg">
                     {i < 3 ? MEDALS[i] : <span className="text-xs text-t4 font-mono">#{i + 1}</span>}
                   </span>
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-[10px] font-bold shrink-0">
-                    {member.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                  </div>
+                  {(() => {
+                    const u = users.find(x => x.name === member.name);
+                    const av = u ? localStorage.getItem(`vantagem_avatar_${u.id}`) : null;
+                    const ini = member.name.split(' ').map(n => n[0]).join('').slice(0, 2);
+                    return av ? (
+                      <img src={av} alt={member.name} className="w-9 h-9 rounded-full object-cover border border-b1 shrink-0" />
+                    ) : (
+                      <div className="w-9 h-9 rounded-full bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-[10px] font-bold shrink-0">{ini}</div>
+                    );
+                  })()}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-semibold truncate">{member.name}</span>

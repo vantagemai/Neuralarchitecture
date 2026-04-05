@@ -72,29 +72,31 @@ export function LoginPage({ onLogin }: LoginPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-canvas flex items-center justify-center px-4">
-      {/* Background pattern */}
-      <div className="fixed inset-0 opacity-[0.02]" style={{
+    <div className="min-h-screen bg-canvas flex items-center justify-center px-4 relative overflow-hidden">
+      {/* Background effects */}
+      <div className="fixed inset-0 opacity-[0.03]" style={{
         backgroundImage: 'linear-gradient(rgba(241,16,19,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(241,16,19,.5) 1px, transparent 1px)',
         backgroundSize: '60px 60px'
       }} />
+      <div className="fixed top-[-20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-vred/5 blur-[120px]" />
+      <div className="fixed bottom-[-20%] left-[-10%] w-[400px] h-[400px] rounded-full bg-vpurp/5 blur-[100px]" />
 
       <div className="relative w-full max-w-md animate-in">
         {/* Logo */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-vred mb-4">
-            <span className="text-white font-black text-2xl">V</span>
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-vred to-vred-dark mb-4 shadow-lg shadow-vred/25 animate-pulse-glow">
+            <span className="text-white font-black text-3xl">V</span>
           </div>
-          <h1 className="text-3xl font-bold tracking-wide">
+          <h1 className="text-4xl font-bold tracking-wide">
             VANTAGEM<span className="text-vred">.ai</span>
           </h1>
-          <p className="text-xs text-t4 tracking-[0.2em] uppercase mt-2">
-            OPS · Sistema de Escala
+          <p className="text-xs text-t4 tracking-[0.25em] uppercase mt-3">
+            OPS · Sistema Gamificado de Vendas
           </p>
         </div>
 
         {/* Card */}
-        <div className="bg-surface border border-b1 rounded-2xl p-8 shadow-2xl shadow-black/40">
+        <div className="bg-surface border border-b1 rounded-2xl p-8 shadow-2xl shadow-black/40 backdrop-blur-sm">
           {/* Tabs */}
           <div className="flex gap-1 bg-elevated rounded-lg p-1 mb-8">
             <button
