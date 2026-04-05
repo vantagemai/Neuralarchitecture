@@ -1,9 +1,8 @@
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, ClipboardList, Target, Trophy, DollarSign,
-  BarChart3, Users, Flame, Settings, Tv, ChevronLeft, ChevronRight
+  BarChart3, Users, Flame, Settings, Tv, ChevronLeft, ChevronRight, X
 } from 'lucide-react';
-import { useState } from 'react';
 
 const NAV = [
   { to: '/',           icon: LayoutDashboard, label: 'Dashboard' },
@@ -21,22 +20,23 @@ const BOTTOM = [
   { to: '/config',   icon: Settings, label: 'Config' },
 ];
 
-export function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
+interface SidebarProps {
+  collapsed: boolean;
+  onToggle: () => void;
+  mobileOpen: boolean;
+  onMobileClose: () => void;
+}
 
+export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: SidebarProps) {
   const linkClass = ({ isActive }: { isActive: boolean }) =>
-    `flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all duration-150 ${
+    `flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-all duration-150 min-h-[44px] ${
       isActive
         ? 'bg-vred/10 text-vred border border-vred/20'
         : 'text-t3 hover:text-t1 hover:bg-elevated border border-transparent'
     }`;
 
-  return (
-    <aside
-      className={`flex flex-col h-screen bg-surface border-r border-b1 transition-all duration-200 ${
-        collapsed ? 'w-[68px]' : 'w-[240px]'
-      }`}
-    >
+  const content = (
+    <>
       {/* Logo */}
       <div className="flex items-center gap-3 px-4 h-16 border-b border-b1 shrink-0">
         <div className="w-8 h-8 rounded-lg bg-vred flex items-center justify-center shrink-0">
@@ -50,6 +50,10 @@ export function Sidebar() {
             <div className="text-[9px] text-t4 tracking-[0.15em] uppercase">OPS Sistema</div>
           </div>
         )}
+        {/* Mobile close */}
+        <button onClick={onMobileClose} className="lg:hidden ml-auto p-1 text-t4 hover:text-t1" aria-label="Fechar menu">
+          <X size={18} />
+        </button>
       </div>
 
       {/* Main nav */}
@@ -58,7 +62,7 @@ export function Sidebar() {
           {collapsed ? '•' : 'Menu Principal'}
         </div>
         {NAV.map(({ to, icon: Icon, label }) => (
-          <NavLink key={to} to={to} className={linkClass} title={label}>
+          <NavLink key={to} to={to} end={to === '/'} className={linkClass} title={label} onClick={onMobileClose}>
             <Icon size={18} className="shrink-0" />
             {!collapsed && <span>{label}</span>}
           </NavLink>
@@ -68,20 +72,41 @@ export function Sidebar() {
       {/* Bottom nav */}
       <div className="px-3 py-3 border-t border-b1 space-y-1">
         {BOTTOM.map(({ to, icon: Icon, label }) => (
-          <NavLink key={to} to={to} className={linkClass} title={label}>
+          <NavLink key={to} to={to} className={linkClass} title={label} onClick={onMobileClose}>
             <Icon size={18} className="shrink-0" />
             {!collapsed && <span>{label}</span>}
           </NavLink>
         ))}
       </div>
 
-      {/* Collapse toggle */}
+      {/* Collapse toggle (desktop only) */}
       <button
-        onClick={() => setCollapsed(!collapsed)}
-        className="flex items-center justify-center h-10 border-t border-b1 text-t4 hover:text-t2 transition-colors"
+        onClick={onToggle}
+        className="hidden lg:flex items-center justify-center h-10 border-t border-b1 text-t4 hover:text-t2 transition-colors"
+        aria-label={collapsed ? 'Expandir menu' : 'Recolher menu'}
       >
         {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
       </button>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Mobile overlay */}
+      {mobileOpen && (
+        <div className="fixed inset-0 bg-black/60 z-40 lg:hidden" onClick={onMobileClose} />
+      )}
+
+      {/* Sidebar */}
+      <aside className={`
+        flex flex-col h-screen bg-surface border-r border-b1 transition-all duration-200 z-50
+        ${/* Mobile: fixed overlay drawer */''}
+        fixed lg:relative
+        ${mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        ${collapsed ? 'w-[68px]' : 'w-[240px]'}
+      `}>
+        {content}
+      </aside>
+    </>
   );
 }

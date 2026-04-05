@@ -109,7 +109,14 @@ export function IdentidadePage() {
 
   // Dashboard view
   const days = daysProgress(profile.startDate);
-  const fp = Math.min(100, Math.round(Math.random() * 60 + 20)); // Demo progress
+  // Real financial progress from sales data
+  const allSales = Object.keys(localStorage)
+    .filter(k => k.startsWith('vops_ops_sale_'))
+    .map(k => { try { return JSON.parse(localStorage.getItem(k)!); } catch { return null; } })
+    .filter(Boolean);
+  const mySales = allSales.filter((s: any) => s.sellerName === session.name);
+  const revenue = mySales.reduce((t: number, s: any) => t + (s.sellerSetupComm || 0) + (s.sellerRecComm || 0), 0);
+  const fp = profile.metaM > 0 ? Math.min(100, Math.round((revenue / profile.metaM) * 100)) : 0;
 
   return (
     <div className="space-y-6 animate-in">
