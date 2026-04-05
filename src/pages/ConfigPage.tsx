@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { Save, Shield, Trophy, Volume2 } from 'lucide-react';
+import { Save, Shield, Trophy, Volume2, Cloud, CloudOff } from 'lucide-react';
 import { db } from '../lib/store';
 import { playSuccess } from '../lib/sounds';
+import { isOnline } from '../lib/supabase';
+import { pushLocalToSupabase, hydrateFromSupabase } from '../lib/supabaseSync';
 
 const PLANS = [
   { key: 'SETTER',   label: 'Setter',   setup: '10%', rec: '3%',  color: '#9B7FE0' },
@@ -84,6 +86,44 @@ export function ConfigPage() {
           <div className="mt-4 text-xs text-t4 border-t border-b1 pt-3">
             Setter bônus: 10 leads qualificados = $100 bloqueado · 1 venda = $100 liberado
           </div>
+        </div>
+      </div>
+
+      {/* Cloud Sync */}
+      <div className="bg-surface border border-b1 rounded-xl p-6">
+        <div className="flex items-center gap-2 mb-4">
+          {isOnline() ? <Cloud size={18} className="text-vgreen" /> : <CloudOff size={18} className="text-t4" />}
+          <h2 className="text-[15px] font-bold">Supabase Cloud</h2>
+          <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full ${isOnline() ? 'bg-vgreen/10 text-vgreen' : 'bg-muted text-t4'}`}>
+            {isOnline() ? 'Conectado' : 'Offline'}
+          </span>
+        </div>
+        <p className="text-xs text-t3 mb-4">Sincronize dados locais com o banco de dados na nuvem. Dados ficam acessiveis de qualquer navegador.</p>
+        <div className="flex gap-3">
+          <button
+            onClick={async () => {
+              setSaved('Enviando dados...');
+              const { pushed } = await pushLocalToSupabase();
+              setSaved(`${pushed} registros enviados para a nuvem!`);
+              setTimeout(() => setSaved(''), 3000);
+            }}
+            disabled={!isOnline()}
+            className="flex items-center gap-2 bg-vblue/15 hover:bg-vblue/25 text-vblue border border-vblue/20 font-bold px-4 py-2.5 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <Cloud size={14} /> Enviar Local → Nuvem
+          </button>
+          <button
+            onClick={async () => {
+              setSaved('Baixando dados...');
+              await hydrateFromSupabase();
+              setSaved('Dados sincronizados da nuvem!');
+              setTimeout(() => setSaved(''), 3000);
+            }}
+            disabled={!isOnline()}
+            className="flex items-center gap-2 bg-elevated border border-b1 text-t2 font-bold px-4 py-2.5 rounded-lg transition-colors hover:border-b3 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <Cloud size={14} /> Baixar Nuvem → Local
+          </button>
         </div>
       </div>
 

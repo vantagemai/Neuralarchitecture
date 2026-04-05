@@ -1,6 +1,7 @@
 import { db, getSession } from './store';
 import { getTotalXp } from './xp';
 import { getStreak } from './streaks';
+import { insertAchievement as syncAchievement } from './supabaseSync';
 
 export interface Achievement {
   id: string;
@@ -34,6 +35,9 @@ function unlockAchievement(achievementId: string, userId?: string): void {
   if (list.some(a => a.id === achievementId)) return;
   list.push({ id: achievementId, unlockedAt: Date.now() });
   db.set(achKey(userId), list);
+  // Sync to Supabase
+  const id = userId || getSession()?.id || 'anon';
+  syncAchievement(id, achievementId);
 }
 
 // Count fills for user

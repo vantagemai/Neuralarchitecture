@@ -1,5 +1,8 @@
-// Simple localStorage-based storage for demo
-// In production, replace with Supabase calls
+// Dual storage: localStorage (instant) + Supabase (persistent)
+// Reads from localStorage, writes to both.
+// Supabase sync is fire-and-forget (non-blocking).
+
+import * as sync from './supabaseSync';
 
 const PREFIX = 'vops_';
 
@@ -16,6 +19,8 @@ export const db = {
   set(key: string, value: unknown): boolean {
     try {
       localStorage.setItem(PREFIX + key, JSON.stringify(value));
+      // Async sync to Supabase based on key pattern
+      queueSync(key, value);
       return true;
     } catch {
       return false;
@@ -36,8 +41,58 @@ export const db = {
 
   remove(key: string): void {
     localStorage.removeItem(PREFIX + key);
+    queueRemove(key);
   },
 };
+
+// Fire-and-forget Supabase sync based on key patterns
+function queueSync(key: string, value: unknown): void {
+  try {
+    if (key === 'ops_users') {
+      sync.upsertUsers(value as UserData[]);
+    } else if (key.startsWith('ops_sale_')) {
+      sync.insertSale(value as SaleData);
+    } else if (key.startsWith('ops_fill_')) {
+      const dateMatch = key.match(/ops_fill_(\d{4}-\d{2}-\d{2})/);
+      if (dateMatch) sync.upsertFill(value as FillData, dateMatch[1]);
+    } else if (key.startsWith('ops_deal_')) {
+      sync.upsertDeal(value as Record<string, unknown>);
+    } else if (key.startsWith('ops_opp_')) {
+      sync.upsertOpp(value as Record<string, unknown>);
+    } else if (key.startsWith('ops_shoutout_')) {
+      sync.insertShoutout(value as Record<string, unknown>);
+    } else if (key.startsWith('coaching_')) {
+      sync.insertCoachingNote(value as Record<string, unknown>);
+    } else if (key === 'ops_config') {
+      sync.upsertConfig('ops_config', value);
+    } else if (key.startsWith('xp_') && !key.startsWith('xp_events_')) {
+      const userId = key.replace('xp_', '');
+      sync.upsertXpTotal(userId, value as number);
+    } else if (key.startsWith('streak_')) {
+      const userId = key.replace('streak_', '');
+      sync.upsertStreak(userId, value as { current: number; best: number; lastFillDate: string; freezesUsed: number; freezeMonth: string });
+    } else if (key.startsWith('achievements_')) {
+      // Achievements are synced individually by achievements.ts
+    } else if (key.startsWith('goals_')) {
+      const userId = key.replace('goals_', '');
+      sync.upsertGoals(userId, value as { dailyContacts: number; dailyScore: number; monthlySales: number; monthlyRevenue: number });
+    }
+  } catch {
+    // Non-blocking: Supabase sync failures don't affect app
+  }
+}
+
+function queueRemove(key: string): void {
+  try {
+    if (key.startsWith('ops_sale_')) {
+      sync.deleteSale(key);
+    } else if (key.startsWith('ops_deal_')) {
+      sync.removeDeal(key);
+    }
+  } catch {
+    // Non-blocking
+  }
+}
 
 // Session helper — single source of truth for current user
 export function getSession(): { id: string; name: string; role: string; email: string } | null {

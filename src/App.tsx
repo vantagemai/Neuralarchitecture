@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AppLayout } from './components/layout/AppLayout';
 import { LoginPage } from './pages/LoginPage';
@@ -18,6 +18,9 @@ import { CoachingPage } from './pages/CoachingPage';
 import { ToastContainer } from './components/ui/Toast';
 import { ConfettiContainer } from './components/ui/Confetti';
 import { OnboardingTour, shouldShowOnboarding } from './components/ui/OnboardingTour';
+import { initSupabase, isOnline } from './lib/supabase';
+import { hydrateFromSupabase, subscribeSales, subscribeShoutouts, subscribeNotifications } from './lib/supabaseSync';
+import { playNotification } from './lib/sounds';
 
 export interface UserSession {
   id: string;
@@ -33,6 +36,30 @@ function App() {
   });
 
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [supabaseStatus, setSupabaseStatus] = useState<'connecting' | 'online' | 'offline'>('connecting');
+
+  // Initialize Supabase on mount
+  useEffect(() => {
+    initSupabase().then(async (online) => {
+      setSupabaseStatus(online ? 'online' : 'offline');
+      if (online) {
+        await hydrateFromSupabase();
+        // Set up real-time subscriptions
+        subscribeSales(() => {
+          document.dispatchEvent(new Event('xp-update'));
+        });
+        subscribeShoutouts(() => {
+          document.dispatchEvent(new Event('xp-update'));
+        });
+        if (user?.id) {
+          subscribeNotifications(user.id, () => {
+            playNotification();
+            document.dispatchEvent(new Event('xp-update'));
+          });
+        }
+      }
+    });
+  }, [user?.id]);
 
   const handleLogin = (u: UserSession) => {
     localStorage.setItem('vantagem_session', JSON.stringify(u));
@@ -41,6 +68,8 @@ function App() {
     setTimeout(() => {
       if (shouldShowOnboarding()) setShowOnboarding(true);
     }, 500);
+    // Re-hydrate after login
+    if (isOnline()) hydrateFromSupabase();
   };
 
   const handleLogout = () => {
@@ -66,6 +95,20 @@ function App() {
       <ToastContainer />
       <ConfettiContainer />
       {showOnboarding && <OnboardingTour onClose={() => setShowOnboarding(false)} />}
+
+      {/* Supabase status indicator */}
+      <div className={`fixed bottom-3 right-3 z-50 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-mono border transition-all ${
+        supabaseStatus === 'online' ? 'bg-vgreen/10 text-vgreen border-vgreen/20' :
+        supabaseStatus === 'offline' ? 'bg-vgold/10 text-vgold border-vgold/20' :
+        'bg-elevated text-t4 border-b1'
+      }`}>
+        <div className={`w-1.5 h-1.5 rounded-full ${
+          supabaseStatus === 'online' ? 'bg-vgreen' :
+          supabaseStatus === 'offline' ? 'bg-vgold' : 'bg-t4 animate-pulse'
+        }`} />
+        {supabaseStatus === 'online' ? 'Sync' : supabaseStatus === 'offline' ? 'Local' : '...'}
+      </div>
+
       <Routes>
         <Route element={
           <AppLayout
