@@ -1,10 +1,11 @@
-import { Bell, Search, LogOut, Camera, Menu, Flame, Zap, X } from 'lucide-react';
+import { Bell, Search, LogOut, Camera, Menu, Flame, Zap, X, Sun, Moon } from 'lucide-react';
 import { useRef, useState, useEffect } from 'react';
 import { getSession, getUsers, getMonthSales, getTodayFills } from '../../lib/store';
 import { getTotalXp } from '../../lib/xp';
 import { getStreak } from '../../lib/streaks';
 import { getLevel, getNextLevel } from '../../lib/levels';
 import { getNotifications, getUnreadCount, markAllRead, type Notification } from '../../lib/notifications';
+import { getTheme, toggleTheme } from '../../lib/theme';
 
 interface HeaderProps {
   userName: string;
@@ -37,6 +38,7 @@ export function Header({ userName, userRole, onLogout, onToggleSidebar, onAvatar
   const [showNotifs, setShowNotifs] = useState(false);
   const [unreadCount, setUnreadCount] = useState(() => getUnreadCount());
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [theme, setThemeState] = useState(getTheme);
   const streak = getStreak();
   const level = getLevel();
   const { next, progress } = getNextLevel();
@@ -203,6 +205,16 @@ export function Header({ userName, userRole, onLogout, onToggleSidebar, onAvatar
         <span className="text-[11px] text-t3 font-mono hidden md:block">
           {dateStr} · {timeStr}
         </span>
+
+        {/* Theme toggle */}
+        <button
+          onClick={() => { const t = toggleTheme(); setThemeState(t); }}
+          className="p-2 rounded-lg text-t3 hover:text-t1 hover:bg-elevated transition-colors"
+          title={theme === 'dark' ? 'Modo claro' : 'Modo escuro'}
+          aria-label="Alternar tema"
+        >
+          {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+        </button>
 
         {/* Notifications */}
         <div className="relative">

@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
+import { RightSidebar } from './RightSidebar';
 
 interface AppLayoutProps {
   userName: string;
@@ -13,6 +14,10 @@ interface AppLayoutProps {
 export function AppLayout({ userName, userRole, userAvatar, onLogout }: AppLayoutProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const location = useLocation();
+
+  // Show right sidebar only on dashboard
+  const showRightSidebar = location.pathname === '/' || location.pathname === '';
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -30,11 +35,14 @@ export function AppLayout({ userName, userRole, userAvatar, onLogout }: AppLayou
           onLogout={onLogout}
           onToggleSidebar={() => setMobileOpen(!mobileOpen)}
         />
-        <main className="flex-1 overflow-y-auto bg-canvas p-4 sm:p-6">
-          <div className="animate-in">
-            <Outlet />
-          </div>
-        </main>
+        <div className="flex-1 flex overflow-hidden">
+          <main className="flex-1 overflow-y-auto bg-canvas p-4 sm:p-6">
+            <div className="animate-in">
+              <Outlet />
+            </div>
+          </main>
+          {showRightSidebar && <RightSidebar />}
+        </div>
       </div>
     </div>
   );
