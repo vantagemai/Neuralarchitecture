@@ -20,26 +20,19 @@ const COLORS = {
   default: { border: 'border-l-b3',     text: 'text-t1',     neon: '',           icon: 'text-t2',     spark: '#6B6B76' },
 };
 
-function Sparkline({ data, color, width = 80, height = 24 }: { data: number[]; color: string; width?: number; height?: number }) {
+function Sparkline({ data, color, width = 80, height = 20 }: { data: number[]; color: string; width?: number; height?: number }) {
   if (!data || data.length < 2) return null;
   const max = Math.max(...data, 1);
   const min = Math.min(...data, 0);
   const range = max - min || 1;
   const step = width / (data.length - 1);
-
-  const points = data.map((v, i) => {
-    const x = i * step;
-    const y = height - ((v - min) / range) * (height - 2) - 1;
-    return `${x},${y}`;
-  }).join(' ');
-
-  // Area fill
+  const points = data.map((v, i) => `${i * step},${height - ((v - min) / range) * (height - 2) - 1}`).join(' ');
   const areaPoints = `0,${height} ${points} ${width},${height}`;
 
   return (
-    <svg width={width} height={height} className="shrink-0 opacity-70">
-      <polygon points={areaPoints} fill={color} opacity="0.12" />
-      <polyline points={points} fill="none" stroke={color} strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
+    <svg width={width} height={height} className="shrink-0 opacity-90">
+      <polygon points={areaPoints} fill={color} opacity="0.15" />
+      <polyline points={points} fill="none" stroke={color} strokeWidth="1.5" />
     </svg>
   );
 }
@@ -49,29 +42,23 @@ export function KpiCard({ label, value, icon: Icon, trend, trendLabel, color = '
   const isUp = trend && trend > 0;
 
   return (
-    <div className={`bg-surface border border-b1 border-l-[3px] ${c.border} rounded-lg p-4 transition-all duration-200 hover:border-b2 card-shadow`}>
-      <div className="flex items-center justify-between mb-1.5">
-        <span className="text-[10px] font-semibold text-t4 uppercase tracking-[0.12em]">{label}</span>
-        {Icon && <Icon size={14} className={`${c.icon} opacity-50`} />}
+    <div className={`bg-surface border border-b1 border-l-2 ${c.border} p-3 transition-all hover:bg-elevated/30`}>
+      <div className="flex items-center justify-between mb-1">
+        <span className="text-[9px] text-t4 uppercase tracking-[0.12em]">{label}</span>
+        {Icon && <Icon size={12} className={`${c.icon} opacity-40`} />}
       </div>
       <div className="flex items-end justify-between gap-2">
         <div>
-          <div className={`text-2xl font-bold font-mono tracking-tight ${c.text} ${c.neon}`}>
-            {value}
-          </div>
+          <div className={`text-xl font-bold tracking-tight ${c.text} ${c.neon}`}>{value}</div>
           {(trend !== undefined || trendLabel) && (
-            <div className="flex items-center gap-1.5 mt-1">
+            <div className="flex items-center gap-1 mt-0.5">
               {trend !== undefined && (
-                <span className={`flex items-center gap-0.5 text-[11px] font-bold font-mono ${
-                  isUp ? 'text-vgreen' : 'text-vred'
-                }`}>
-                  {isUp ? <ArrowUpRight size={11} /> : <ArrowDownRight size={11} />}
+                <span className={`flex items-center gap-0.5 text-[10px] font-bold ${isUp ? 'text-vgreen' : 'text-vred'}`}>
+                  {isUp ? <ArrowUpRight size={10} /> : <ArrowDownRight size={10} />}
                   {Math.abs(trend)}%
                 </span>
               )}
-              {trendLabel && (
-                <span className="text-[10px] text-t4">{trendLabel}</span>
-              )}
+              {trendLabel && <span className="text-[9px] text-t4">{trendLabel}</span>}
             </div>
           )}
         </div>

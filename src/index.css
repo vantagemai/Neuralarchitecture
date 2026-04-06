@@ -9,36 +9,41 @@
   --color-vpurp: #9B7FE0;
   --color-vpurp-light: #C4B2F0;
   --color-vblue: #5B9AF5;
-  --color-canvas: #080808;
-  --color-surface: #0F0F12;
-  --color-elevated: #17171C;
-  --color-overlay: #1F1F26;
-  --color-muted: #2A2A32;
-  --color-t1: #F5F5F5;
-  --color-t2: #A8A8B0;
-  --color-t3: #6B6B76;
-  --color-t4: #44444E;
-  --color-b1: rgba(255,255,255,.10);
-  --color-b2: rgba(255,255,255,.14);
-  --color-b3: rgba(255,255,255,.22);
+  --color-canvas: #0D1117;
+  --color-surface: #161B22;
+  --color-elevated: #1C2333;
+  --color-overlay: #21283B;
+  --color-muted: #2D3548;
+  --color-t1: #E6EDF3;
+  --color-t2: #8B949E;
+  --color-t3: #6E7681;
+  --color-t4: #484F58;
+  --color-b1: rgba(48,54,61,.8);
+  --color-b2: rgba(56,63,71,.9);
+  --color-b3: rgba(64,72,82,1);
+  --color-mt4-header: #1F2A40;
+  --color-mt4-header-text: #8CA0C0;
+  --color-mt4-grid: rgba(48,54,61,.5);
 }
 
 /* ==========================================
    LIGHT THEME OVERRIDES
    ========================================== */
 html.light {
-  --color-canvas: #F5F6FA;
-  --color-surface: #FFFFFF;
-  --color-elevated: #F0F1F5;
-  --color-overlay: #E4E6EB;
-  --color-muted: #CDD0D8;
-  --color-t1: #111118;
-  --color-t2: #4A4A55;
-  --color-t3: #7A7A88;
-  --color-t4: #A0A0AC;
-  --color-b1: rgba(0,0,0,.10);
-  --color-b2: rgba(0,0,0,.14);
-  --color-b3: rgba(0,0,0,.22);
+  --color-canvas: #E8ECF0;
+  --color-surface: #F0F2F5;
+  --color-elevated: #D8DCE2;
+  --color-overlay: #C8CDD5;
+  --color-muted: #B0B5BE;
+  --color-t1: #0D1117;
+  --color-t2: #3A424D;
+  --color-t3: #6E7681;
+  --color-t4: #8B949E;
+  --color-b1: rgba(0,0,0,.15);
+  --color-b2: rgba(0,0,0,.20);
+  --color-b3: rgba(0,0,0,.30);
+  --color-mt4-header: #C0C8D5;
+  --color-mt4-header-text: #3A424D;
 }
 
 /* Light mode card tints */
@@ -71,13 +76,19 @@ html.light .card-shadow { box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(
 /* Light scrollbar */
 html.light ::-webkit-scrollbar-thumb { background: #CDD0D8; }
 
+/* MT4: sharp corners everywhere */
+*, *::before, *::after { border-radius: 0 !important; }
+
 body {
   margin: 0;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'SF Mono', monospace;
+  font-size: 13px;
   background: var(--color-canvas);
   color: var(--color-t1);
   -webkit-font-smoothing: antialiased;
 }
+
+.font-ui { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }

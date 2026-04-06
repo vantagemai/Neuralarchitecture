@@ -2,13 +2,14 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { KpiCard } from '../components/ui/KpiCard';
 import { Badge } from '../components/ui/Badge';
+// PanelHeader available for chart wrappers if needed
 import {
   DollarSign, Users, Target, TrendingUp,
   AlertTriangle, CheckCircle2, Clock, Activity
 } from 'lucide-react';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { getUsers, getTodayFills, getMonthSales, calcScore, db, today, fmt$, CHANNELS, type FillData, getSession } from '../lib/store';
-import { ShoutoutFeed } from '../components/ops/ShoutoutFeed';
+
 import { getScorecard } from '../lib/scorecard';
 import { getGoalProgress } from '../lib/goals';
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
@@ -17,16 +18,16 @@ import { getStreak } from '../lib/streaks';
 import { getLevel } from '../lib/levels';
 import { getTotalXp } from '../lib/xp';
 
-// Theme-aware chart colors
+// MT4-style chart colors
 function chartColors() {
   const dark = getTheme() === 'dark';
   return {
-    grid: dark ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.07)',
-    tick: dark ? '#6B6B76' : '#7A7A88',
-    tooltipBg: dark ? '#17171C' : '#FFFFFF',
-    tooltipBorder: dark ? '1px solid rgba(255,255,255,.1)' : '1px solid rgba(0,0,0,.1)',
-    tooltipLabel: dark ? '#A8A8B0' : '#4A4A55',
-    polarGrid: dark ? 'rgba(255,255,255,.08)' : 'rgba(0,0,0,.08)',
+    grid: dark ? 'rgba(48,54,61,.5)' : 'rgba(0,0,0,.1)',
+    tick: dark ? '#6E7681' : '#6E7681',
+    tooltipBg: dark ? '#1C2333' : '#FFFFFF',
+    tooltipBorder: dark ? '1px solid rgba(48,54,61,.8)' : '1px solid rgba(0,0,0,.15)',
+    tooltipLabel: dark ? '#8B949E' : '#3A424D',
+    polarGrid: dark ? 'rgba(48,54,61,.5)' : 'rgba(0,0,0,.1)',
   };
 }
 
@@ -169,14 +170,14 @@ export function DashboardPage() {
           {(() => { const cc = chartColors(); return (
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={activityTrend}>
-              <CartesianGrid strokeDasharray="3 3" stroke={cc.grid} />
+              <CartesianGrid strokeDasharray="1 1" stroke={cc.grid} />
               <XAxis dataKey="label" tick={{ fontSize: 10, fill: cc.tick }} />
               <YAxis tick={{ fontSize: 10, fill: cc.tick }} />
               <Tooltip
-                contentStyle={{ background: cc.tooltipBg, border: cc.tooltipBorder, borderRadius: 8, fontSize: 12 }}
+                contentStyle={{ background: cc.tooltipBg, border: cc.tooltipBorder, borderRadius: 0, fontSize: 11 }}
                 labelStyle={{ color: cc.tooltipLabel }}
               />
-              <Bar dataKey="score" fill="#F11013" radius={[2, 2, 0, 0]} />
+              <Bar dataKey="score" fill="#F11013" radius={0} />
             </BarChart>
           </ResponsiveContainer>
           ); })()}
@@ -191,11 +192,11 @@ export function DashboardPage() {
           {(() => { const cc = chartColors(); return (
           <ResponsiveContainer width="100%" height={220}>
             <LineChart data={salesTrend}>
-              <CartesianGrid strokeDasharray="3 3" stroke={cc.grid} />
+              <CartesianGrid strokeDasharray="1 1" stroke={cc.grid} />
               <XAxis dataKey="label" tick={{ fontSize: 10, fill: cc.tick }} />
               <YAxis tick={{ fontSize: 10, fill: cc.tick }} />
               <Tooltip
-                contentStyle={{ background: cc.tooltipBg, border: cc.tooltipBorder, borderRadius: 8, fontSize: 12 }}
+                contentStyle={{ background: cc.tooltipBg, border: cc.tooltipBorder, borderRadius: 0, fontSize: 11 }}
                 formatter={(value: any) => ['$' + value, 'Comissão']}
               />
               <Line type="monotone" dataKey="comissao" stroke="#00C864" strokeWidth={2} dot={{ fill: '#00C864', r: 3 }} />
@@ -417,53 +418,7 @@ export function DashboardPage() {
         </div>
       </div>
 
-      {/* Shoutouts */}
-      <div>
-        <h2 className="text-[15px] font-bold mb-3">💬 Reconhecimentos</h2>
-        <ShoutoutFeed />
-      </div>
-
-      {/* Recent sales */}
-      <div className="bg-surface border border-b1 rounded-lg overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-b1">
-          <h2 className="text-[15px] font-bold">Vendas Recentes</h2>
-        </div>
-        {sales.length === 0 ? (
-          <div className="text-center py-12 text-t3 text-sm">Registre vendas em <strong>Vendas</strong></div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-elevated/50">
-                  {['Vendedor', 'Data', 'Setup', 'Rec/mês', 'Comissão'].map(h => (
-                    <th key={h} className="text-left text-[10px] text-t4 uppercase tracking-wider font-semibold px-5 py-3">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-b1">
-                {sales.sort((a, b) => b.ts - a.ts).slice(0, 5).map(s => {
-                  const av = localStorage.getItem(`vantagem_avatar_${s.sellerId}`);
-                  const ini = s.sellerName.split(' ').map(n => n[0]).join('').slice(0, 2);
-                  return (
-                  <tr key={s.id} className="hover:bg-elevated/30 transition-colors">
-                    <td className="px-5 py-2.5 text-sm font-semibold">
-                      <div className="flex items-center gap-2">
-                        {av ? <img src={av} alt="" className="w-7 h-7 rounded-full object-cover border border-b1 shrink-0" /> : <div className="w-7 h-7 rounded-full bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-[9px] font-bold shrink-0">{ini}</div>}
-                        <Link to={`/perfil/${s.sellerId}`} className="hover:text-vred transition-colors">{s.sellerName}</Link>
-                      </div>
-                    </td>
-                    <td className="px-5 py-2.5 text-sm text-t3 font-mono">{s.date}</td>
-                    <td className="px-5 py-2.5 text-sm font-mono">${s.setupValue}</td>
-                    <td className="px-5 py-2.5 text-sm font-mono">${s.recValue}</td>
-                    <td className="px-5 py-2.5 text-sm font-mono font-bold text-vgreen">{fmt$(s.sellerSetupComm + s.sellerRecComm)}</td>
-                  </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+      {/* Vendas recentes + Shoutouts moved to BottomTerminal */}
     </div>
   );
 }

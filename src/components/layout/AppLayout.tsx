@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
-import { Header } from './Header';
+import { Toolbar } from './Toolbar';
 import { RightSidebar } from './RightSidebar';
+import { BottomTerminal } from './BottomTerminal';
+import { StatusBar } from './StatusBar';
 
 interface AppLayoutProps {
   userName: string;
@@ -11,39 +13,44 @@ interface AppLayoutProps {
   onLogout: () => void;
 }
 
-export function AppLayout({ userName, userRole, userAvatar, onLogout }: AppLayoutProps) {
+export function AppLayout({ userName, onLogout }: AppLayoutProps) {
   const [collapsed, setCollapsed] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
 
-  // Show right sidebar only on dashboard
-  const showRightSidebar = location.pathname === '/' || location.pathname === '';
+  const isDashboard = location.pathname === '/' || location.pathname === '';
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar
-        collapsed={collapsed}
-        onToggle={() => setCollapsed(!collapsed)}
-        mobileOpen={mobileOpen}
-        onMobileClose={() => setMobileOpen(false)}
+    <div className="flex flex-col h-screen overflow-hidden">
+      {/* Top toolbar (32px) */}
+      <Toolbar
+        userName={userName}
+        onLogout={onLogout}
+        onToggleSidebar={() => setMobileOpen(!mobileOpen)}
       />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <Header
-          userName={userName}
-          userRole={userRole}
-          userAvatar={userAvatar}
-          onLogout={onLogout}
-          onToggleSidebar={() => setMobileOpen(!mobileOpen)}
+
+      {/* Main area */}
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar
+          collapsed={collapsed}
+          onToggle={() => setCollapsed(!collapsed)}
+          mobileOpen={mobileOpen}
+          onMobileClose={() => setMobileOpen(false)}
         />
-        <div className="flex-1 flex overflow-hidden">
-          <main className="flex-1 overflow-y-auto bg-canvas p-4 sm:p-6">
-            <div className="animate-in">
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <div className="flex flex-1 overflow-hidden">
+            <main className="flex-1 overflow-y-auto bg-canvas p-3 sm:p-4">
               <Outlet />
-            </div>
-          </main>
-          {showRightSidebar && <RightSidebar />}
+            </main>
+            {isDashboard && <RightSidebar />}
+          </div>
+          {/* Bottom terminal (dashboard only on desktop) */}
+          {isDashboard && <BottomTerminal />}
         </div>
       </div>
+
+      {/* Status bar (22px) */}
+      <StatusBar />
     </div>
   );
 }
