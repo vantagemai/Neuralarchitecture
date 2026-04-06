@@ -91,12 +91,12 @@ export function LoginPage({ onLogin }: LoginPageProps) {
         {/* Card */}
         <div className="bg-surface border border-b1 p-5 shadow-lg shadow-black/10">
           {/* Tabs */}
-          <div className="flex gap-1 bg-elevated rounded-lg p-1 mb-8">
+          <div className="flex gap-1 bg-elevated rounded-lg p-1 mb-5">
             <button
               onClick={() => { setMode('login'); setError(''); }}
               className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-md text-sm font-semibold transition-all ${
                 mode === 'login'
-                  ? 'bg-vred text-white shadow-lg shadow-vred/20'
+                  ? 'bg-vred text-white shadow-sm shadow-vred/15'
                   : 'text-t3 hover:text-t1'
               }`}
             >
@@ -106,7 +106,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
               onClick={() => { setMode('register'); setError(''); }}
               className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-md text-sm font-semibold transition-all ${
                 mode === 'register'
-                  ? 'bg-vred text-white shadow-lg shadow-vred/20'
+                  ? 'bg-vred text-white shadow-sm shadow-vred/15'
                   : 'text-t3 hover:text-t1'
               }`}
             >
@@ -120,7 +120,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
             {mode === 'register' && (
               <div>
                 <label className="block text-[11px] text-t3 uppercase tracking-wider font-semibold mb-2">
@@ -191,14 +191,14 @@ export function LoginPage({ onLogin }: LoginPageProps) {
 
             <button
               type="submit"
-              className="w-full bg-vred hover:bg-vred-dark text-white font-bold py-3.5 rounded-lg transition-all duration-200 shadow-lg shadow-vred/25 hover:shadow-vred/40 hover:-translate-y-0.5"
+              className="w-full bg-vred hover:bg-vred-dark text-white font-bold py-3.5 rounded-lg transition-all duration-200 shadow-sm shadow-vred/15 hover:shadow-vred/40 hover:-translate-y-0.5"
             >
               {mode === 'login' ? 'Entrar →' : 'Criar Conta →'}
             </button>
           </form>
         </div>
 
-        <div className="flex items-center justify-center gap-3 mt-8">
+        <div className="flex items-center justify-center gap-3 mt-5">
           <p className="text-[10px] text-t4 font-mono tracking-wider">
             v2.0 · Sistemas de Escala
           </p>

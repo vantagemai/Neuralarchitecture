@@ -56,7 +56,7 @@ export function ConfigPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* PIN */}
         <div className="bg-surface border border-b1 rounded-lg p-4">
           <div className="flex items-center gap-2 mb-5">

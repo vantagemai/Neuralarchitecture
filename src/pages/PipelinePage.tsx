@@ -152,7 +152,7 @@ export function PipelinePage() {
 
       {/* New deal form */}
       {showForm && (
-        <div className="bg-surface border border-b1 rounded-lg p-5 animate-in">
+        <div className="bg-surface border border-b1 rounded-lg p-4 animate-in">
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
             <input value={fName} onChange={e => setFName(e.target.value)} placeholder="Nome do deal"
               className="bg-elevated border border-b1 rounded-lg px-3 py-2 text-sm outline-none focus:border-vred/40" />
@@ -232,7 +232,7 @@ export function PipelinePage() {
 
       {/* Funnel view */}
       {view === 'funnel' && (
-        <div className="bg-surface border border-b1 rounded-lg p-6">
+        <div className="bg-surface border border-b1 rounded-lg p-4">
           <h2 className="text-sm font-bold mb-4">📊 Funil do Time</h2>
           <div className="space-y-3">
             {[

@@ -195,7 +195,7 @@ export function VendasPage() {
           {/* Preview */}
           <div className="bg-vgreen/8 border border-vgreen/20 rounded-lg p-4 mb-4">
             <div className="text-xs text-vgreen uppercase tracking-wider font-semibold mb-2">Comissao calculada</div>
-            <div className="flex gap-6">
+            <div className="flex gap-4">
               <div>
                 <div className="text-xs text-t3">Setup (50%)</div>
                 <div className="font-mono font-bold text-vgreen">{fmt$(Math.round(parseFloat(setup || '0') * 0.5))}</div>

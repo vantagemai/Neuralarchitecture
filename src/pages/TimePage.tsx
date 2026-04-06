@@ -94,13 +94,13 @@ export function TimePage() {
   return (
     <div className="space-y-4 animate-in">
       <div>
-        <h1 className="text-2xl font-bold">Time</h1>
+        <h1 className="text-lg font-bold">Time</h1>
         <p className="text-sm text-t3 mt-1">Gerencie os colaboradores do sistema</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Add form */}
-        <div className="bg-surface border border-b1 rounded-lg p-6">
+        <div className="bg-surface border border-b1 rounded-lg p-4">
           <h2 className="text-[12px] font-bold mb-5">➕ Adicionar Membro</h2>
 
           {msg && (

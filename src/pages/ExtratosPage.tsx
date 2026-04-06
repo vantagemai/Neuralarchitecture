@@ -37,7 +37,7 @@ export function ExtratosPage() {
   return (
     <div className="space-y-4 animate-in">
       <div>
-        <h1 className="text-2xl font-bold">Extratos</h1>
+        <h1 className="text-lg font-bold">Extratos</h1>
         <p className="text-sm text-t3 mt-1">Comissões detalhadas por membro</p>
       </div>
 

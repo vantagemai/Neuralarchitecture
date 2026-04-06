@@ -189,7 +189,7 @@ export function FillPage() {
         {CHANNELS.map(ch => (
           <div
             key={ch.id}
-            className="bg-surface border border-b1 rounded-lg p-5 hover:border-b3 transition-colors focus-within:border-vred/30"
+            className="bg-surface border border-b1 rounded-lg p-4 hover:border-b3 transition-colors focus-within:border-vred/30"
           >
             <div className="flex items-center gap-3 mb-4">
               <span className="text-2xl">{ch.icon}</span>
@@ -248,7 +248,7 @@ export function FillPage() {
         <button
           onClick={handleSubmit}
           disabled={saving || score === 0}
-          className="flex items-center gap-2 bg-vred hover:bg-vred-dark disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold px-4 py-2 rounded-lg transition-all duration-200 shadow-lg shadow-vred/20 hover:shadow-vred/40"
+          className="flex items-center gap-2 bg-vred hover:bg-vred-dark disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold px-4 py-2 rounded-lg transition-all duration-200 shadow-sm shadow-vred/15 hover:shadow-vred/40"
         >
           {saving ? (
             <><RefreshCw size={16} className="animate-spin" /> Salvando...</>

@@ -131,7 +131,7 @@ export function PremiacoesPage() {
   const MEDALS = ['🥇', '🥈', '🥉'];
 
   return (
-    <div className="space-y-5 animate-in">
+    <div className="space-y-4 animate-in">
       <div className="flex items-center justify-between border-b border-b1 pb-3">
         <div>
           <h1 className="text-lg font-bold font-mono">PREMIACOES</h1>

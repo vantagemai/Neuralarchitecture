@@ -12,7 +12,7 @@ export function NotFoundPage() {
       <a href="/Neuralarchitecture/" className="flex items-center gap-2 bg-vred hover:bg-vred-dark text-white font-bold px-6 py-3 rounded-lg transition-colors">
         <ArrowLeft size={16} /> Voltar ao Dashboard
       </a>
-      <div className="mt-8 opacity-30">
+      <div className="mt-5 opacity-30">
         <Logo size="sm" />
       </div>
     </div>

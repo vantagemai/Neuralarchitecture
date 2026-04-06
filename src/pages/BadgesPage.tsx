@@ -52,7 +52,7 @@ export function BadgesPage() {
 
       {/* Level progress */}
       {next && (
-        <div className="bg-surface border border-b1 rounded-lg p-5">
+        <div className="bg-surface border border-b1 rounded-lg p-4">
           <div className="flex justify-between items-center mb-2">
             <div className="flex items-center gap-2">
               <span>{level.icon}</span>

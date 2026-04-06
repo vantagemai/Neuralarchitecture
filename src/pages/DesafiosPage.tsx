@@ -134,7 +134,7 @@ export function DesafiosPage() {
         {isManager && (
           <button
             onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-2 bg-vgold hover:bg-vgold-dark text-canvas font-bold px-5 py-2.5 rounded-lg transition-colors shadow-lg shadow-vgold/20"
+            className="flex items-center gap-2 bg-vgold hover:bg-vgold-dark text-canvas font-bold px-5 py-2.5 rounded-lg transition-colors shadow-sm shadow-vgold/15"
           >
             {showForm ? <><X size={16} /> Fechar</> : <><Plus size={16} /> Novo Desafio</>}
           </button>
@@ -143,7 +143,7 @@ export function DesafiosPage() {
 
       {/* Create form */}
       {showForm && (
-        <div className="bg-surface border border-vgold/20 rounded-lg p-4 animate-in shadow-lg shadow-vgold/5">
+        <div className="bg-surface border border-vgold/20 rounded-lg p-4 animate-in shadow-sm shadow-vgold/5">
           <h3 className="font-bold mb-4 flex items-center gap-2"><Trophy size={18} className="text-vgold" /> Criar Desafio</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div>
@@ -181,7 +181,7 @@ export function DesafiosPage() {
                 className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-vgold/40" />
             </div>
           </div>
-          <button onClick={handleCreate} className="bg-vgold hover:bg-vgold-dark text-canvas font-bold px-4 py-2 rounded-lg w-full transition-colors shadow-lg shadow-vgold/20">
+          <button onClick={handleCreate} className="bg-vgold hover:bg-vgold-dark text-canvas font-bold px-4 py-2 rounded-lg w-full transition-colors shadow-sm shadow-vgold/15">
             🏆 Criar Desafio
           </button>
         </div>
@@ -207,7 +207,7 @@ export function DesafiosPage() {
             const remaining = timeRemaining(c.endDate);
             const MetricIcon = METRIC_ICONS[c.metric];
             return (
-              <div key={c.id} className="bg-surface border border-vgold/15 rounded-lg overflow-hidden shadow-lg shadow-vgold/5 hover:shadow-vgold/10 transition-shadow">
+              <div key={c.id} className="bg-surface border border-vgold/15 rounded-lg overflow-hidden shadow-sm shadow-vgold/5 hover:shadow-vgold/10 transition-shadow">
                 {/* Header */}
                 <div className="px-4 py-2.5 border-b border-vgold/10">
                   <div className="flex items-start justify-between">

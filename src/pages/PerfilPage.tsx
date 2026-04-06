@@ -60,7 +60,7 @@ export function PerfilPage() {
   ];
 
   return (
-    <div className="space-y-5 animate-in">
+    <div className="space-y-4 animate-in">
       {/* Back */}
       <Link to="/ranking" className="inline-flex items-center gap-1.5 text-xs text-t3 hover:text-t1 transition-colors">
         <ArrowLeft size={14} /> Voltar ao Ranking
@@ -74,7 +74,7 @@ export function PerfilPage() {
           <div className="w-20 h-20 rounded-lg bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-2xl font-bold">{initials}</div>
         )}
         <div className="flex-1">
-          <h1 className="text-2xl font-bold">{user.name}</h1>
+          <h1 className="text-lg font-bold">{user.name}</h1>
           <div className="flex items-center gap-3 mt-1.5">
             <Badge variant={roleVariant(user.role)}>{user.role}</Badge>
             <span className={`text-sm font-bold ${level.color}`}>{level.icon} {level.name}</span>
