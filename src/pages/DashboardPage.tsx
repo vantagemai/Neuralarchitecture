@@ -118,7 +118,7 @@ export function DashboardPage() {
   const myXp = getTotalXp();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Terminal header bar */}
       <div className="flex items-center justify-between border-b border-b1 pb-3">
         <div className="flex items-center gap-3">

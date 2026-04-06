@@ -190,7 +190,7 @@ export function DesafiosPage() {
       {/* Empty state */}
       {active.length === 0 && ended.length === 0 && (
         <div className="text-center py-16 bg-surface border border-b1 rounded-lg">
-          <div className="text-5xl mb-4">🎯</div>
+          <div className="text-3xl mb-3">🎯</div>
           <p className="text-sm text-t3">Nenhum desafio criado ainda</p>
           {isManager && <p className="text-xs text-t4 mt-1">Crie um desafio para motivar o time!</p>}
         </div>

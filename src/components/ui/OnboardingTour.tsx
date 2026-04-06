@@ -60,7 +60,7 @@ export function OnboardingTour({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* Icon */}
-        <div className="text-5xl mb-4">{current.icon}</div>
+        <div className="text-3xl mb-4">{current.icon}</div>
 
         {/* Content */}
         <h2 className="text-xl font-bold mb-2">{current.title}</h2>

@@ -167,7 +167,7 @@ export function PremiacoesPage() {
       )}
 
       {/* Prize cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {PRIZE_DEFS.map(prize => {
           const prizeValue = prizeValues[prize.id];
           const ranking = getMetricRanking(prize.metric);

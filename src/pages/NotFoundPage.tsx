@@ -4,7 +4,7 @@ import { Logo } from '../components/ui/Logo';
 export function NotFoundPage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-      <div className="text-8xl font-black font-mono text-vred neon-red mb-4">404</div>
+      <div className="text-3xl font-black font-mono text-vred neon-red mb-4">404</div>
       <h1 className="text-xl font-bold mb-2">Pagina nao encontrada</h1>
       <p className="text-sm text-t3 mb-6 max-w-md">
         A rota que voce tentou acessar nao existe. Verifique o endereco ou volte ao dashboard.
