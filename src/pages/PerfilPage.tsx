@@ -123,7 +123,7 @@ export function PerfilPage() {
           <h2 className="text-[11px] font-bold text-t3 uppercase tracking-wider mb-2">Scorecard</h2>
           <ResponsiveContainer width="100%" height={200}>
             <RadarChart data={radarData}>
-              <PolarGrid stroke={dark ? 'rgba(255,255,255,.08)' : 'rgba(0,0,0,.08)'} />
+              <PolarGrid stroke={dark ? 'rgba(100,116,139,.15)' : 'rgba(0,0,0,.07)'} />
               <PolarAngleAxis dataKey="m" tick={{ fontSize: 10, fill: dark ? '#6B6B76' : '#7A7A88' }} />
               <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
               <Radar dataKey="v" stroke="#F11013" fill="#F11013" fillOpacity={0.2} strokeWidth={2} />

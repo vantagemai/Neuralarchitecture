@@ -22,12 +22,12 @@ import { getTotalXp } from '../lib/xp';
 function chartColors() {
   const dark = getTheme() === 'dark';
   return {
-    grid: dark ? 'rgba(48,54,61,.5)' : 'rgba(0,0,0,.1)',
-    tick: dark ? '#6E7681' : '#6E7681',
-    tooltipBg: dark ? '#1C2333' : '#FFFFFF',
-    tooltipBorder: dark ? '1px solid rgba(48,54,61,.8)' : '1px solid rgba(0,0,0,.15)',
-    tooltipLabel: dark ? '#8B949E' : '#3A424D',
-    polarGrid: dark ? 'rgba(48,54,61,.5)' : 'rgba(0,0,0,.1)',
+    grid: dark ? 'rgba(100,116,139,.15)' : 'rgba(0,0,0,.07)',
+    tick: dark ? '#6B7A90' : '#64748B',
+    tooltipBg: dark ? '#1A2236' : '#FFFFFF',
+    tooltipBorder: dark ? '1px solid rgba(100,116,139,.25)' : '1px solid rgba(0,0,0,.1)',
+    tooltipLabel: dark ? '#94A3B8' : '#475569',
+    polarGrid: dark ? 'rgba(100,116,139,.15)' : 'rgba(0,0,0,.07)',
   };
 }
 
@@ -286,7 +286,7 @@ export function DashboardPage() {
           ) : (
             <div className="divide-y divide-b1">
               {teamData.map((member, i) => (
-                <div key={member.name} className="flex items-center gap-3 px-4 py-2.5 hover:bg-mt4-header transition-colors">
+                <div key={member.name} className="flex items-center gap-3 px-4 py-2.5 hover:bg-elevated/30 transition-colors">
                   <span className="w-7 text-center text-lg">
                     {i < 3 ? MEDALS[i] : <span className="text-xs text-t4 font-mono">#{i + 1}</span>}
                   </span>

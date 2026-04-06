@@ -220,7 +220,7 @@ export function VendasPage() {
         {sales.length ? (
           <div className="divide-y divide-b1">
             {sales.sort((a, b) => b.ts - a.ts).slice(0, 20).map(s => (
-              <div key={s.id} className="flex items-center gap-3 px-4 py-2.5 hover:bg-mt4-header transition-colors">
+              <div key={s.id} className="flex items-center gap-3 px-4 py-2.5 hover:bg-elevated/30 transition-colors">
                 {(() => {
                   const av = localStorage.getItem(`vantagem_avatar_${s.sellerId}`);
                   const ini = s.sellerName.split(' ').map(n => n[0]).join('').slice(0, 2);

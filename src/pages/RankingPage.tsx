@@ -172,7 +172,7 @@ export function RankingPage() {
           actData.length === 0 ? emptyMsg('Sem fills registrados hoje') : (
             <div className="divide-y divide-b1">
               {actData.map((person, i) => (
-                <div key={person.name} className={`px-3 py-1.5 hover:bg-mt4-header transition-colors ${person.id === session?.id ? 'bg-vred/5 border-l-2 border-l-vred' : ''}`}>
+                <div key={person.name} className={`px-3 py-1.5 hover:bg-elevated/30 transition-colors ${person.id === session?.id ? 'bg-vred/5 border-l-2 border-l-vred' : ''}`}>
                   <div className="flex items-center gap-3 mb-2">
                     <span className="w-7 text-center text-lg">
                       {MEDALS[i] || <span className="text-xs text-t4 font-mono">#{i + 1}</span>}
@@ -210,7 +210,7 @@ export function RankingPage() {
           revData.length === 0 ? emptyMsg('Sem vendas registradas este mes') : (
             <div className="divide-y divide-b1">
               {revData.map((person, i) => (
-                <div key={person.name} className={`px-5 py-4 hover:bg-mt4-header transition-colors ${person.id === session?.id ? 'bg-vgreen/5 border-l-2 border-l-vgreen' : ''}`}>
+                <div key={person.name} className={`px-5 py-4 hover:bg-elevated/30 transition-colors ${person.id === session?.id ? 'bg-vgreen/5 border-l-2 border-l-vgreen' : ''}`}>
                   <div className="flex items-center gap-3 mb-2">
                     <span className="w-7 text-center text-lg">
                       {MEDALS[i] || <span className="text-xs text-t4 font-mono">#{i + 1}</span>}
@@ -241,7 +241,7 @@ export function RankingPage() {
           xpData.length === 0 ? emptyMsg('Nenhum XP registrado ainda') : (
             <div className="divide-y divide-b1">
               {xpData.map((person, i) => (
-                <div key={person.id} className={`px-5 py-4 hover:bg-mt4-header transition-colors ${person.id === session?.id ? 'bg-vgold/5 border-l-2 border-l-vgold' : ''}`}>
+                <div key={person.id} className={`px-5 py-4 hover:bg-elevated/30 transition-colors ${person.id === session?.id ? 'bg-vgold/5 border-l-2 border-l-vgold' : ''}`}>
                   <div className="flex items-center gap-3">
                     <span className="w-7 text-center text-lg">
                       {MEDALS[i] || <span className="text-xs text-t4 font-mono">#{i + 1}</span>}

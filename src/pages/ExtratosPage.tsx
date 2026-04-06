@@ -72,7 +72,7 @@ export function ExtratosPage() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-mt4-header">
+              <tr className="bg-elevated/30">
                 {['Membro', 'Função', 'Vendas', 'C. Setup', 'C. Rec', 'Total'].map(h => (
                   <th key={h} className="text-left text-[10px] text-t4 uppercase tracking-wider font-semibold px-3 py-1">{h}</th>
                 ))}
@@ -93,7 +93,7 @@ export function ExtratosPage() {
                 <tr><td colSpan={6} className="text-center py-12 text-t3 text-sm">Sem dados no período</td></tr>
               )}
               {filtered.length > 0 && (
-                <tr className="bg-mt4-header">
+                <tr className="bg-elevated/30">
                   <td colSpan={3} className="px-3 py-1 font-bold text-sm">TOTAL</td>
                   <td className="px-3 py-1 font-mono font-bold text-vgreen">{fmt$(filtered.reduce((t, r) => t + r.su, 0))}</td>
                   <td className="px-3 py-1 font-mono font-bold text-vgold">{fmt$(filtered.reduce((t, r) => t + r.re, 0))}</td>

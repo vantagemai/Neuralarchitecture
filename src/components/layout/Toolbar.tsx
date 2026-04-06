@@ -98,7 +98,7 @@ export function Toolbar({ userName, onLogout, onToggleSidebar, onAvatarChange }:
   };
 
   return (
-    <header className="h-8 bg-mt4-header border-b border-b1 flex items-center justify-between px-2 shrink-0 z-30">
+    <header className="h-9 bg-surface border-b border-b1 flex items-center justify-between px-3 shrink-0 z-30">
       {/* Left: hamburger + logo + search */}
       <div className="flex items-center gap-2 flex-1">
         <button onClick={onToggleSidebar} className="lg:hidden p-1 text-t3 hover:text-t1" aria-label="Menu">
@@ -161,8 +161,8 @@ export function Toolbar({ userName, onLogout, onToggleSidebar, onAvatarChange }:
           </button>
           {showNotifs && (
             <div className="absolute right-0 top-full mt-px w-72 bg-surface border border-b1 shadow-xl z-50" onClick={e => e.stopPropagation()}>
-              <div className="h-6 bg-mt4-header border-b border-b1 px-2 flex items-center">
-                <span className="text-[10px] text-mt4-header-text uppercase tracking-wider">Notificacoes</span>
+              <div className="h-6 bg-elevated/50 border-b border-b1 px-2 flex items-center">
+                <span className="text-[10px] text-t3 uppercase tracking-wider">Notificacoes</span>
               </div>
               <div className="max-h-52 overflow-y-auto">
                 {notifications.length === 0 ? (

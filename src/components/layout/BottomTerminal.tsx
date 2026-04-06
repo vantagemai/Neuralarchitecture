@@ -53,9 +53,9 @@ export function BottomTerminal() {
           {tab === 'vendas' && (
             <table className="w-full">
               <thead>
-                <tr className="bg-mt4-header">
+                <tr className="bg-elevated/50">
                   {['Vendedor', 'Data', 'Setup', 'Rec/mês', 'Comissão'].map(h => (
-                    <th key={h} className="text-left text-[9px] text-mt4-header-text uppercase tracking-wider px-3 py-1">{h}</th>
+                    <th key={h} className="text-left text-[9px] text-t3 uppercase tracking-wider px-3 py-1">{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -83,9 +83,9 @@ export function BottomTerminal() {
           {tab === 'journal' && (
             <table className="w-full">
               <thead>
-                <tr className="bg-mt4-header">
+                <tr className="bg-elevated/50">
                   {['Membro', 'Status', 'Score', 'Horario'].map(h => (
-                    <th key={h} className="text-left text-[9px] text-mt4-header-text uppercase tracking-wider px-3 py-1">{h}</th>
+                    <th key={h} className="text-left text-[9px] text-t3 uppercase tracking-wider px-3 py-1">{h}</th>
                   ))}
                 </tr>
               </thead>
