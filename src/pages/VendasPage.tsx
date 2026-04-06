@@ -143,7 +143,7 @@ export function VendasPage() {
         </button>
         <button
           onClick={openNewForm}
-          className="flex items-center gap-2 bg-vgreen hover:bg-emerald-600 text-white font-bold px-5 py-2.5 rounded-lg transition-colors"
+          className="flex items-center gap-2 bg-vgreen hover:bg-emerald-600 text-white font-bold px-3 py-1.5 rounded-lg transition-colors"
         >
           {showForm ? <><X size={16} /> Fechar</> : <><Plus size={16} /> Nova Venda</>}
         </button>
@@ -215,12 +215,12 @@ export function VendasPage() {
       {/* Sales list */}
       <div className="bg-surface border border-b1 rounded-lg overflow-hidden">
         <div className="px-5 py-4 border-b border-b1">
-          <h2 className="text-[15px] font-bold">Vendas deste mes ({sales.length})</h2>
+          <h2 className="text-[12px] font-bold">Vendas deste mes ({sales.length})</h2>
         </div>
         {sales.length ? (
           <div className="divide-y divide-b1">
             {sales.sort((a, b) => b.ts - a.ts).slice(0, 20).map(s => (
-              <div key={s.id} className="flex items-center gap-3 px-4 py-2.5 hover:bg-elevated/50 transition-colors">
+              <div key={s.id} className="flex items-center gap-3 px-4 py-2.5 hover:bg-mt4-header transition-colors">
                 {(() => {
                   const av = localStorage.getItem(`vantagem_avatar_${s.sellerId}`);
                   const ini = s.sellerName.split(' ').map(n => n[0]).join('').slice(0, 2);

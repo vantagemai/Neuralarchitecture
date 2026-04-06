@@ -272,7 +272,7 @@ export function DashboardPage() {
         <div className="lg:col-span-2 bg-surface border border-b1 rounded-lg overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-b1">
             <div>
-              <h2 className="text-[15px] font-bold">Atividade do Time</h2>
+              <h2 className="text-[12px] font-bold">Atividade do Time</h2>
               <p className="text-xs text-t3 mt-0.5">Score por canal — hoje</p>
             </div>
             <Badge variant={filledCount === totalMembers ? 'green' : 'red'}>
@@ -286,7 +286,7 @@ export function DashboardPage() {
           ) : (
             <div className="divide-y divide-b1">
               {teamData.map((member, i) => (
-                <div key={member.name} className="flex items-center gap-3 px-4 py-2.5 hover:bg-elevated/50 transition-colors">
+                <div key={member.name} className="flex items-center gap-3 px-4 py-2.5 hover:bg-mt4-header transition-colors">
                   <span className="w-7 text-center text-lg">
                     {i < 3 ? MEDALS[i] : <span className="text-xs text-t4 font-mono">#{i + 1}</span>}
                   </span>
@@ -345,7 +345,7 @@ export function DashboardPage() {
         {/* Alerts */}
         <div className="bg-surface border border-b1 rounded-lg overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-b1">
-            <h2 className="text-[15px] font-bold">Alertas</h2>
+            <h2 className="text-[12px] font-bold">Alertas</h2>
           </div>
           <div className="divide-y divide-b1">
             {alerts.length === 0 ? (

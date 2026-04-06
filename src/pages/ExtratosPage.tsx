@@ -72,32 +72,32 @@ export function ExtratosPage() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-elevated/50">
+              <tr className="bg-mt4-header">
                 {['Membro', 'Função', 'Vendas', 'C. Setup', 'C. Rec', 'Total'].map(h => (
-                  <th key={h} className="text-left text-[10px] text-t4 uppercase tracking-wider font-semibold px-5 py-3">{h}</th>
+                  <th key={h} className="text-left text-[10px] text-t4 uppercase tracking-wider font-semibold px-3 py-1">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-b1">
               {filtered.map(r => (
                 <tr key={r.name} className="hover:bg-elevated/30 transition-colors">
-                  <td className="px-5 py-3.5 font-semibold text-sm"><Link to={`/perfil/${r.userId}`} className="hover:text-vred transition-colors">{r.name}</Link></td>
-                  <td className="px-5 py-3.5"><Badge variant={roleVariant(r.role)}>{r.role}</Badge></td>
-                  <td className="px-5 py-3.5 font-mono text-sm">{r.cnt}</td>
-                  <td className="px-5 py-3.5 font-mono text-sm text-vgreen">{fmt$(r.su)}</td>
-                  <td className="px-5 py-3.5 font-mono text-sm text-vgold">{fmt$(r.re)}</td>
-                  <td className="px-5 py-3.5 font-mono text-sm font-bold text-vred">{fmt$(r.su + r.re)}</td>
+                  <td className="px-3 py-1.5 font-semibold text-sm"><Link to={`/perfil/${r.userId}`} className="hover:text-vred transition-colors">{r.name}</Link></td>
+                  <td className="px-3 py-1.5"><Badge variant={roleVariant(r.role)}>{r.role}</Badge></td>
+                  <td className="px-3 py-1.5 font-mono text-sm">{r.cnt}</td>
+                  <td className="px-3 py-1.5 font-mono text-sm text-vgreen">{fmt$(r.su)}</td>
+                  <td className="px-3 py-1.5 font-mono text-sm text-vgold">{fmt$(r.re)}</td>
+                  <td className="px-3 py-1.5 font-mono text-sm font-bold text-vred">{fmt$(r.su + r.re)}</td>
                 </tr>
               ))}
               {filtered.length === 0 && (
                 <tr><td colSpan={6} className="text-center py-12 text-t3 text-sm">Sem dados no período</td></tr>
               )}
               {filtered.length > 0 && (
-                <tr className="bg-elevated/50">
-                  <td colSpan={3} className="px-5 py-3 font-bold text-sm">TOTAL</td>
-                  <td className="px-5 py-3 font-mono font-bold text-vgreen">{fmt$(filtered.reduce((t, r) => t + r.su, 0))}</td>
-                  <td className="px-5 py-3 font-mono font-bold text-vgold">{fmt$(filtered.reduce((t, r) => t + r.re, 0))}</td>
-                  <td className="px-5 py-3 font-mono font-bold text-vred">{fmt$(filtered.reduce((t, r) => t + r.su + r.re, 0))}</td>
+                <tr className="bg-mt4-header">
+                  <td colSpan={3} className="px-3 py-1 font-bold text-sm">TOTAL</td>
+                  <td className="px-3 py-1 font-mono font-bold text-vgreen">{fmt$(filtered.reduce((t, r) => t + r.su, 0))}</td>
+                  <td className="px-3 py-1 font-mono font-bold text-vgold">{fmt$(filtered.reduce((t, r) => t + r.re, 0))}</td>
+                  <td className="px-3 py-1 font-mono font-bold text-vred">{fmt$(filtered.reduce((t, r) => t + r.su + r.re, 0))}</td>
                 </tr>
               )}
             </tbody>
