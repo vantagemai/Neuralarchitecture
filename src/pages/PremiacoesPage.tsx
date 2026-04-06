@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { Trophy, CheckCircle2, Clock, Crown } from 'lucide-react';
 import { db, getUsers, getMonthSales, getTodayFills, calcScore, fmt$, getSession } from '../lib/store';
 import { getStreak } from '../lib/streaks';
@@ -150,11 +151,11 @@ export function PremiacoesPage() {
             {monthWinners.map(w => {
               const def = PRIZE_DEFS.find(p => p.id === w.prizeId);
               return (
-                <div key={w.odId} className="flex items-center gap-2 bg-vgold/5 border border-vgold/10 rounded-xl px-4 py-2.5">
+                <div key={w.odId} className="flex items-center gap-2 bg-vgold/5 border border-vgold/10 rounded-lg px-4 py-2.5">
                   <span className="text-xl">{def?.icon || '🏆'}</span>
                   <Avatar userId={w.userId} name={w.userName} size="w-8 h-8" />
                   <div>
-                    <div className="text-xs font-bold">{w.userName}</div>
+                    <Link to={`/perfil/${w.userId}`} className="text-xs font-bold hover:text-vred transition-colors">{w.userName}</Link>
                     <div className="text-[10px] text-vgold">{def?.label} · {w.value}</div>
                   </div>
                   <CheckCircle2 size={14} className="text-vgreen ml-1" />
@@ -203,11 +204,11 @@ export function PremiacoesPage() {
               {/* Ranking */}
               <div className="px-5 py-4">
                 {isApproved && winner ? (
-                  <div className="flex items-center gap-4 bg-vgreen/5 border border-vgreen/15 rounded-xl px-4 py-3">
+                  <div className="flex items-center gap-4 bg-vgreen/5 border border-vgreen/15 rounded-lg px-4 py-3">
                     <span className="text-2xl">🏆</span>
                     <Avatar userId={winner.userId} name={winner.userName} size="w-12 h-12" />
                     <div className="flex-1">
-                      <div className="font-bold text-lg">{winner.userName}</div>
+                      <Link to={`/perfil/${winner.userId}`} className="font-bold text-lg hover:text-vred transition-colors">{winner.userName}</Link>
                       <div className="text-xs text-vgreen">Vencedor — {winner.value}</div>
                     </div>
                     <div className="text-right">
@@ -226,7 +227,7 @@ export function PremiacoesPage() {
                       const isTop = i === 0;
                       const pct = ranking[0]?.value > 0 ? Math.round((person.value / ranking[0].value) * 100) : 0;
                       return (
-                        <div key={person.id} className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-colors ${
+                        <div key={person.id} className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
                           isTop ? 'bg-vgold/5 border border-vgold/10' : 'hover:bg-elevated/50'
                         }`}>
                           <span style={{ fontSize: i < 3 ? '18px' : '13px' }}>
@@ -234,7 +235,7 @@ export function PremiacoesPage() {
                           </span>
                           <Avatar userId={person.id} name={person.name} size={isTop ? 'w-10 h-10' : 'w-8 h-8'} />
                           <div className="flex-1 min-w-0">
-                            <span className={`text-sm font-semibold truncate block ${isTop ? 'text-vgold' : ''}`}>{person.name}</span>
+                            <Link to={`/perfil/${person.id}`} className={`text-sm font-semibold truncate block hover:text-vred transition-colors ${isTop ? 'text-vgold' : ''}`}>{person.name}</Link>
                             <div className="h-2 bg-overlay rounded-sm overflow-hidden mt-1">
                               <div className={`h-full rounded-sm transition-all duration-700 ${isTop ? 'bg-gradient-to-r from-vgold-dark to-vgold' : 'bg-vgold/40'}`}
                                 style={{ width: `${pct}%` }} />

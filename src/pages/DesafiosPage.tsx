@@ -251,7 +251,7 @@ export function DesafiosPage() {
                               {MEDALS[i] || <span className="text-[10px] text-t4 font-mono">#{i + 1}</span>}
                             </span>
                             <Avatar userId={p.userId} name={p.userName} />
-                            <span className="flex-1 text-sm font-semibold truncate">{p.userName}</span>
+                            <a href={`/Neuralarchitecture/perfil/${p.userId}`} className="flex-1 text-sm font-semibold truncate hover:text-vred transition-colors">{p.userName}</a>
                             <div className="w-28 h-2 bg-overlay rounded-sm overflow-hidden">
                               <div className={`h-full rounded-sm transition-all duration-700 ${completed ? 'bg-vgreen' : 'bg-gradient-to-r from-vgold-dark to-vgold'}`}
                                 style={{ width: `${pct}%` }} />
