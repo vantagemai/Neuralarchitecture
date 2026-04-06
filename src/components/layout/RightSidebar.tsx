@@ -6,6 +6,7 @@ import { getStreak } from '../../lib/streaks';
 import { getTotalXp } from '../../lib/xp';
 import { getScorecard } from '../../lib/scorecard';
 import { getGoalProgress } from '../../lib/goals';
+import { PanelHeader } from '../ui/PanelHeader';
 
 interface NIProfile {
   metaM: number; meta180: number; car: string; home: string; body: string;
@@ -59,26 +60,27 @@ export function RightSidebar() {
   }
 
   return (
-    <div className="hidden xl:flex flex-col w-72 bg-surface border-l border-b1 shrink-0 overflow-y-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-b1">
-        <span className="text-xs font-bold uppercase tracking-wider text-t3">Vision Board</span>
-        <button onClick={() => setOpen(false)} className="p-1 rounded text-t4 hover:text-t1 transition-colors">
-          <ChevronRight size={14} />
-        </button>
-      </div>
+    <div className="hidden xl:flex flex-col w-64 bg-surface border-l border-b1 shrink-0 overflow-y-auto">
+      <PanelHeader
+        title="Vision Board"
+        actions={
+          <button onClick={() => setOpen(false)} className="w-4 h-4 flex items-center justify-center text-t3 hover:text-t1 transition-colors">
+            <ChevronRight size={10} />
+          </button>
+        }
+      />
 
-      <div className="p-4 space-y-5">
+      <div className="p-3 space-y-3">
         {/* Avatar + Level */}
         <div className="text-center">
           {avatar ? (
-            <img src={avatar} alt={session.name} className="w-16 h-16 rounded-full object-cover border-2 border-vred/30 mx-auto" />
+            <img src={avatar} alt={session.name} className="w-12 h-12 object-cover border border-vred/30 mx-auto" />
           ) : (
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-lg font-bold mx-auto">
+            <div className="w-12 h-12 bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-sm font-bold mx-auto">
               {initials}
             </div>
           )}
-          <div className="mt-2 font-bold text-sm">{session.name}</div>
+          <div className="mt-1.5 font-bold text-xs">{session.name}</div>
           <div className="flex items-center justify-center gap-1.5 mt-1">
             <span className="text-sm">{level.icon}</span>
             <span className={`text-[11px] font-bold ${level.color}`}>{level.name}</span>
@@ -93,13 +95,13 @@ export function RightSidebar() {
 
         {/* 180d Goal Donut */}
         {meta180 > 0 && (
-          <div className="bg-elevated rounded-lg p-4 border border-b1">
+          <div className="bg-elevated p-3 border border-b1">
             <div className="flex items-center gap-2 mb-3">
               <Target size={14} className="text-vred" />
               <span className="text-[11px] font-bold uppercase tracking-wider">Meta 180 Dias</span>
             </div>
             {/* SVG Donut */}
-            <div className="relative w-28 h-28 mx-auto">
+            <div className="relative w-20 h-20 mx-auto">
               <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
                 <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="8" className="text-overlay" />
                 <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="8"
@@ -121,7 +123,7 @@ export function RightSidebar() {
         )}
 
         {/* Scorecard */}
-        <div className="bg-elevated rounded-lg p-4 border border-b1">
+        <div className="bg-elevated p-3 border border-b1">
           <div className="flex items-center justify-between mb-3">
             <span className="text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5">
               <Star size={12} className="text-vgold" /> Scorecard
@@ -150,7 +152,7 @@ export function RightSidebar() {
         </div>
 
         {/* Goals today */}
-        <div className="bg-elevated rounded-lg p-4 border border-b1">
+        <div className="bg-elevated p-3 border border-b1">
           <span className="text-[11px] font-bold uppercase tracking-wider">Metas Hoje</span>
           <div className="mt-2 space-y-1.5">
             {[

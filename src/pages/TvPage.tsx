@@ -218,7 +218,7 @@ export function TvPage() {
 
       {/* Sale celebration */}
       {recentSale && (
-        <div className="tv-sale-flash tv-glass rounded-2xl px-8 py-5 flex items-center gap-6 border-l-4 border-l-vgreen">
+        <div className="tv-sale-flash tv-glass rounded-lg px-8 py-5 flex items-center gap-6 border-l-4 border-l-vgreen">
           <Avatar userId={recentSale.sellerId} name={recentSale.sellerName} size="w-14 h-14" ring />
           <div className="flex-1">
             <div className="text-vgreen font-bold uppercase tracking-wider" style={{ fontSize: '14px' }}>NOVA VENDA</div>
@@ -239,7 +239,7 @@ export function TvPage() {
           { val: animSales.toString(), label: 'VENDAS MES', color: 'text-vgold', bg: 'from-vgold/10 to-vgold/5', glow: 'shadow-vgold/10' },
           { val: `$${animComm.toLocaleString()}`, label: 'COMISSOES', color: 'text-vgreen', bg: 'from-vgreen/10 to-vgreen/5', glow: 'shadow-vgreen/10' },
         ].map((kpi, i) => (
-          <div key={i} className={`tv-glass rounded-2xl p-5 text-center bg-gradient-to-br ${kpi.bg} shadow-lg ${kpi.glow} tv-kpi-glow`}>
+          <div key={i} className={`tv-glass rounded-lg p-5 text-center bg-gradient-to-br ${kpi.bg} shadow-lg ${kpi.glow} tv-kpi-glow`}>
             <div className={`font-mono font-bold ${kpi.color} tv-breathe`} style={{ fontSize: '48px', lineHeight: 1.1 }}>
               {kpi.val}
             </div>
@@ -263,7 +263,7 @@ export function TvPage() {
       {/* Main content: Activity (fixed) + Rotating panel */}
       <div className="flex-1 grid grid-cols-2 gap-5 min-h-0">
         {/* Left: Activity */}
-        <div className="tv-glass rounded-2xl p-5 overflow-hidden flex flex-col">
+        <div className="tv-glass rounded-lg p-5 overflow-hidden flex flex-col">
           <h2 className="text-vred font-bold uppercase tracking-wider mb-4" style={{ fontSize: '18px' }}>📊 ATIVIDADE — HOJE</h2>
           <div className="flex-1 overflow-hidden space-y-1">
             {actSorted.length === 0 ? (
@@ -287,7 +287,7 @@ export function TvPage() {
         </div>
 
         {/* Right: Rotating */}
-        <div className="tv-glass rounded-2xl p-5 overflow-hidden flex flex-col">
+        <div className="tv-glass rounded-lg p-5 overflow-hidden flex flex-col">
           <div key={panelKey} className="animate-panel-in flex-1 flex flex-col">
             {/* Revenue */}
             {activePanel === 'revenue' && (

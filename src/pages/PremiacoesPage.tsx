@@ -183,7 +183,7 @@ export function PremiacoesPage() {
               <div className="px-5 py-4 border-b border-b1">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <span className="text-3xl">{prize.icon}</span>
+                    <span className="text-xl">{prize.icon}</span>
                     <div>
                       <h3 className="font-bold">{prize.label}</h3>
                       <p className="text-[11px] text-t4">{prize.description}</p>

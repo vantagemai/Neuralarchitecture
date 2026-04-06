@@ -89,7 +89,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
         </div>
 
         {/* Card */}
-        <div className="bg-surface border border-b1 p-8 shadow-xl shadow-black/20">
+        <div className="bg-surface border border-b1 p-5 shadow-lg shadow-black/10">
           {/* Tabs */}
           <div className="flex gap-1 bg-elevated rounded-lg p-1 mb-8">
             <button

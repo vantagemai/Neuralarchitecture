@@ -91,7 +91,7 @@ export function RankingPage() {
 
   const emptyMsg = (text: string) => (
     <div className="text-center py-16">
-      <div className="text-3xl mb-3">🏆</div>
+      <div className="text-xl mb-3">🏆</div>
       <p className="text-sm text-t3">{text}</p>
       <p className="text-xs text-t4 mt-2">Os dados aparecem quando alguem preenche o Fill Diario ou registra vendas.</p>
     </div>

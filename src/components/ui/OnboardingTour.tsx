@@ -47,7 +47,7 @@ export function OnboardingTour({ onClose }: { onClose: () => void }) {
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
 
       {/* Card */}
-      <div className="relative bg-surface border border-b1 rounded-lg p-8 max-w-md w-full mx-4 shadow-2xl animate-in">
+      <div className="relative bg-surface border border-b1 rounded-lg p-5 max-w-md w-full mx-4 shadow-lg animate-in">
         <button onClick={finish} className="absolute top-4 right-4 text-t4 hover:text-t2 transition-colors">
           <X size={18} />
         </button>

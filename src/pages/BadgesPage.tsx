@@ -88,7 +88,7 @@ export function BadgesPage() {
                       earned ? 'border-vpurp/30 bg-vpurp/5' : 'border-b1 opacity-50 grayscale'
                     }`}
                   >
-                    <div className="text-3xl">{ach.icon}</div>
+                    <div className="text-xl">{ach.icon}</div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-bold truncate">{ach.name}</span>

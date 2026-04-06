@@ -22,7 +22,7 @@ export function PerfilPage() {
   if (!user) {
     return (
       <div className="text-center py-20">
-        <div className="text-4xl mb-3">👤</div>
+        <div className="text-2xl mb-3">👤</div>
         <p className="text-t3">Membro nao encontrado</p>
         <Link to="/ranking" className="text-vred text-sm mt-2 inline-block">← Voltar ao Ranking</Link>
       </div>
@@ -92,7 +92,7 @@ export function PerfilPage() {
           )}
         </div>
         <div className="text-right hidden sm:block">
-          <div className="text-3xl font-bold font-mono text-vred neon-red">{scorecard.overall}</div>
+          <div className="text-xl font-bold font-mono text-vred neon-red">{scorecard.overall}</div>
           <div className="text-[10px] text-t4 uppercase tracking-wider">Scorecard</div>
         </div>
       </div>

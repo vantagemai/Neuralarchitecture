@@ -159,7 +159,7 @@ export function IdentidadePage() {
         <div className="absolute inset-0 bg-gradient-to-t from-canvas via-transparent to-transparent" />
         <div className="relative p-5">
           <div className="text-[10px] text-t4 uppercase tracking-[0.2em] mb-2">SUA NOVA IDENTIDADE</div>
-          <h1 className="text-3xl font-bold mb-2">{session.name}</h1>
+          <h1 className="text-xl font-bold mb-2">{session.name}</h1>
           {profile.car && <p className="text-sm text-t3">→ {profile.car}</p>}
           <div className="flex gap-2 mt-4 flex-wrap">
             <span className="bg-vgold/15 text-vgold border border-vgold/20 px-3 py-1 rounded-full text-xs font-bold">
