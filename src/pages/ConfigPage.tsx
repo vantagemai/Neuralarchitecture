@@ -5,7 +5,7 @@ import { playSuccess } from '../lib/sounds';
 import { isOnline } from '../lib/supabase';
 import { getTheme, toggleTheme } from '../lib/theme';
 import { pushLocalToSupabase, hydrateFromSupabase } from '../lib/supabaseSync';
-import { runDemoSeed } from '../lib/demoSeed';
+import { runDemoSeed, clearAllData } from '../lib/demoSeed';
 
 const PLANS = [
   { key: 'SETTER',   label: 'Setter',   setup: '10%', rec: '3%',  color: '#8B7EC8' },
@@ -130,26 +130,49 @@ export function ConfigPage() {
         </div>
       </div>
 
-      {/* Demo Seed */}
+      {/* Data Management */}
       <div className="bg-surface border border-b1 rounded-lg p-4">
         <div className="flex items-center gap-2 mb-4">
           <Users size={18} className="text-vpurp" />
-          <h2 className="text-[15px] font-bold">Dados Demo</h2>
+          <h2 className="text-[15px] font-bold">Gerenciamento de Dados</h2>
         </div>
-        <p className="text-xs text-t3 mb-4">Popula o sistema com 10 membros realistas, vendas, fills, pipeline, shoutouts, XP, streaks, conquistas e metas. Ideal para demonstracao.</p>
-        <button
-          onClick={async () => {
-            setSaved('Gerando dados demo...');
-            const result = await runDemoSeed();
-            playSuccess();
-            setSaved(`Demo criado! ${result.users} membros, ${result.sales} vendas, ${result.fills} fills`);
-            setTimeout(() => setSaved(''), 5000);
-          }}
-          className="flex items-center gap-2 bg-vpurp/15 hover:bg-vpurp/25 text-vpurp border border-vpurp/20 font-bold px-4 py-2.5 rounded-lg transition-colors"
-        >
-          <Users size={14} /> Gerar Time Demo (10 membros)
-        </button>
-        <p className="text-[10px] text-t4 mt-2">Senha de todos: demo123</p>
+
+        {/* Clear Data */}
+        <div className="mb-4 pb-4 border-b border-b1">
+          <p className="text-xs text-t3 mb-3">Remove todos os dados (usuarios, vendas, fills, XP, etc.) para comecar do zero. Configuracoes sao preservadas.</p>
+          <button
+            onClick={() => {
+              if (!window.confirm('Tem certeza? Todos os dados serao removidos permanentemente. Configuracoes serao mantidas.')) return;
+              const result = clearAllData();
+              setSaved(`Dados limpos! ${result.removed} registros removidos.`);
+              setTimeout(() => setSaved(''), 5000);
+            }}
+            className="flex items-center gap-2 bg-vred/10 hover:bg-vred/20 text-vred border border-vred/20 font-bold px-4 py-2.5 rounded-lg transition-colors"
+          >
+            <Shield size={14} /> Limpar Todos os Dados
+          </button>
+        </div>
+
+        {/* Demo Seed */}
+        <div>
+          <p className="text-xs text-t3 mb-3">Gera 100 usuarios com 90 dias de dados realistas — vendas, fills, XP, streaks, conquistas, pipeline. Ideal para apresentacao ao time.</p>
+          <button
+            onClick={async () => {
+              if (!window.confirm('Isso vai limpar os dados atuais e gerar 100 usuarios demo com 90 dias de historico. Continuar?')) return;
+              setSaved('Limpando dados antigos...');
+              clearAllData();
+              setSaved('Gerando 100 usuarios + 90 dias...');
+              const result = await runDemoSeed();
+              playSuccess();
+              setSaved(`Demo criado! ${result.users} membros, ${result.sales} vendas, ${result.fills} fills`);
+              setTimeout(() => setSaved(''), 5000);
+            }}
+            className="flex items-center gap-2 bg-vpurp/15 hover:bg-vpurp/25 text-vpurp border border-vpurp/20 font-bold px-4 py-2.5 rounded-lg transition-colors"
+          >
+            <Users size={14} /> Demo 100 Usuarios (90 dias)
+          </button>
+          <p className="text-[10px] text-t4 mt-2">Senha de todos os demo: demo123</p>
+        </div>
       </div>
 
       {/* Sound Effects */}
