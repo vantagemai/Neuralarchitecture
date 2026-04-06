@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Heart, Send } from 'lucide-react';
 import { db, getSession, getUsers } from '../../lib/store';
 import { broadcastNotification } from '../../lib/notifications';
@@ -139,10 +140,10 @@ export function ShoutoutFeed() {
                 <Avatar userId={s.fromId} name={s.fromName} />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 text-sm">
-                    <span className="font-bold">{s.fromName}</span>
+                    <Link to={`/perfil/${s.fromId}`} className="font-bold hover:text-vred transition-colors">{s.fromName}</Link>
                     <span className="text-t4">→</span>
                     <Avatar userId={s.toId} name={s.toName} />
-                    <span className="font-bold text-vred">{s.toName}</span>
+                    <Link to={`/perfil/${s.toId}`} className="font-bold text-vred hover:text-vred-dark transition-colors">{s.toName}</Link>
                     <span className="text-xl ml-0.5">{s.emoji}</span>
                     <span className="text-t4 text-[10px] ml-auto font-mono shrink-0">{relativeTime(s.ts)}</span>
                   </div>

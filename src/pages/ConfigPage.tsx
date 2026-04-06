@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Save, Shield, Trophy, Volume2, Cloud, CloudOff, Users } from 'lucide-react';
+import { Save, Shield, Trophy, Volume2, Cloud, CloudOff, Users, Sun, Moon } from 'lucide-react';
 import { db } from '../lib/store';
 import { playSuccess } from '../lib/sounds';
 import { isOnline } from '../lib/supabase';
+import { getTheme, toggleTheme } from '../lib/theme';
 import { pushLocalToSupabase, hydrateFromSupabase } from '../lib/supabaseSync';
 import { runDemoSeed } from '../lib/demoSeed';
 
@@ -26,6 +27,7 @@ export function ConfigPage() {
   const cfg = db.get<{ headPin?: string; soundEnabled?: boolean; awards?: { prizes?: Record<string, string> } }>('ops_config') || {};
   const [pin, setPin] = useState(cfg.headPin || '1111');
   const [soundEnabled, setSoundEnabled] = useState(cfg.soundEnabled !== false);
+  const [dark, setDark] = useState(getTheme() === 'dark');
   const [prizes, setPrizes] = useState<Record<string, string>>(cfg.awards?.prizes || {});
   const [saved, setSaved] = useState('');
 
@@ -171,6 +173,26 @@ export function ConfigPage() {
             className={`w-12 h-6 rounded-full transition-colors relative ${soundEnabled ? 'bg-vgreen' : 'bg-muted'}`}
           >
             <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${soundEnabled ? 'translate-x-6' : 'translate-x-0.5'}`} />
+          </button>
+        </div>
+      </div>
+
+      {/* Theme */}
+      <div className="bg-surface border border-b1 rounded-lg p-6">
+        <div className="flex items-center gap-2 mb-4">
+          {dark ? <Moon size={18} className="text-vpurp" /> : <Sun size={18} className="text-vgold" />}
+          <h2 className="text-[15px] font-bold">Tema</h2>
+        </div>
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-sm font-medium">{dark ? 'Modo escuro' : 'Modo claro'}</div>
+            <div className="text-xs text-t4">Alterne entre tema escuro e claro</div>
+          </div>
+          <button
+            onClick={() => { toggleTheme(); setDark(!dark); }}
+            className={`w-12 h-6 rounded-full transition-colors relative ${dark ? 'bg-vpurp' : 'bg-vgold'}`}
+          >
+            <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${dark ? 'translate-x-6' : 'translate-x-0.5'}`} />
           </button>
         </div>
       </div>

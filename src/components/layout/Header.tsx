@@ -1,5 +1,6 @@
 import { Bell, Search, LogOut, Camera, Menu, Flame, Zap, X, Sun, Moon } from 'lucide-react';
 import { useRef, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getSession, getUsers, getMonthSales, getTodayFills } from '../../lib/store';
 import { getTotalXp } from '../../lib/xp';
 import { getStreak } from '../../lib/streaks';
@@ -29,6 +30,7 @@ interface SearchResult {
 }
 
 export function Header({ userName, userRole, onLogout, onToggleSidebar, onAvatarChange }: HeaderProps) {
+  const navigate = useNavigate();
   const fileRef = useRef<HTMLInputElement>(null);
   const [avatar, setAvatar] = useState(() => localStorage.getItem(avatarKey()) || null);
   const [xp, setXp] = useState(() => getTotalXp());
@@ -241,8 +243,11 @@ export function Header({ userName, userRole, onLogout, onToggleSidebar, onAvatar
                 {notifications.length === 0 ? (
                   <div className="text-center py-8 text-t4 text-xs">Sem notificacoes</div>
                 ) : (
-                  notifications.slice(0, 15).map(n => (
-                    <div key={n.id} className={`px-4 py-2.5 border-b border-b1 hover:bg-elevated/50 transition-colors ${!n.read ? 'bg-vred/5' : ''}`}>
+                  notifications.slice(0, 15).map(n => {
+                    const routes: Record<string, string> = { sale: '/vendas', badge: '/badges', challenge: '/desafios', shoutout: '/ranking', levelup: '/ranking', streak: '/fill' };
+                    return (
+                    <div key={n.id} className={`px-4 py-2.5 border-b border-b1 hover:bg-elevated/50 transition-colors cursor-pointer ${!n.read ? 'bg-vred/5' : ''}`}
+                      onClick={() => { setShowNotifs(false); navigate(routes[n.type] || '/'); }}>
                       <div className="flex items-start gap-2">
                         <span className="text-sm mt-0.5">{n.icon}</span>
                         <div className="flex-1 min-w-0">
@@ -252,7 +257,8 @@ export function Header({ userName, userRole, onLogout, onToggleSidebar, onAvatar
                         <span className="text-[9px] text-t4 font-mono shrink-0">{relTime(n.ts)}</span>
                       </div>
                     </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             </div>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { getUsers, getMonthSales, currentMonth, fmt$ } from '../lib/store';
 import { Badge } from '../components/ui/Badge';
 import { KpiCard } from '../components/ui/KpiCard';
@@ -15,10 +16,10 @@ export function ExtratosPage() {
   const sales = getMonthSales(ym);
 
   // Aggregate per user
-  const totals: Record<string, { name: string; role: string; su: number; re: number; cnt: number }> = {};
+  const totals: Record<string, { userId: string; name: string; role: string; su: number; re: number; cnt: number }> = {};
   sales.forEach(s => {
     const id = s.sellerName;
-    if (!totals[id]) totals[id] = { name: s.sellerName, role: s.sellerRole, su: 0, re: 0, cnt: 0 };
+    if (!totals[id]) totals[id] = { userId: s.sellerId, name: s.sellerName, role: s.sellerRole, su: 0, re: 0, cnt: 0 };
     totals[id].su += s.sellerSetupComm || 0;
     totals[id].re += s.sellerRecComm || 0;
     totals[id].cnt++;
@@ -80,7 +81,7 @@ export function ExtratosPage() {
             <tbody className="divide-y divide-b1">
               {filtered.map(r => (
                 <tr key={r.name} className="hover:bg-elevated/30 transition-colors">
-                  <td className="px-5 py-3.5 font-semibold text-sm">{r.name}</td>
+                  <td className="px-5 py-3.5 font-semibold text-sm"><Link to={`/perfil/${r.userId}`} className="hover:text-vred transition-colors">{r.name}</Link></td>
                   <td className="px-5 py-3.5"><Badge variant={roleVariant(r.role)}>{r.role}</Badge></td>
                   <td className="px-5 py-3.5 font-mono text-sm">{r.cnt}</td>
                   <td className="px-5 py-3.5 font-mono text-sm text-vgreen">{fmt$(r.su)}</td>
