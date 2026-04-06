@@ -59,7 +59,7 @@ export function ToastContainer() {
       {toasts.map(t => (
         <div
           key={t.id}
-          className={`pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl border backdrop-blur-sm shadow-xl animate-slide-up ${COLORS[t.type]}`}
+          className={`pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-lg border backdrop-blur-sm shadow-xl animate-slide-up ${COLORS[t.type]}`}
         >
           {ICONS[t.type]}
           <div className="min-w-0">

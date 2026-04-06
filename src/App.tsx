@@ -15,6 +15,7 @@ import { TvPage } from './pages/TvPage';
 import { BadgesPage } from './pages/BadgesPage';
 import { DesafiosPage } from './pages/DesafiosPage';
 import { CoachingPage } from './pages/CoachingPage';
+import { NotFoundPage } from './pages/NotFoundPage';
 import { ToastContainer } from './components/ui/Toast';
 import { ConfettiContainer } from './components/ui/Confetti';
 import { OnboardingTour, shouldShowOnboarding } from './components/ui/OnboardingTour';
@@ -156,6 +157,7 @@ function App() {
           {/* Head/Founder only */}
           {isHead && <Route path="time" element={<TimePage />} />}
           {isHead && <Route path="config" element={<ConfigPage />} />}
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

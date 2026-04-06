@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Badge } from '../components/ui/Badge';
-import { CHANNELS, getTodayFills, getMonthSales, getUsers, calcScore, fmt$, getSession, db } from '../lib/store';
+import { CHANNELS, getTodayFills, getMonthSales, getUsers, calcScore, fmt$, getSession, db, currentMonth } from '../lib/store';
 import { getTotalXp } from '../lib/xp';
 import { getStreak } from '../lib/streaks';
 import { getLevel, getLevelByXp } from '../lib/levels';
@@ -13,9 +13,15 @@ type Tab = 'activity' | 'revenue' | 'xp';
 
 export function RankingPage() {
   const [tab, setTab] = useState<Tab>('activity');
+  const [month, setMonth] = useState(currentMonth());
   const session = getSession();
   const fills = useMemo(() => getTodayFills(), []);
-  const sales = useMemo(() => getMonthSales(), []);
+  const sales = useMemo(() => getMonthSales(month), [month]);
+
+  const months = useMemo(() => Array.from({ length: 6 }, (_, i) => {
+    const d = new Date(); d.setMonth(d.getMonth() - i);
+    return { value: d.toISOString().slice(0, 7), label: d.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' }) };
+  }), []);
   const users = useMemo(() => getUsers().filter(u => u.active), []);
 
   // Activity ranking from real fills
@@ -106,8 +112,12 @@ export function RankingPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Ranking</h1>
-          <p className="text-sm text-t3 mt-1">Atividade vs Resultado vs XP — dados reais</p>
+          <p className="text-sm text-t3 mt-1">Atividade vs Resultado vs XP</p>
         </div>
+        <select value={month} onChange={e => setMonth(e.target.value)}
+          className="bg-elevated border border-b1 rounded-lg px-3 py-2 text-sm font-mono outline-none cursor-pointer">
+          {months.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
+        </select>
       </div>
 
       {/* My stats bar */}
