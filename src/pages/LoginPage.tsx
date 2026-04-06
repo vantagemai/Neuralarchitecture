@@ -3,6 +3,7 @@ import { Eye, EyeOff, LogIn, UserPlus, Sun, Moon } from 'lucide-react';
 import type { UserSession } from '../App';
 import { db } from '../lib/store';
 import { getTheme, toggleTheme } from '../lib/theme';
+import { Logo } from '../components/ui/Logo';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -83,16 +84,8 @@ export function LoginPage({ onLogin }: LoginPageProps) {
 
       <div className="relative w-full max-w-md animate-in">
         {/* Logo */}
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-vred to-vred-dark mb-4 shadow-lg shadow-vred/25 animate-pulse-glow p-3">
-            <img src="/Neuralarchitecture/logo.svg" alt="V" className="w-full h-full" style={{ filter: 'brightness(0) invert(1)' }} />
-          </div>
-          <h1 className="text-4xl font-bold tracking-wide">
-            VANTAGEM<span className="text-vred">.ai</span>
-          </h1>
-          <p className="text-xs text-t4 tracking-[0.25em] uppercase mt-3">
-            OPS · Sistema Gamificado de Vendas
-          </p>
+        <div className="flex flex-col items-center mb-10">
+          <Logo size="xl" />
         </div>
 
         {/* Card */}
@@ -207,7 +200,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
 
         <div className="flex items-center justify-center gap-3 mt-8">
           <p className="text-[10px] text-t4 font-mono tracking-wider">
-            v2.0 · Vantagem.ai · Sistemas de Escala
+            v2.0 · Sistemas de Escala
           </p>
           <button
             onClick={() => { toggleTheme(); setError(''); }}

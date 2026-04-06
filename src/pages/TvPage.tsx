@@ -5,6 +5,7 @@ import { getStreak } from '../lib/streaks';
 import { getLevelByXp } from '../lib/levels';
 import { getUnlocked, ACHIEVEMENTS } from '../lib/achievements';
 import { getGoals } from '../lib/goals';
+import { Logo } from '../components/ui/Logo';
 
 const MEDALS = ['🥇', '🥈', '🥉'];
 type Panel = 'revenue' | 'xp' | 'prizes' | 'streaks' | 'achievements';
@@ -174,15 +175,7 @@ export function TvPage() {
       {/* Header */}
       <div className="flex items-center justify-between px-2">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-vred flex items-center justify-center animate-pulse-glow p-2">
-            <img src="/Neuralarchitecture/logo.svg" alt="V" className="w-full h-full" style={{ filter: 'brightness(0) invert(1)' }} />
-          </div>
-          <div>
-            <h1 className="font-bold tracking-wide" style={{ fontSize: '28px' }}>
-              VANTAGEM<span className="text-vred">.ai</span>
-              <span className="text-t4 ml-4" style={{ fontSize: '16px' }}>SALES FLOOR</span>
-            </h1>
-          </div>
+          <Logo size="lg" />
         </div>
         <div className="flex items-center gap-6">
           {/* Team goal */}

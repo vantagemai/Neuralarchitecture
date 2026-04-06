@@ -4,6 +4,7 @@ import {
   BarChart3, Users, Flame, Settings, Tv, ChevronLeft, ChevronRight, X, Award, Swords, MessageSquare, Gift
 } from 'lucide-react';
 import { getSession } from '../../lib/store';
+import { Logo } from '../ui/Logo';
 
 type Role = 'all' | 'manager' | 'head';
 interface NavItem { to: string; icon: typeof LayoutDashboard; label: string; minRole?: Role }
@@ -56,13 +57,11 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
     <>
       {/* Logo */}
       <div className="flex items-center gap-3 px-4 h-16 border-b border-b1 shrink-0">
-        <img src="/Neuralarchitecture/logo.svg" alt="V" className="w-8 h-8 shrink-0 text-t1" style={{ filter: 'brightness(0) invert(1)' }} />
-        {!collapsed && (
+        {collapsed ? (
+          <Logo size="sm" iconOnly />
+        ) : (
           <div className="animate-slide">
-            <div className="font-bold text-[15px] tracking-wide text-t1">
-              VANTAGEM<span className="text-vred">.ai</span>
-            </div>
-            <div className="text-[9px] text-t4 tracking-[0.15em] uppercase font-mono">OPS TERMINAL</div>
+            <Logo size="sm" />
           </div>
         )}
         {/* Mobile close */}
