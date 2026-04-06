@@ -150,10 +150,10 @@ export function DashboardPage() {
 
       {/* KPIs */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <KpiCard label="Receita Mês" value={fmt$(totalComm)} icon={DollarSign} color="green" trendLabel={`${totalSalesMonth} vendas`} highlight />
-        <KpiCard label="Vendas Mês" value={totalSalesMonth} icon={Target} color="gold" />
-        <KpiCard label="Time" value={`${filledCount}/${totalMembers}`} icon={Users} color="blue" trendLabel="preencheram hoje" />
-        <KpiCard label="Score Total" value={totalScore} icon={TrendingUp} color="red" trendLabel="pts hoje" />
+        <KpiCard label="Receita Mês" value={fmt$(totalComm)} icon={DollarSign} color="green" trendLabel={`${totalSalesMonth} vendas`} sparkData={salesTrend.map(d => d.comissao)} />
+        <KpiCard label="Vendas Mês" value={totalSalesMonth} icon={Target} color="gold" sparkData={salesTrend.map(d => d.vendas)} />
+        <KpiCard label="Time" value={`${filledCount}/${totalMembers}`} icon={Users} color="blue" trendLabel="preencheram" />
+        <KpiCard label="Score Total" value={totalScore} icon={TrendingUp} color="red" trendLabel="pts hoje" sparkData={activityTrend.map(d => d.score)} />
       </div>
 
       {/* Charts */}
@@ -362,6 +362,55 @@ export function DashboardPage() {
                 </div>
               ))
             )}
+          </div>
+        </div>
+      </div>
+
+      {/* Activity heatmap — last 7 days */}
+      <div className="bg-surface border border-b1 rounded-lg p-4">
+        <h2 className="text-[11px] font-bold text-t3 uppercase tracking-wider mb-3">Atividade do Time — 7 dias</h2>
+        <div className="overflow-x-auto">
+          <div className="min-w-[500px]">
+            {/* Day headers */}
+            <div className="flex items-center gap-1 mb-1 pl-24">
+              {Array.from({ length: 7 }, (_, i) => {
+                const d = new Date(); d.setDate(d.getDate() - (6 - i));
+                return <div key={i} className="flex-1 text-center text-[9px] text-t4 font-mono">{d.toLocaleDateString('pt-BR', { weekday: 'short' }).slice(0, 3)}</div>;
+              })}
+            </div>
+            {/* Member rows */}
+            {users.slice(0, 10).map(u => {
+              const cells = Array.from({ length: 7 }, (_, i) => {
+                const d = new Date(); d.setDate(d.getDate() - (6 - i));
+                const dateStr = d.toISOString().split('T')[0];
+                const fillKey = `ops_fill_${dateStr}_${u.id}`;
+                const fill = db.get<FillData>(fillKey);
+                const score = fill ? calcScore(fill) : 0;
+                // Intensity: 0=none, 1=low, 2=med, 3=high
+                const intensity = score === 0 ? 0 : score < 30 ? 1 : score < 70 ? 2 : 3;
+                const colors = ['bg-overlay', 'bg-vred/20', 'bg-vred/45', 'bg-vred'];
+                return (
+                  <div key={i} className="flex-1 px-0.5">
+                    <div className={`h-5 rounded-sm ${colors[intensity]} transition-colors`}
+                      title={`${u.name} · ${dateStr} · ${score} pts`} />
+                  </div>
+                );
+              });
+              return (
+                <div key={u.id} className="flex items-center gap-1 mb-1">
+                  <span className="w-24 text-[10px] text-t3 truncate shrink-0 font-mono">{u.name.split(' ')[0]}</span>
+                  {cells}
+                </div>
+              );
+            })}
+            {/* Legend */}
+            <div className="flex items-center gap-2 mt-2 pl-24">
+              <span className="text-[9px] text-t4">Menos</span>
+              {['bg-overlay', 'bg-vred/20', 'bg-vred/45', 'bg-vred'].map((c, i) => (
+                <div key={i} className={`w-4 h-4 rounded-sm ${c}`} />
+              ))}
+              <span className="text-[9px] text-t4">Mais</span>
+            </div>
           </div>
         </div>
       </div>
