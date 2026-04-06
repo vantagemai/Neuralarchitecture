@@ -10,7 +10,7 @@ interface PanelHeaderProps {
 export function PanelHeader({ title, onCollapse, collapsed, actions }: PanelHeaderProps) {
   return (
     <div
-      className="h-6 bg-elevated/40 border-b border-b1 px-2 flex items-center justify-between select-none shrink-0"
+      className="h-7 bg-elevated border-b border-b1 px-2 flex items-center justify-between select-none shrink-0"
       onDoubleClick={onCollapse}
     >
       <span className="text-[10px] font-medium text-t3 uppercase tracking-wider truncate">{title}</span>

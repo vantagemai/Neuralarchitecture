@@ -18,16 +18,16 @@ import { getStreak } from '../lib/streaks';
 import { getLevel } from '../lib/levels';
 import { getTotalXp } from '../lib/xp';
 
-// MT4-style chart colors
+// Clean monochrome chart colors
 function chartColors() {
   const dark = getTheme() === 'dark';
   return {
-    grid: dark ? 'rgba(100,116,139,.15)' : 'rgba(0,0,0,.07)',
-    tick: dark ? '#6B7A90' : '#64748B',
-    tooltipBg: dark ? '#1A2236' : '#FFFFFF',
-    tooltipBorder: dark ? '1px solid rgba(100,116,139,.25)' : '1px solid rgba(0,0,0,.1)',
-    tooltipLabel: dark ? '#94A3B8' : '#475569',
-    polarGrid: dark ? 'rgba(100,116,139,.15)' : 'rgba(0,0,0,.07)',
+    grid: dark ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.06)',
+    tick: dark ? '#737373' : '#8F8F8F',
+    tooltipBg: dark ? '#1F1F1F' : '#FFFFFF',
+    tooltipBorder: dark ? '1px solid rgba(255,255,255,.1)' : '1px solid rgba(0,0,0,.08)',
+    tooltipLabel: dark ? '#999' : '#6B6B6B',
+    polarGrid: dark ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.06)',
   };
 }
 
@@ -177,7 +177,7 @@ export function DashboardPage() {
                 contentStyle={{ background: cc.tooltipBg, border: cc.tooltipBorder, borderRadius: 0, fontSize: 11 }}
                 labelStyle={{ color: cc.tooltipLabel }}
               />
-              <Bar dataKey="score" fill="#F11013" radius={0} />
+              <Bar dataKey="score" fill="#D4634B" radius={0} />
             </BarChart>
           </ResponsiveContainer>
           ); })()}
@@ -199,7 +199,7 @@ export function DashboardPage() {
                 contentStyle={{ background: cc.tooltipBg, border: cc.tooltipBorder, borderRadius: 0, fontSize: 11 }}
                 formatter={(value: any) => ['$' + value, 'Comissão']}
               />
-              <Line type="monotone" dataKey="comissao" stroke="#00C864" strokeWidth={2} dot={{ fill: '#00C864', r: 3 }} />
+              <Line type="monotone" dataKey="comissao" stroke="#5A9E6F" strokeWidth={2} dot={{ fill: '#5A9E6F', r: 3 }} />
             </LineChart>
           </ResponsiveContainer>
           ); })()}
@@ -231,7 +231,7 @@ export function DashboardPage() {
                   <PolarGrid stroke={cc.polarGrid} />
                   <PolarAngleAxis dataKey="metric" tick={{ fontSize: 10, fill: cc.tick }} />
                   <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
-                  <Radar dataKey="value" stroke="#F11013" fill="#F11013" fillOpacity={0.2} strokeWidth={2} />
+                  <Radar dataKey="value" stroke="#D4634B" fill="#D4634B" fillOpacity={0.2} strokeWidth={2} />
                 </RadarChart>
               </ResponsiveContainer>
               ); })()}

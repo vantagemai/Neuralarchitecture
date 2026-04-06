@@ -1,94 +1,92 @@
 @import "tailwindcss";
 
 @theme {
-  --color-vred: #F11013;
-  --color-vred-dark: #C90D10;
-  --color-vgold: #FFD130;
-  --color-vgold-dark: #C8A400;
-  --color-vgreen: #00C864;
-  --color-vpurp: #9B7FE0;
-  --color-vpurp-light: #C4B2F0;
-  --color-vblue: #5B9AF5;
-  --color-canvas: #111827;
-  --color-surface: #1A2236;
-  --color-elevated: #222D44;
-  --color-overlay: #2A3752;
-  --color-muted: #364160;
-  --color-t1: #EDF2F7;
-  --color-t2: #94A3B8;
-  --color-t3: #6B7A90;
-  --color-t4: #4A5568;
-  --color-b1: rgba(100,116,139,.25);
-  --color-b2: rgba(100,116,139,.35);
-  --color-b3: rgba(100,116,139,.50);
-  --color-mt4-header: #1E293B;
-  --color-mt4-header-text: #94A3B8;
-  --color-mt4-grid: rgba(100,116,139,.15);
+  /* Accent — single warm tone, used sparingly */
+  --color-vred: #D4634B;
+  --color-vred-dark: #B84E3A;
+  --color-vgold: #C8963E;
+  --color-vgold-dark: #A67B2E;
+  --color-vgreen: #5A9E6F;
+  --color-vpurp: #8B7EC8;
+  --color-vpurp-light: #B0A6DC;
+  --color-vblue: #6B8FBF;
+
+  /* Canvas = white, surface = white, elevated = light gray */
+  --color-canvas: #FFFFFF;
+  --color-surface: #FFFFFF;
+  --color-elevated: #F5F5F4;
+  --color-overlay: #EBEBEA;
+  --color-muted: #D4D4D3;
+
+  /* Text: dark grays */
+  --color-t1: #1A1A1A;
+  --color-t2: #6B6B6B;
+  --color-t3: #8F8F8F;
+  --color-t4: #B3B3B3;
+
+  /* Borders: very subtle */
+  --color-b1: rgba(0,0,0,.08);
+  --color-b2: rgba(0,0,0,.12);
+  --color-b3: rgba(0,0,0,.18);
+
+  --color-mt4-header: #F5F5F4;
+  --color-mt4-header-text: #6B6B6B;
+  --color-mt4-grid: rgba(0,0,0,.06);
 }
 
 /* ==========================================
-   LIGHT THEME OVERRIDES
+   DARK THEME OVERRIDES
    ========================================== */
-html.light {
-  --color-canvas: #F1F5F9;
-  --color-surface: #FFFFFF;
-  --color-elevated: #F1F5F9;
-  --color-overlay: #E2E8F0;
-  --color-muted: #CBD5E1;
-  --color-t1: #0F172A;
-  --color-t2: #475569;
-  --color-t3: #64748B;
-  --color-t4: #94A3B8;
-  --color-b1: rgba(15,23,42,.08);
-  --color-b2: rgba(15,23,42,.12);
-  --color-b3: rgba(15,23,42,.20);
-  --color-mt4-header: #E2E8F0;
-  --color-mt4-header-text: #475569;
+html.dark {
+  --color-canvas: #191919;
+  --color-surface: #1F1F1F;
+  --color-elevated: #2A2A2A;
+  --color-overlay: #333333;
+  --color-muted: #444444;
+  --color-t1: #ECECEC;
+  --color-t2: #999999;
+  --color-t3: #737373;
+  --color-t4: #525252;
+  --color-b1: rgba(255,255,255,.08);
+  --color-b2: rgba(255,255,255,.12);
+  --color-b3: rgba(255,255,255,.20);
+  --color-mt4-header: #252525;
+  --color-mt4-header-text: #999999;
+  --color-mt4-grid: rgba(255,255,255,.06);
 }
 
-/* Light mode card tints */
-html.light .card-tint-red { background: #FFF5F5; border-color: rgba(241,16,19,.10); }
-html.light .card-tint-gold { background: #FFFBEB; border-color: rgba(255,209,48,.14); }
-html.light .card-tint-green { background: #F0FFF4; border-color: rgba(0,200,100,.10); }
-html.light .card-tint-blue { background: #F0F7FF; border-color: rgba(91,154,245,.10); }
-html.light .card-tint-purp { background: #F8F5FF; border-color: rgba(155,127,224,.10); }
+/* Card tints — very subtle */
+.card-tint-red { background: rgba(212,99,75,.04); border-color: rgba(212,99,75,.10); }
+.card-tint-gold { background: rgba(200,150,62,.04); border-color: rgba(200,150,62,.10); }
+.card-tint-green { background: rgba(90,158,111,.04); border-color: rgba(90,158,111,.10); }
+.card-tint-blue { background: rgba(107,143,191,.04); border-color: rgba(107,143,191,.10); }
+.card-tint-purp { background: rgba(139,126,200,.04); border-color: rgba(139,126,200,.10); }
 
 /* ==========================================
    TRADER TERMINAL EFFECTS
    ========================================== */
 
-/* Subtle text glow */
-.neon-red { text-shadow: 0 0 8px rgba(241,16,19,.2); }
-.neon-green { text-shadow: 0 0 8px rgba(0,200,100,.2); }
-.neon-gold { text-shadow: 0 0 8px rgba(255,209,48,.2); }
-.neon-purp { text-shadow: 0 0 8px rgba(155,127,224,.2); }
-.neon-blue { text-shadow: 0 0 8px rgba(91,154,245,.2); }
-html.light .neon-red, html.light .neon-green, html.light .neon-gold, html.light .neon-purp, html.light .neon-blue { text-shadow: none; }
+/* No glow — clean flat text */
+.neon-red, .neon-green, .neon-gold, .neon-purp, .neon-blue { text-shadow: none; }
 
-/* Terminal scanline subtle effect */
-.scanline {
-  background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,.01) 2px, rgba(255,255,255,.01) 4px);
-}
-
-/* Light mode shadow for cards */
-html.light .card-shadow { box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04); }
-
-/* Light scrollbar */
-html.light ::-webkit-scrollbar-thumb { background: #CDD0D8; }
+/* Subtle card shadow */
+.card-shadow { box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+html.dark .card-shadow { box-shadow: 0 1px 2px rgba(0,0,0,.2); }
 
 /* MT4: sharp corners everywhere */
 *, *::before, *::after { border-radius: 0 !important; }
 
 body {
   margin: 0;
-  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'SF Mono', monospace;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   font-size: 13px;
   background: var(--color-canvas);
   color: var(--color-t1);
   -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
 }
 
-.font-ui { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+.font-mono { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }

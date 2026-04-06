@@ -98,7 +98,7 @@ export function Toolbar({ userName, onLogout, onToggleSidebar, onAvatarChange }:
   };
 
   return (
-    <header className="h-9 bg-surface border-b border-b1 flex items-center justify-between px-3 shrink-0 z-30">
+    <header className="h-10 bg-surface border-b border-b1 flex items-center justify-between px-3 shrink-0 z-30">
       {/* Left: hamburger + logo + search */}
       <div className="flex items-center gap-2 flex-1">
         <button onClick={onToggleSidebar} className="lg:hidden p-1 text-t3 hover:text-t1" aria-label="Menu">

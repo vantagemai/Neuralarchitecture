@@ -12,12 +12,12 @@ interface KpiCardProps {
 }
 
 const COLORS = {
-  red:     { border: 'border-l-vred',   text: 'text-vred',   neon: 'neon-red',   icon: 'text-vred',   spark: '#F11013' },
-  green:   { border: 'border-l-vgreen', text: 'text-vgreen', neon: 'neon-green', icon: 'text-vgreen', spark: '#00C864' },
-  gold:    { border: 'border-l-vgold',  text: 'text-vgold',  neon: 'neon-gold',  icon: 'text-vgold',  spark: '#FFD130' },
-  purp:    { border: 'border-l-vpurp',  text: 'text-vpurp',  neon: 'neon-purp',  icon: 'text-vpurp',  spark: '#9B7FE0' },
-  blue:    { border: 'border-l-vblue',  text: 'text-vblue',  neon: 'neon-blue',  icon: 'text-vblue',  spark: '#5B9AF5' },
-  default: { border: 'border-l-b3',     text: 'text-t1',     neon: '',           icon: 'text-t2',     spark: '#6B6B76' },
+  red:     { border: 'border-l-vred',   text: 'text-vred',   neon: '',  icon: 'text-vred',   spark: '#D4634B' },
+  green:   { border: 'border-l-vgreen', text: 'text-vgreen', neon: '',  icon: 'text-vgreen', spark: '#5A9E6F' },
+  gold:    { border: 'border-l-vgold',  text: 'text-vgold',  neon: '',  icon: 'text-vgold',  spark: '#C8963E' },
+  purp:    { border: 'border-l-vpurp',  text: 'text-vpurp',  neon: '',  icon: 'text-vpurp',  spark: '#8B7EC8' },
+  blue:    { border: 'border-l-vblue',  text: 'text-vblue',  neon: '',  icon: 'text-vblue',  spark: '#6B8FBF' },
+  default: { border: 'border-l-b3',     text: 'text-t1',     neon: '',  icon: 'text-t2',     spark: '#8F8F8F' },
 };
 
 function Sparkline({ data, color, width = 80, height = 20 }: { data: number[]; color: string; width?: number; height?: number }) {
