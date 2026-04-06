@@ -7,7 +7,6 @@ import {
 import { getSession, getMonthSales, fmt$, db, getUsers, type FillData, calcScore, today } from '../../lib/store';
 import { Logo } from '../ui/Logo';
 import { PanelHeader } from '../ui/PanelHeader';
-import { ShoutoutFeed } from '../ops/ShoutoutFeed';
 
 type Role = 'all' | 'manager' | 'head';
 interface NavItem { to: string; icon: typeof LayoutDashboard; label: string; minRole?: Role }
@@ -99,6 +98,20 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
     const time = fill ? new Date(fill.ts).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '';
     return { id: u.id, name: u.name, filled: !!fill, score, time };
   }).sort((a, b) => b.score - a.score);
+
+  // Shoutouts
+  interface Shoutout { id: string; fromName: string; fromId: string; toName: string; toId: string; message: string; emoji: string; ts: number }
+  const shoutouts: Shoutout[] = db.list('ops_shoutout_')
+    .map(k => db.get<Shoutout>(k)).filter(Boolean)
+    .sort((a, b) => (b as Shoutout).ts - (a as Shoutout).ts) as Shoutout[];
+
+  const relTime = (ts: number) => {
+    const d = Math.floor((Date.now() - ts) / 60000);
+    if (d < 1) return 'agora';
+    if (d < 60) return `${d}m`;
+    if (d < 1440) return `${Math.floor(d / 60)}h`;
+    return `${Math.floor(d / 1440)}d`;
+  };
 
   const termTabs: { key: TermTab; label: string }[] = [
     { key: 'vendas', label: 'Vendas' },
@@ -202,8 +215,25 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
               )}
 
               {termTab === 'shoutouts' && (
-                <div className="p-2">
-                  <ShoutoutFeed />
+                <div>
+                  {shoutouts.length === 0 ? (
+                    <div className="text-center py-4 text-t4">Sem reconhecimentos</div>
+                  ) : (
+                    shoutouts.slice(0, 15).map((s, i) => (
+                      <div key={s.id} className={`flex items-center justify-between px-2 py-1 ${i % 2 === 0 ? '' : 'bg-elevated/20'} hover:bg-elevated/40 transition-colors`}>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-1 truncate">
+                            <span>{s.emoji}</span>
+                            <Link to={`/perfil/${s.fromId}`} className="hover:text-vred transition-colors font-medium truncate">{s.fromName.split(' ')[0]}</Link>
+                            <span className="text-t4">→</span>
+                            <Link to={`/perfil/${s.toId}`} className="hover:text-vred transition-colors text-vred truncate">{s.toName.split(' ')[0]}</Link>
+                          </div>
+                          <div className="text-[8px] text-t3 truncate">{s.message}</div>
+                        </div>
+                        <span className="text-[8px] text-t4 shrink-0 ml-1">{relTime(s.ts)}</span>
+                      </div>
+                    ))
+                  )}
                 </div>
               )}
 
