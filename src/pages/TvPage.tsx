@@ -174,8 +174,8 @@ export function TvPage() {
       {/* Header */}
       <div className="flex items-center justify-between px-2">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-vred flex items-center justify-center animate-pulse-glow">
-            <span className="text-white font-black text-2xl">V</span>
+          <div className="w-12 h-12 rounded-2xl bg-vred flex items-center justify-center animate-pulse-glow p-2">
+            <img src="/Neuralarchitecture/logo.svg" alt="V" className="w-full h-full" style={{ filter: 'brightness(0) invert(1)' }} />
           </div>
           <div>
             <h1 className="font-bold tracking-wide" style={{ fontSize: '28px' }}>

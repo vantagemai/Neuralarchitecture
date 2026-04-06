@@ -84,8 +84,8 @@ export function LoginPage({ onLogin }: LoginPageProps) {
       <div className="relative w-full max-w-md animate-in">
         {/* Logo */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-vred to-vred-dark mb-4 shadow-lg shadow-vred/25 animate-pulse-glow">
-            <span className="text-white font-black text-3xl">V</span>
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-vred to-vred-dark mb-4 shadow-lg shadow-vred/25 animate-pulse-glow p-3">
+            <img src="/Neuralarchitecture/logo.svg" alt="V" className="w-full h-full" style={{ filter: 'brightness(0) invert(1)' }} />
           </div>
           <h1 className="text-4xl font-bold tracking-wide">
             VANTAGEM<span className="text-vred">.ai</span>

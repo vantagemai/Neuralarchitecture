@@ -12,7 +12,7 @@ interface AppLayoutProps {
 }
 
 export function AppLayout({ userName, userRole, userAvatar, onLogout }: AppLayoutProps) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
 

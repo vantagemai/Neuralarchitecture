@@ -130,18 +130,21 @@ export function PremiacoesPage() {
   const MEDALS = ['🥇', '🥈', '🥉'];
 
   return (
-    <div className="space-y-6 animate-in">
-      <div>
-        <h1 className="text-2xl font-bold">Premiacoes</h1>
-        <p className="text-sm text-t3 mt-1">Quem esta mais perto de cada premio — aprove os vencedores</p>
+    <div className="space-y-5 animate-in">
+      <div className="flex items-center justify-between border-b border-b1 pb-3">
+        <div>
+          <h1 className="text-lg font-bold font-mono">PREMIACOES</h1>
+          <p className="text-[11px] text-t4 font-mono">Rankings ao vivo · Aprove vencedores</p>
+        </div>
+        <div className="text-[10px] font-mono text-t4">{new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }).toUpperCase()}</div>
       </div>
 
       {/* Month winners summary */}
       {monthWinners.length > 0 && (
-        <div className="bg-gradient-to-r from-vgold/10 to-surface border border-vgold/15 rounded-2xl p-5">
+        <div className="bg-surface border border-b1 border-l-[3px] border-l-vgold rounded-lg p-4">
           <div className="flex items-center gap-2 mb-3">
-            <Crown size={16} className="text-vgold" />
-            <span className="text-sm font-bold text-vgold uppercase tracking-wider">Vencedores do Mes</span>
+            <Crown size={14} className="text-vgold" />
+            <span className="text-[11px] font-bold text-vgold uppercase tracking-[0.12em] font-mono">Vencedores Aprovados</span>
           </div>
           <div className="flex gap-4 flex-wrap">
             {monthWinners.map(w => {
@@ -172,8 +175,8 @@ export function PremiacoesPage() {
           const winner = monthWinners.find(w => w.prizeId === prize.id);
 
           return (
-            <div key={prize.id} className={`rounded-2xl overflow-hidden border transition-shadow hover:shadow-lg ${
-              isApproved ? 'bg-surface border-vgreen/20' : 'bg-gradient-to-br from-vgold/5 to-surface border-vgold/15 hover:shadow-vgold/10'
+            <div key={prize.id} className={`rounded-lg overflow-hidden border transition-all hover:border-b2 ${
+              isApproved ? 'bg-surface border-vgreen/20 border-l-[3px] border-l-vgreen' : 'bg-surface border-b1 border-l-[3px] border-l-vgold'
             }`}>
               {/* Prize header */}
               <div className="px-5 py-4 border-b border-b1">
@@ -232,8 +235,8 @@ export function PremiacoesPage() {
                           <Avatar userId={person.id} name={person.name} size={isTop ? 'w-10 h-10' : 'w-8 h-8'} />
                           <div className="flex-1 min-w-0">
                             <span className={`text-sm font-semibold truncate block ${isTop ? 'text-vgold' : ''}`}>{person.name}</span>
-                            <div className="h-1.5 bg-overlay rounded-full overflow-hidden mt-1">
-                              <div className={`h-full rounded-full transition-all duration-700 ${isTop ? 'bg-gradient-to-r from-vgold-dark to-vgold' : 'bg-vgold/40'}`}
+                            <div className="h-2 bg-overlay rounded-sm overflow-hidden mt-1">
+                              <div className={`h-full rounded-sm transition-all duration-700 ${isTop ? 'bg-gradient-to-r from-vgold-dark to-vgold' : 'bg-vgold/40'}`}
                                 style={{ width: `${pct}%` }} />
                             </div>
                           </div>
@@ -248,7 +251,7 @@ export function PremiacoesPage() {
                     {isManager && top5[0] && prizeValue && (
                       <button
                         onClick={() => approveWinner(prize.id, top5[0].id, top5[0].name, top5[0].display)}
-                        className="w-full mt-2 flex items-center justify-center gap-2 bg-vgold/10 hover:bg-vgold/20 text-vgold border border-vgold/20 font-bold py-2.5 rounded-xl transition-colors text-sm"
+                        className="w-full mt-2 flex items-center justify-center gap-2 bg-transparent hover:bg-vgold/10 text-vgold border border-vgold/30 font-bold font-mono py-2 rounded-lg transition-colors text-xs uppercase tracking-wider"
                       >
                         <Trophy size={14} /> Aprovar {top5[0].name} como vencedor
                       </button>

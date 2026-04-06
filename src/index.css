@@ -18,9 +18,9 @@
   --color-t2: #A8A8B0;
   --color-t3: #6B6B76;
   --color-t4: #44444E;
-  --color-b1: rgba(255,255,255,.06);
-  --color-b2: rgba(255,255,255,.10);
-  --color-b3: rgba(255,255,255,.18);
+  --color-b1: rgba(255,255,255,.10);
+  --color-b2: rgba(255,255,255,.14);
+  --color-b3: rgba(255,255,255,.22);
 }
 
 /* ==========================================
@@ -36,9 +36,9 @@ html.light {
   --color-t2: #4A4A55;
   --color-t3: #7A7A88;
   --color-t4: #A0A0AC;
-  --color-b1: rgba(0,0,0,.07);
-  --color-b2: rgba(0,0,0,.11);
-  --color-b3: rgba(0,0,0,.18);
+  --color-b1: rgba(0,0,0,.10);
+  --color-b2: rgba(0,0,0,.14);
+  --color-b3: rgba(0,0,0,.22);
 }
 
 /* Light mode card tints */
@@ -47,6 +47,23 @@ html.light .card-tint-gold { background: #FFFBEB; border-color: rgba(255,209,48,
 html.light .card-tint-green { background: #F0FFF4; border-color: rgba(0,200,100,.10); }
 html.light .card-tint-blue { background: #F0F7FF; border-color: rgba(91,154,245,.10); }
 html.light .card-tint-purp { background: #F8F5FF; border-color: rgba(155,127,224,.10); }
+
+/* ==========================================
+   TRADER TERMINAL EFFECTS
+   ========================================== */
+
+/* Neon text glow */
+.neon-red { text-shadow: 0 0 10px rgba(241,16,19,.35), 0 0 30px rgba(241,16,19,.1); }
+.neon-green { text-shadow: 0 0 10px rgba(0,200,100,.35), 0 0 30px rgba(0,200,100,.1); }
+.neon-gold { text-shadow: 0 0 10px rgba(255,209,48,.35), 0 0 30px rgba(255,209,48,.1); }
+.neon-purp { text-shadow: 0 0 10px rgba(155,127,224,.35), 0 0 30px rgba(155,127,224,.1); }
+.neon-blue { text-shadow: 0 0 10px rgba(91,154,245,.35), 0 0 30px rgba(91,154,245,.1); }
+html.light .neon-red, html.light .neon-green, html.light .neon-gold, html.light .neon-purp, html.light .neon-blue { text-shadow: none; }
+
+/* Terminal scanline subtle effect */
+.scanline {
+  background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,.01) 2px, rgba(255,255,255,.01) 4px);
+}
 
 /* Light mode shadow for cards */
 html.light .card-shadow { box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04); }

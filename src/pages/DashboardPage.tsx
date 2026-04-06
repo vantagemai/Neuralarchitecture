@@ -3,7 +3,7 @@ import { KpiCard } from '../components/ui/KpiCard';
 import { Badge } from '../components/ui/Badge';
 import {
   DollarSign, Users, Target, TrendingUp,
-  AlertTriangle, CheckCircle2, Clock, Activity, Flame
+  AlertTriangle, CheckCircle2, Clock, Activity
 } from 'lucide-react';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { getUsers, getTodayFills, getMonthSales, calcScore, db, today, fmt$, CHANNELS, type FillData, getSession } from '../lib/store';
@@ -116,37 +116,35 @@ export function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      {/* Hero header */}
-      <div className="bg-gradient-to-r from-vred/8 via-surface to-surface border border-b1 rounded-2xl px-6 py-5">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            {(() => {
-              const avatar = localStorage.getItem(`vantagem_avatar_${session?.id || ''}`);
-              const initials = (session?.name || 'U').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-              return avatar ? (
-                <img src={avatar} alt="" className="w-14 h-14 rounded-2xl object-cover border-2 border-vred/20" />
-              ) : (
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-lg font-bold">{initials}</div>
-              );
-            })()}
-            <div>
-              <h1 className="text-2xl font-bold">{greeting}, {session?.name?.split(' ')[0] || 'Usuario'}</h1>
-              <div className="flex items-center gap-3 mt-1">
-                <span className={`text-xs font-bold ${myLevel.color}`}>{myLevel.icon} {myLevel.name}</span>
-                <span className="text-xs font-mono text-vgold">{myXp.toLocaleString()} XP</span>
-                {myStreak.current > 0 && <span className="text-xs text-orange-400 flex items-center gap-0.5"><Flame size={11} />{myStreak.current}d</span>}
-              </div>
+      {/* Terminal header bar */}
+      <div className="flex items-center justify-between border-b border-b1 pb-3">
+        <div className="flex items-center gap-3">
+          {(() => {
+            const avatar = localStorage.getItem(`vantagem_avatar_${session?.id || ''}`);
+            const initials = (session?.name || 'U').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+            return avatar ? (
+              <img src={avatar} alt="" className="w-10 h-10 rounded-lg object-cover border border-b1" />
+            ) : (
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-sm font-bold">{initials}</div>
+            );
+          })()}
+          <div>
+            <h1 className="text-lg font-bold font-mono">{greeting}, {session?.name?.split(' ')[0] || 'User'}</h1>
+            <div className="flex items-center gap-3">
+              <span className={`text-[10px] font-bold font-mono ${myLevel.color}`}>{myLevel.icon} {myLevel.name}</span>
+              <span className="text-[10px] font-mono text-vgold neon-gold">{myXp.toLocaleString()} XP</span>
+              {myStreak.current > 0 && <span className="text-[10px] font-mono text-orange-400">🔥{myStreak.current}d</span>}
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-t3 font-mono hidden sm:block">
-              {now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
-            </span>
-            <span className="flex items-center gap-1.5 text-xs text-vgreen bg-vgreen/8 px-2.5 py-1 rounded-full">
-              <span className="w-1.5 h-1.5 rounded-full bg-vgreen animate-pulse" />
-              Ao vivo
-            </span>
-          </div>
+        </div>
+        <div className="flex items-center gap-4">
+          <span className="text-[11px] text-t3 font-mono hidden sm:block">
+            {now.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' })}
+          </span>
+          <span className="flex items-center gap-1.5 text-[10px] text-vgreen font-mono">
+            <span className="relative w-2 h-2"><span className="absolute inset-0 rounded-full bg-vgreen animate-pulse" /><span className="absolute inset-0 rounded-full tv-live-ring text-vgreen" /></span>
+            LIVE
+          </span>
         </div>
       </div>
 
@@ -167,7 +165,7 @@ export function DashboardPage() {
             <h2 className="text-sm font-bold">Atividade — Últimos 7 dias</h2>
           </div>
           {(() => { const cc = chartColors(); return (
-          <ResponsiveContainer width="100%" height={180}>
+          <ResponsiveContainer width="100%" height={220}>
             <BarChart data={activityTrend}>
               <CartesianGrid strokeDasharray="3 3" stroke={cc.grid} />
               <XAxis dataKey="label" tick={{ fontSize: 10, fill: cc.tick }} />
@@ -176,7 +174,7 @@ export function DashboardPage() {
                 contentStyle={{ background: cc.tooltipBg, border: cc.tooltipBorder, borderRadius: 8, fontSize: 12 }}
                 labelStyle={{ color: cc.tooltipLabel }}
               />
-              <Bar dataKey="score" fill="#F11013" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="score" fill="#F11013" radius={[2, 2, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
           ); })()}
@@ -189,7 +187,7 @@ export function DashboardPage() {
             <h2 className="text-sm font-bold">Comissões — Últimos 7 dias</h2>
           </div>
           {(() => { const cc = chartColors(); return (
-          <ResponsiveContainer width="100%" height={180}>
+          <ResponsiveContainer width="100%" height={220}>
             <LineChart data={salesTrend}>
               <CartesianGrid strokeDasharray="3 3" stroke={cc.grid} />
               <XAxis dataKey="label" tick={{ fontSize: 10, fill: cc.tick }} />
@@ -225,7 +223,7 @@ export function DashboardPage() {
                 <span className="font-mono text-2xl font-bold text-vred">{sc.overall}<span className="text-xs text-t4">/100</span></span>
               </div>
               {(() => { const cc = chartColors(); return (
-              <ResponsiveContainer width="100%" height={180}>
+              <ResponsiveContainer width="100%" height={220}>
                 <RadarChart data={radarData}>
                   <PolarGrid stroke={cc.polarGrid} />
                   <PolarAngleAxis dataKey="metric" tick={{ fontSize: 10, fill: cc.tick }} />
@@ -285,7 +283,7 @@ export function DashboardPage() {
           ) : (
             <div className="divide-y divide-b1">
               {teamData.map((member, i) => (
-                <div key={member.name} className="flex items-center gap-4 px-5 py-3.5 hover:bg-elevated/50 transition-colors">
+                <div key={member.name} className="flex items-center gap-3 px-4 py-2.5 hover:bg-elevated/50 transition-colors">
                   <span className="w-7 text-center text-lg">
                     {i < 3 ? MEDALS[i] : <span className="text-xs text-t4 font-mono">#{i + 1}</span>}
                   </span>

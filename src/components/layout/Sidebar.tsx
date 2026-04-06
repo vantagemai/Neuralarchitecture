@@ -56,15 +56,13 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
     <>
       {/* Logo */}
       <div className="flex items-center gap-3 px-4 h-16 border-b border-b1 shrink-0">
-        <div className="w-8 h-8 rounded-lg bg-vred flex items-center justify-center shrink-0">
-          <span className="text-white font-black text-sm">V</span>
-        </div>
+        <img src="/Neuralarchitecture/logo.svg" alt="V" className="w-8 h-8 shrink-0 text-t1" style={{ filter: 'brightness(0) invert(1)' }} />
         {!collapsed && (
           <div className="animate-slide">
             <div className="font-bold text-[15px] tracking-wide text-t1">
               VANTAGEM<span className="text-vred">.ai</span>
             </div>
-            <div className="text-[9px] text-t4 tracking-[0.15em] uppercase">OPS Sistema</div>
+            <div className="text-[9px] text-t4 tracking-[0.15em] uppercase font-mono">OPS TERMINAL</div>
           </div>
         )}
         {/* Mobile close */}

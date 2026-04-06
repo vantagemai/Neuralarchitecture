@@ -11,45 +11,39 @@ interface KpiCardProps {
 }
 
 const COLORS = {
-  red:     { bg: 'bg-gradient-to-br from-vred/10 to-vred/5',  border: 'border-vred/15',  text: 'text-vred',   icon: 'bg-vred/12 text-vred' },
-  green:   { bg: 'bg-gradient-to-br from-vgreen/10 to-vgreen/5', border: 'border-vgreen/15', text: 'text-vgreen', icon: 'bg-vgreen/12 text-vgreen' },
-  gold:    { bg: 'bg-gradient-to-br from-vgold/10 to-vgold/5',  border: 'border-vgold/15',  text: 'text-vgold',  icon: 'bg-vgold/12 text-vgold' },
-  purp:    { bg: 'bg-gradient-to-br from-vpurp/10 to-vpurp/5',  border: 'border-vpurp/15',  text: 'text-vpurp',  icon: 'bg-vpurp/12 text-vpurp' },
-  blue:    { bg: 'bg-gradient-to-br from-vblue/10 to-vblue/5',  border: 'border-vblue/15',  text: 'text-vblue',  icon: 'bg-vblue/12 text-vblue' },
-  default: { bg: 'bg-surface',  border: 'border-b1',        text: 'text-t1',     icon: 'bg-elevated text-t2' },
+  red:     { border: 'border-l-vred',   text: 'text-vred',   neon: 'neon-red',   icon: 'text-vred' },
+  green:   { border: 'border-l-vgreen', text: 'text-vgreen', neon: 'neon-green', icon: 'text-vgreen' },
+  gold:    { border: 'border-l-vgold',  text: 'text-vgold',  neon: 'neon-gold',  icon: 'text-vgold' },
+  purp:    { border: 'border-l-vpurp',  text: 'text-vpurp',  neon: 'neon-purp',  icon: 'text-vpurp' },
+  blue:    { border: 'border-l-vblue',  text: 'text-vblue',  neon: 'neon-blue',  icon: 'text-vblue' },
+  default: { border: 'border-l-b3',     text: 'text-t1',     neon: '',           icon: 'text-t2' },
 };
 
-export function KpiCard({ label, value, icon: Icon, trend, trendLabel, color = 'default', highlight }: KpiCardProps) {
+export function KpiCard({ label, value, icon: Icon, trend, trendLabel, color = 'default' }: KpiCardProps) {
   const c = COLORS[color];
   const isUp = trend && trend > 0;
 
   return (
-    <div className={`rounded-xl border p-5 transition-all duration-200 hover:border-b3 hover:-translate-y-0.5 card-shadow ${
-      highlight ? `${c.bg} ${c.border}` : `bg-surface ${c.border}`
-    }`}>
-      <div className="flex items-start justify-between mb-3">
-        <span className="text-[11px] font-medium text-t3 uppercase tracking-wider">{label}</span>
-        {Icon && (
-          <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${c.icon}`}>
-            <Icon size={16} />
-          </div>
-        )}
+    <div className={`bg-surface border border-b1 border-l-[3px] ${c.border} rounded-lg p-4 transition-all duration-200 hover:border-b2 card-shadow`}>
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-[10px] font-semibold text-t4 uppercase tracking-[0.12em]">{label}</span>
+        {Icon && <Icon size={15} className={`${c.icon} opacity-60`} />}
       </div>
-      <div className={`text-2xl font-bold font-mono tracking-tight ${c.text}`}>
+      <div className={`text-2xl font-bold font-mono tracking-tight ${c.text} ${c.neon}`}>
         {value}
       </div>
       {(trend !== undefined || trendLabel) && (
-        <div className="flex items-center gap-1.5 mt-2">
+        <div className="flex items-center gap-1.5 mt-1.5">
           {trend !== undefined && (
-            <span className={`flex items-center gap-0.5 text-xs font-semibold ${
+            <span className={`flex items-center gap-0.5 text-[11px] font-bold font-mono ${
               isUp ? 'text-vgreen' : 'text-vred'
             }`}>
-              {isUp ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+              {isUp ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
               {Math.abs(trend)}%
             </span>
           )}
           {trendLabel && (
-            <span className="text-[11px] text-t4">{trendLabel}</span>
+            <span className="text-[10px] text-t4">{trendLabel}</span>
           )}
         </div>
       )}

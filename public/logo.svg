@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 180" fill="none">
+  <!-- Left ear -->
+  <polygon points="15,55 75,20 80,75" fill="currentColor"/>
+  <!-- Right ear -->
+  <polygon points="185,55 125,20 120,75" fill="currentColor"/>
+  <!-- Head/body -->
+  <polygon points="10,65 100,75 190,65 190,100 150,105 100,170 50,105 10,100" fill="currentColor" opacity="0.85"/>
+  <!-- V shape inner -->
+  <polygon points="50,80 100,155 150,80 130,80 100,130 70,80" fill="black" opacity="0.15"/>
+</svg>
