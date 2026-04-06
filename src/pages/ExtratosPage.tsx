@@ -35,7 +35,7 @@ export function ExtratosPage() {
   const filtered = uid === 'all' ? sorted : sorted.filter(r => r.name === uid);
 
   return (
-    <div className="space-y-6 animate-in">
+    <div className="space-y-4 animate-in">
       <div>
         <h1 className="text-2xl font-bold">Extratos</h1>
         <p className="text-sm text-t3 mt-1">Comissões detalhadas por membro</p>

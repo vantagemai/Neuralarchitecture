@@ -92,7 +92,7 @@ export function TimePage() {
   };
 
   return (
-    <div className="space-y-6 animate-in">
+    <div className="space-y-4 animate-in">
       <div>
         <h1 className="text-2xl font-bold">Time</h1>
         <p className="text-sm text-t3 mt-1">Gerencie os colaboradores do sistema</p>

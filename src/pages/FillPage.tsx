@@ -100,17 +100,17 @@ export function FillPage() {
     : null;
 
   return (
-    <div className="space-y-6 animate-in">
+    <div className="space-y-4 animate-in">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Fill Diário</h1>
+          <h1 className="text-lg font-bold">Fill Diário</h1>
           <p className="text-sm text-t3 mt-1">Registre sua atividade de prospecção por canal</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="text-right">
             <div className="text-xs text-t4 uppercase tracking-wider">Score</div>
-            <div className="text-2xl font-bold font-mono text-vred">{score} pts</div>
+            <div className="text-lg font-bold font-mono text-vred">{score} pts</div>
           </div>
         </div>
       </div>

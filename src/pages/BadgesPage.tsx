@@ -23,10 +23,10 @@ export function BadgesPage() {
   ];
 
   return (
-    <div className="space-y-6 animate-in">
+    <div className="space-y-4 animate-in">
       {/* Header stats */}
       <div>
-        <h1 className="text-2xl font-bold">Conquistas</h1>
+        <h1 className="text-lg font-bold">Conquistas</h1>
         <p className="text-sm text-t3 mt-1">Seus badges, XP e progresso</p>
       </div>
 
@@ -37,15 +37,15 @@ export function BadgesPage() {
           <div className="text-[10px] text-t4 uppercase">Level {level.rank}</div>
         </div>
         <div className="bg-surface border border-b1 rounded-lg p-4 text-center">
-          <div className="font-mono text-2xl font-bold text-vgold">{xp.toLocaleString()}</div>
+          <div className="font-mono text-lg font-bold text-vgold">{xp.toLocaleString()}</div>
           <div className="text-[10px] text-t4 uppercase">XP Total</div>
         </div>
         <div className="bg-surface border border-b1 rounded-lg p-4 text-center">
-          <div className="font-mono text-2xl font-bold text-orange-400">{streak.current}d</div>
+          <div className="font-mono text-lg font-bold text-orange-400">{streak.current}d</div>
           <div className="text-[10px] text-t4 uppercase">Streak Atual</div>
         </div>
         <div className="bg-surface border border-b1 rounded-lg p-4 text-center">
-          <div className="font-mono text-2xl font-bold text-vpurp">{unlocked.length}/{ACHIEVEMENTS.length}</div>
+          <div className="font-mono text-lg font-bold text-vpurp">{unlocked.length}/{ACHIEVEMENTS.length}</div>
           <div className="text-[10px] text-t4 uppercase">Badges</div>
         </div>
       </div>

@@ -127,7 +127,7 @@ export function VendasPage() {
     isManager || sale.sellerId === session.id || sale.sellerName === session.name;
 
   return (
-    <div className="space-y-6 animate-in" key={refreshKey}>
+    <div className="space-y-4 animate-in" key={refreshKey}>
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Vendas</h1>

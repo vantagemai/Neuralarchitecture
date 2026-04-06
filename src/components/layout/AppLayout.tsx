@@ -39,7 +39,7 @@ export function AppLayout({ userName, onLogout }: AppLayoutProps) {
         />
         <div className="flex-1 flex flex-col overflow-hidden">
           <div className="flex flex-1 overflow-hidden">
-            <main className="flex-1 overflow-y-auto bg-canvas p-3 sm:p-4">
+            <main className="flex-1 overflow-y-auto bg-canvas p-2 sm:p-3">
               <Outlet />
             </main>
             {isDashboard && <RightSidebar />}

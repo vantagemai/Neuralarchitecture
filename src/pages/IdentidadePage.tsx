@@ -74,9 +74,9 @@ export function IdentidadePage() {
 
   if (editing || !profile) {
     return (
-      <div className="max-w-2xl space-y-6 animate-in">
+      <div className="max-w-2xl space-y-4 animate-in">
         <div>
-          <h1 className="text-2xl font-bold">🔥 Sua Nova Identidade</h1>
+          <h1 className="text-lg font-bold">🔥 Sua Nova Identidade</h1>
           <p className="text-sm text-t3 mt-1">Configure sua visão de 180 dias</p>
         </div>
 
@@ -153,7 +153,7 @@ export function IdentidadePage() {
   const fp = profile.metaM > 0 ? Math.min(100, Math.round((revenue / profile.metaM) * 100)) : 0;
 
   return (
-    <div className="space-y-6 animate-in">
+    <div className="space-y-4 animate-in">
       {/* Hero */}
       <div className="relative bg-gradient-to-br from-vred/15 via-canvas to-canvas border border-vred/15 rounded-lg overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-canvas via-transparent to-transparent" />

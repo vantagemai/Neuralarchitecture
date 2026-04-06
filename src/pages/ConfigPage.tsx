@@ -44,7 +44,7 @@ export function ConfigPage() {
   };
 
   return (
-    <div className="space-y-6 animate-in max-w-4xl">
+    <div className="space-y-4 animate-in max-w-4xl">
       <div>
         <h1 className="text-2xl font-bold">Configurações</h1>
         <p className="text-sm text-t3 mt-1">PINs, comissões e premiações</p>
