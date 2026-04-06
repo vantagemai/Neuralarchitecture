@@ -117,7 +117,7 @@ export function FillPage() {
 
       {/* Status banner */}
       {saved && filledTime && (
-        <div className="flex items-center gap-3 bg-vgreen/8 border border-vgreen/20 rounded-xl px-5 py-3">
+        <div className="flex items-center gap-3 bg-vgreen/8 border border-vgreen/20 rounded-lg px-5 py-3">
           <CheckCircle2 size={18} className="text-vgreen" />
           <span className="text-sm text-vgreen font-medium">
             Preenchido hoje às {filledTime} — score: {existingFill?.score} pts
@@ -131,7 +131,7 @@ export function FillPage() {
         const streak = getStreak();
         return (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="bg-surface border border-b1 rounded-xl p-3">
+            <div className="bg-surface border border-b1 rounded-lg p-3">
               <div className="flex items-center gap-1.5 mb-1">
                 <Target size={12} className="text-vred" />
                 <span className="text-[10px] text-t3 uppercase font-bold">Contatos</span>
@@ -144,7 +144,7 @@ export function FillPage() {
                 <div className={`h-full rounded-full transition-all ${gp.dailyContacts.pct >= 100 ? 'bg-vgreen' : 'bg-vred'}`} style={{ width: `${Math.min(100, Math.round((score / gp.dailyContacts.target) * 100))}%` }} />
               </div>
             </div>
-            <div className="bg-surface border border-b1 rounded-xl p-3">
+            <div className="bg-surface border border-b1 rounded-lg p-3">
               <div className="flex items-center gap-1.5 mb-1">
                 <Target size={12} className="text-vpurp" />
                 <span className="text-[10px] text-t3 uppercase font-bold">Score</span>
@@ -157,7 +157,7 @@ export function FillPage() {
                 <div className={`h-full rounded-full transition-all ${gp.dailyScore.pct >= 100 ? 'bg-vgreen' : 'bg-vpurp'}`} style={{ width: `${Math.min(100, Math.round((score / gp.dailyScore.target) * 100))}%` }} />
               </div>
             </div>
-            <div className="bg-surface border border-b1 rounded-xl p-3">
+            <div className="bg-surface border border-b1 rounded-lg p-3">
               <div className="flex items-center gap-1.5 mb-1">
                 <Flame size={12} className="text-orange-400" />
                 <span className="text-[10px] text-t3 uppercase font-bold">Streak</span>
@@ -167,7 +167,7 @@ export function FillPage() {
               </div>
               <div className="text-[10px] text-t4 mt-0.5">Recorde: {streak.best}d</div>
             </div>
-            <div className="bg-surface border border-b1 rounded-xl p-3">
+            <div className="bg-surface border border-b1 rounded-lg p-3">
               <div className="flex items-center gap-1.5 mb-1">
                 <Target size={12} className="text-vgreen" />
                 <span className="text-[10px] text-t3 uppercase font-bold">Vendas Mes</span>
@@ -189,7 +189,7 @@ export function FillPage() {
         {CHANNELS.map(ch => (
           <div
             key={ch.id}
-            className="bg-surface border border-b1 rounded-xl p-5 hover:border-b3 transition-colors focus-within:border-vred/30"
+            className="bg-surface border border-b1 rounded-lg p-5 hover:border-b3 transition-colors focus-within:border-vred/30"
           >
             <div className="flex items-center gap-3 mb-4">
               <span className="text-2xl">{ch.icon}</span>
@@ -232,12 +232,12 @@ export function FillPage() {
           value={obs}
           onChange={e => setObs(e.target.value)}
           placeholder="Ex: leads frios na região X, WhatsApp bloqueado..."
-          className="mt-2 w-full bg-surface border border-b1 rounded-xl px-4 py-3 text-sm text-t2 placeholder:text-t4 outline-none focus:border-vred/40 transition-colors min-h-[80px] resize-none"
+          className="mt-2 w-full bg-surface border border-b1 rounded-lg px-4 py-3 text-sm text-t2 placeholder:text-t4 outline-none focus:border-vred/40 transition-colors min-h-[80px] resize-none"
         />
       </div>
 
       {/* Submit */}
-      <div className="flex items-center justify-between bg-surface border border-b1 rounded-xl px-6 py-4">
+      <div className="flex items-center justify-between bg-surface border border-b1 rounded-lg px-6 py-4">
         <div className="flex items-center gap-4">
           <span className="text-sm text-t3">Score estimado:</span>
           <span className="font-mono font-bold text-xl text-vred">{score} pts</span>

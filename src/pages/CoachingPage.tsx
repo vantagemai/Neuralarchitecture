@@ -72,7 +72,7 @@ export function CoachingPage() {
               <button
                 key={u.id}
                 onClick={() => setSelectedId(u.id)}
-                className={`w-full flex items-center gap-3 bg-surface border rounded-xl px-4 py-3 text-left transition-colors ${
+                className={`w-full flex items-center gap-3 bg-surface border rounded-lg px-4 py-3 text-left transition-colors ${
                   selectedId === u.id ? 'border-vred/30 bg-vred/5' : 'border-b1 hover:border-b3'
                 }`}
               >
@@ -100,14 +100,14 @@ export function CoachingPage() {
         {/* Coaching form + history */}
         <div className="lg:col-span-2 space-y-4">
           {!selected ? (
-            <div className="text-center py-16 bg-surface border border-b1 rounded-xl">
+            <div className="text-center py-16 bg-surface border border-b1 rounded-lg">
               <MessageSquare size={32} className="mx-auto mb-3 text-t4 opacity-30" />
               <p className="text-sm text-t3">Selecione um membro para registrar coaching</p>
             </div>
           ) : (
             <>
               {/* New note form */}
-              <div className="bg-surface border border-b1 rounded-xl p-5">
+              <div className="bg-surface border border-b1 rounded-lg p-5">
                 <h3 className="font-bold text-sm mb-4">Nova nota para {selected.name}</h3>
 
                 {/* Rating */}
@@ -146,13 +146,13 @@ export function CoachingPage() {
               <div>
                 <h3 className="font-bold text-sm mb-3">Historico ({history.length})</h3>
                 {history.length === 0 ? (
-                  <div className="text-center py-8 bg-surface border border-b1 rounded-xl text-t4 text-sm">
+                  <div className="text-center py-8 bg-surface border border-b1 rounded-lg text-t4 text-sm">
                     Primeira sessao de coaching
                   </div>
                 ) : (
                   <div className="space-y-2">
                     {history.map(n => (
-                      <div key={n.id} className="bg-surface border border-b1 rounded-xl">
+                      <div key={n.id} className="bg-surface border border-b1 rounded-lg">
                         <button
                           onClick={() => setExpanded(expanded === n.id ? null : n.id)}
                           className="w-full flex items-center justify-between px-5 py-3 text-left"

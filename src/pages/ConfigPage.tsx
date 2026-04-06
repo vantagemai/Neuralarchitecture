@@ -56,7 +56,7 @@ export function ConfigPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* PIN */}
-        <div className="bg-surface border border-b1 rounded-xl p-6">
+        <div className="bg-surface border border-b1 rounded-lg p-6">
           <div className="flex items-center gap-2 mb-5">
             <Shield size={18} className="text-vred" />
             <h2 className="text-[15px] font-bold">Acesso Head</h2>
@@ -72,7 +72,7 @@ export function ConfigPage() {
         </div>
 
         {/* Commissions */}
-        <div className="bg-surface border border-b1 rounded-xl p-6">
+        <div className="bg-surface border border-b1 rounded-lg p-6">
           <h2 className="text-[15px] font-bold mb-5">💰 Tabela de Comissões</h2>
           <div className="space-y-3">
             {PLANS.map(p => (
@@ -91,7 +91,7 @@ export function ConfigPage() {
       </div>
 
       {/* Cloud Sync */}
-      <div className="bg-surface border border-b1 rounded-xl p-6">
+      <div className="bg-surface border border-b1 rounded-lg p-6">
         <div className="flex items-center gap-2 mb-4">
           {isOnline() ? <Cloud size={18} className="text-vgreen" /> : <CloudOff size={18} className="text-t4" />}
           <h2 className="text-[15px] font-bold">Supabase Cloud</h2>
@@ -129,7 +129,7 @@ export function ConfigPage() {
       </div>
 
       {/* Demo Seed */}
-      <div className="bg-surface border border-b1 rounded-xl p-6">
+      <div className="bg-surface border border-b1 rounded-lg p-6">
         <div className="flex items-center gap-2 mb-4">
           <Users size={18} className="text-vpurp" />
           <h2 className="text-[15px] font-bold">Dados Demo</h2>
@@ -151,7 +151,7 @@ export function ConfigPage() {
       </div>
 
       {/* Sound Effects */}
-      <div className="bg-surface border border-b1 rounded-xl p-6">
+      <div className="bg-surface border border-b1 rounded-lg p-6">
         <div className="flex items-center gap-2 mb-4">
           <Volume2 size={18} className="text-vblue" />
           <h2 className="text-[15px] font-bold">Som</h2>
@@ -176,7 +176,7 @@ export function ConfigPage() {
       </div>
 
       {/* Prizes */}
-      <div className="bg-surface border border-b1 rounded-xl p-6">
+      <div className="bg-surface border border-b1 rounded-lg p-6">
         <div className="flex items-center gap-2 mb-5">
           <Trophy size={18} className="text-vgold" />
           <h2 className="text-[15px] font-bold">Premiações</h2>

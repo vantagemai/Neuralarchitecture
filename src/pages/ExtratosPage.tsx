@@ -67,7 +67,7 @@ export function ExtratosPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-surface border border-b1 rounded-xl overflow-hidden">
+      <div className="bg-surface border border-b1 rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>

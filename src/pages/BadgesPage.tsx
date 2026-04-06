@@ -31,20 +31,20 @@ export function BadgesPage() {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-surface border border-b1 rounded-xl p-4 text-center">
+        <div className="bg-surface border border-b1 rounded-lg p-4 text-center">
           <div className="text-2xl mb-1">{level.icon}</div>
           <div className={`text-lg font-bold ${level.color}`}>{level.name}</div>
           <div className="text-[10px] text-t4 uppercase">Level {level.rank}</div>
         </div>
-        <div className="bg-surface border border-b1 rounded-xl p-4 text-center">
+        <div className="bg-surface border border-b1 rounded-lg p-4 text-center">
           <div className="font-mono text-2xl font-bold text-vgold">{xp.toLocaleString()}</div>
           <div className="text-[10px] text-t4 uppercase">XP Total</div>
         </div>
-        <div className="bg-surface border border-b1 rounded-xl p-4 text-center">
+        <div className="bg-surface border border-b1 rounded-lg p-4 text-center">
           <div className="font-mono text-2xl font-bold text-orange-400">{streak.current}d</div>
           <div className="text-[10px] text-t4 uppercase">Streak Atual</div>
         </div>
-        <div className="bg-surface border border-b1 rounded-xl p-4 text-center">
+        <div className="bg-surface border border-b1 rounded-lg p-4 text-center">
           <div className="font-mono text-2xl font-bold text-vpurp">{unlocked.length}/{ACHIEVEMENTS.length}</div>
           <div className="text-[10px] text-t4 uppercase">Badges</div>
         </div>
@@ -52,7 +52,7 @@ export function BadgesPage() {
 
       {/* Level progress */}
       {next && (
-        <div className="bg-surface border border-b1 rounded-xl p-5">
+        <div className="bg-surface border border-b1 rounded-lg p-5">
           <div className="flex justify-between items-center mb-2">
             <div className="flex items-center gap-2">
               <span>{level.icon}</span>
@@ -63,7 +63,7 @@ export function BadgesPage() {
             </div>
             <span className="text-xs text-t3 font-mono">{xpNeeded.toLocaleString()} XP restam</span>
           </div>
-          <div className="h-2 bg-overlay rounded-full overflow-hidden">
+          <div className="h-2 bg-overlay rounded-sm overflow-hidden">
             <div className="h-full bg-gradient-to-r from-vred to-vgold rounded-full transition-all duration-1000" style={{ width: `${progress}%` }} />
           </div>
         </div>
@@ -84,7 +84,7 @@ export function BadgesPage() {
                 return (
                   <div
                     key={ach.id}
-                    className={`bg-surface border rounded-xl p-4 flex items-center gap-4 transition-all ${
+                    className={`bg-surface border rounded-lg p-4 flex items-center gap-4 transition-all ${
                       earned ? 'border-vpurp/30 bg-vpurp/5' : 'border-b1 opacity-50 grayscale'
                     }`}
                   >

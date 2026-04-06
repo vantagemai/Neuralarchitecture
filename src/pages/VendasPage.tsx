@@ -149,7 +149,7 @@ export function VendasPage() {
 
       {/* Sale form */}
       {showForm && (
-        <div className="bg-surface border border-b1 rounded-xl p-6 animate-in">
+        <div className="bg-surface border border-b1 rounded-lg p-6 animate-in">
           <h3 className="font-bold mb-4">{editingId ? 'Editar Venda' : 'Registrar Nova Venda'}</h3>
           {saved && (
             <div className="bg-vgreen/10 border border-vgreen/20 text-vgreen rounded-lg px-4 py-3 mb-4 text-sm font-medium">
@@ -203,7 +203,7 @@ export function VendasPage() {
       )}
 
       {/* Sales list */}
-      <div className="bg-surface border border-b1 rounded-xl overflow-hidden">
+      <div className="bg-surface border border-b1 rounded-lg overflow-hidden">
         <div className="px-5 py-4 border-b border-b1">
           <h2 className="text-[15px] font-bold">Vendas deste mes ({sales.length})</h2>
         </div>

@@ -99,7 +99,7 @@ export function TimePage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Add form */}
-        <div className="bg-surface border border-b1 rounded-xl p-6">
+        <div className="bg-surface border border-b1 rounded-lg p-6">
           <h2 className="text-[15px] font-bold mb-5">➕ Adicionar Membro</h2>
 
           {msg && (
@@ -141,11 +141,11 @@ export function TimePage() {
         <div>
           <h2 className="text-[15px] font-bold mb-4">👥 Time ({active.length})</h2>
           {active.length === 0 ? (
-            <div className="text-center py-12 text-t3 text-sm bg-surface border border-b1 rounded-xl">Sem colaboradores cadastrados</div>
+            <div className="text-center py-12 text-t3 text-sm bg-surface border border-b1 rounded-lg">Sem colaboradores cadastrados</div>
           ) : (
             <div className="space-y-2">
               {active.map(u => (
-                <div key={u.id} className="bg-surface border border-b1 rounded-xl px-5 py-3.5 hover:border-b3 transition-colors">
+                <div key={u.id} className="bg-surface border border-b1 rounded-lg px-5 py-3.5 hover:border-b3 transition-colors">
                   {editId === u.id ? (
                     /* Edit mode */
                     <div className="space-y-3">

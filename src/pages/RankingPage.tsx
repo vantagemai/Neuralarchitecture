@@ -112,20 +112,20 @@ export function RankingPage() {
 
       {/* My stats bar */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-        <div className="bg-surface border border-b1 rounded-xl p-3 text-center">
+        <div className="bg-surface border border-b1 rounded-lg p-3 text-center">
           <div className="text-sm">{myLevel.icon}</div>
           <div className={`text-xs font-bold ${myLevel.color}`}>{myLevel.name}</div>
         </div>
-        <div className="bg-surface border border-b1 rounded-xl p-3 text-center">
+        <div className="bg-surface border border-b1 rounded-lg p-3 text-center">
           <div className="font-mono text-sm font-bold text-vgold">{myXp.toLocaleString()} XP</div>
         </div>
-        <div className="bg-surface border border-b1 rounded-xl p-3 text-center">
+        <div className="bg-surface border border-b1 rounded-lg p-3 text-center">
           <div className="font-mono text-sm font-bold text-orange-400">🔥 {myStreak.current}d</div>
         </div>
-        <div className="bg-surface border border-b1 rounded-xl p-3 text-center">
+        <div className="bg-surface border border-b1 rounded-lg p-3 text-center">
           <div className="font-mono text-sm font-bold text-vpurp">{myBadges} badges</div>
         </div>
-        <div className="bg-surface border border-b1 rounded-xl p-3 text-center">
+        <div className="bg-surface border border-b1 rounded-lg p-3 text-center">
           <div className="text-[10px] text-t3 uppercase">Posicao</div>
           <div className="font-mono text-sm font-bold text-vred">
             {tab === 'activity' && myActRank > 0 ? `#${myActRank}` : tab === 'revenue' && myRevRank > 0 ? `#${myRevRank}` : myXpRank > 0 ? `#${myXpRank}` : '—'}
@@ -137,7 +137,7 @@ export function RankingPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-elevated rounded-xl p-1">
+      <div className="flex gap-1 bg-elevated rounded-lg p-1">
         {[
           { key: 'activity' as Tab, label: '📊 Atividade Hoje' },
           { key: 'revenue' as Tab, label: '💰 Receita Mes' },
@@ -156,7 +156,7 @@ export function RankingPage() {
       </div>
 
       {/* Content */}
-      <div className="bg-surface border border-b1 rounded-xl overflow-hidden">
+      <div className="bg-surface border border-b1 rounded-lg overflow-hidden">
         {tab === 'activity' && (
           actData.length === 0 ? emptyMsg('Sem fills registrados hoje') : (
             <div className="divide-y divide-b1">
@@ -186,8 +186,8 @@ export function RankingPage() {
                       </span>
                     ))}
                   </div>
-                  <div className="ml-10 mt-2 h-1.5 bg-overlay rounded-full overflow-hidden">
-                    <div className="h-full bg-vred rounded-full transition-all duration-1000" style={{ width: `${Math.round((person.score / maxScore) * 100)}%` }} />
+                  <div className="ml-10 mt-2 h-2 bg-overlay rounded-sm overflow-hidden">
+                    <div className="h-full bg-vred rounded-sm transition-all duration-1000" style={{ width: `${Math.round((person.score / maxScore) * 100)}%` }} />
                   </div>
                 </div>
               ))}
@@ -217,8 +217,8 @@ export function RankingPage() {
                     </div>
                     <span className="font-mono font-bold text-vgreen">{fmt$(person.comm)}</span>
                   </div>
-                  <div className="ml-10 h-1.5 bg-overlay rounded-full overflow-hidden">
-                    <div className="h-full bg-vgreen rounded-full transition-all duration-1000" style={{ width: `${Math.round((person.comm / maxComm) * 100)}%` }} />
+                  <div className="ml-10 h-2 bg-overlay rounded-sm overflow-hidden">
+                    <div className="h-full bg-vgreen rounded-sm transition-all duration-1000" style={{ width: `${Math.round((person.comm / maxComm) * 100)}%` }} />
                   </div>
                 </div>
               ))}
@@ -249,8 +249,8 @@ export function RankingPage() {
                     </div>
                     <span className="font-mono font-bold text-vgold">{person.xp.toLocaleString()} XP</span>
                   </div>
-                  <div className="ml-10 mt-2 h-1.5 bg-overlay rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-vgold-dark to-vgold rounded-full transition-all duration-1000" style={{ width: `${Math.round((person.xp / maxXp) * 100)}%` }} />
+                  <div className="ml-10 mt-2 h-2 bg-overlay rounded-sm overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-vgold-dark to-vgold rounded-sm transition-all duration-1000" style={{ width: `${Math.round((person.xp / maxXp) * 100)}%` }} />
                   </div>
                 </div>
               ))}

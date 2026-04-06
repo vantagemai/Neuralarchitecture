@@ -143,7 +143,7 @@ export function DesafiosPage() {
 
       {/* Create form */}
       {showForm && (
-        <div className="bg-gradient-to-br from-vgold/5 to-surface border border-vgold/20 rounded-2xl p-6 animate-in shadow-lg shadow-vgold/5">
+        <div className="bg-surface border border-vgold/20 rounded-lg p-6 animate-in shadow-lg shadow-vgold/5">
           <h3 className="font-bold mb-4 flex items-center gap-2"><Trophy size={18} className="text-vgold" /> Criar Desafio</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div>
@@ -189,7 +189,7 @@ export function DesafiosPage() {
 
       {/* Empty state */}
       {active.length === 0 && ended.length === 0 && (
-        <div className="text-center py-16 bg-surface border border-b1 rounded-xl">
+        <div className="text-center py-16 bg-surface border border-b1 rounded-lg">
           <div className="text-5xl mb-4">🎯</div>
           <p className="text-sm text-t3">Nenhum desafio criado ainda</p>
           {isManager && <p className="text-xs text-t4 mt-1">Crie um desafio para motivar o time!</p>}
@@ -207,12 +207,12 @@ export function DesafiosPage() {
             const remaining = timeRemaining(c.endDate);
             const MetricIcon = METRIC_ICONS[c.metric];
             return (
-              <div key={c.id} className="bg-gradient-to-br from-vgold/5 to-surface border border-vgold/15 rounded-2xl overflow-hidden shadow-lg shadow-vgold/5 hover:shadow-vgold/10 transition-shadow">
+              <div key={c.id} className="bg-surface border border-vgold/15 rounded-lg overflow-hidden shadow-lg shadow-vgold/5 hover:shadow-vgold/10 transition-shadow">
                 {/* Header */}
                 <div className="px-6 py-4 border-b border-vgold/10">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-vgold/15 flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-lg bg-vgold/15 flex items-center justify-center">
                         <MetricIcon size={20} className="text-vgold" />
                       </div>
                       <div>
@@ -246,14 +246,14 @@ export function DesafiosPage() {
                         const pct = Math.min(100, Math.round((p.value / c.target) * 100));
                         const completed = pct >= 100;
                         return (
-                          <div key={p.userId} className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-colors ${i === 0 ? 'bg-vgold/5' : 'hover:bg-elevated/50'}`}>
+                          <div key={p.userId} className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${i === 0 ? 'bg-vgold/5' : 'hover:bg-elevated/50'}`}>
                             <span className="w-6 text-center" style={{ fontSize: i < 3 ? '18px' : '13px' }}>
                               {MEDALS[i] || <span className="text-[10px] text-t4 font-mono">#{i + 1}</span>}
                             </span>
                             <Avatar userId={p.userId} name={p.userName} />
                             <span className="flex-1 text-sm font-semibold truncate">{p.userName}</span>
-                            <div className="w-28 h-2 bg-overlay rounded-full overflow-hidden">
-                              <div className={`h-full rounded-full transition-all duration-700 ${completed ? 'bg-vgreen' : 'bg-gradient-to-r from-vgold-dark to-vgold'}`}
+                            <div className="w-28 h-2 bg-overlay rounded-sm overflow-hidden">
+                              <div className={`h-full rounded-sm transition-all duration-700 ${completed ? 'bg-vgreen' : 'bg-gradient-to-r from-vgold-dark to-vgold'}`}
                                 style={{ width: `${pct}%` }} />
                             </div>
                             <span className={`font-mono text-xs font-bold ${completed ? 'text-vgreen' : 'text-vgold'}`}>
@@ -283,7 +283,7 @@ export function DesafiosPage() {
             const progress = getProgress(c);
             const top3 = progress.slice(0, 3);
             return (
-              <div key={c.id} className="bg-surface border border-b1 rounded-xl overflow-hidden">
+              <div key={c.id} className="bg-surface border border-b1 rounded-lg overflow-hidden">
                 <div className="px-5 py-4 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-vgold/10 flex items-center justify-center">
