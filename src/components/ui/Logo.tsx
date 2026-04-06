@@ -14,9 +14,9 @@ function LogoIcon({ size = 32 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 100 90" fill="none" xmlns="http://www.w3.org/2000/svg">
       {/* Left ear - red */}
-      <polygon points="8,28 38,10 40,38" fill="#F11013"/>
+      <polygon points="8,28 38,10 40,38" fill="#D4634B"/>
       {/* Right ear - red */}
-      <polygon points="92,28 62,10 60,38" fill="#F11013"/>
+      <polygon points="92,28 62,10 60,38" fill="#D4634B"/>
       {/* Head body - dark */}
       <polygon points="5,33 50,38 95,33 95,50 75,53 50,85 25,53 5,50" fill="currentColor"/>
       {/* V inner cut */}

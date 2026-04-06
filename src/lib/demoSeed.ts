@@ -28,13 +28,13 @@ function darken(hex: string): string {
 }
 
 const MEMBERS = [
-  { name: 'Lucas Ferreira', email: 'lucas@vantagem.ai', role: 'Founder', plan: 'FOUNDER', color: '#F11013' },
+  { name: 'Lucas Ferreira', email: 'lucas@vantagem.ai', role: 'Founder', plan: 'FOUNDER', color: '#D4634B' },
   { name: 'Ana Beatriz Costa', email: 'ana@vantagem.ai', role: 'Founder', plan: 'FOUNDER', color: '#E91E63' },
-  { name: 'Pedro Henrique Silva', email: 'pedro@vantagem.ai', role: 'Partner', plan: 'PARTNER', color: '#5B9AF5' },
-  { name: 'Mariana Oliveira', email: 'mariana@vantagem.ai', role: 'Partner', plan: 'PARTNER', color: '#9B7FE0' },
-  { name: 'Rafael Santos', email: 'rafael@vantagem.ai', role: 'Vendedor', plan: 'PARTNER', color: '#00C864' },
+  { name: 'Pedro Henrique Silva', email: 'pedro@vantagem.ai', role: 'Partner', plan: 'PARTNER', color: '#6B8FBF' },
+  { name: 'Mariana Oliveira', email: 'mariana@vantagem.ai', role: 'Partner', plan: 'PARTNER', color: '#8B7EC8' },
+  { name: 'Rafael Santos', email: 'rafael@vantagem.ai', role: 'Vendedor', plan: 'PARTNER', color: '#5A9E6F' },
   { name: 'Juliana Pereira', email: 'juliana@vantagem.ai', role: 'Vendedor', plan: 'PARTNER', color: '#FF6B6B' },
-  { name: 'Gabriel Almeida', email: 'gabriel@vantagem.ai', role: 'Setter', plan: 'SETTER', color: '#FFD130' },
+  { name: 'Gabriel Almeida', email: 'gabriel@vantagem.ai', role: 'Setter', plan: 'SETTER', color: '#C8963E' },
   { name: 'Camila Rodrigues', email: 'camila@vantagem.ai', role: 'Setter', plan: 'SETTER', color: '#FF9800' },
   { name: 'Thiago Nascimento', email: 'thiago@vantagem.ai', role: 'Setter', plan: 'SETTER', color: '#26C6DA' },
   { name: 'Isabela Martins', email: 'isabela@vantagem.ai', role: 'Setter', plan: 'SETTER', color: '#AB47BC' },

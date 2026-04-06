@@ -126,7 +126,7 @@ export function PerfilPage() {
               <PolarGrid stroke={dark ? 'rgba(100,116,139,.15)' : 'rgba(0,0,0,.06)'} />
               <PolarAngleAxis dataKey="m" tick={{ fontSize: 10, fill: dark ? '#6B6B76' : '#7A7A88' }} />
               <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
-              <Radar dataKey="v" stroke="#F11013" fill="#F11013" fillOpacity={0.2} strokeWidth={2} />
+              <Radar dataKey="v" stroke="#D4634B" fill="#D4634B" fillOpacity={0.2} strokeWidth={2} />
             </RadarChart>
           </ResponsiveContainer>
         </div>

@@ -8,10 +8,10 @@ import { pushLocalToSupabase, hydrateFromSupabase } from '../lib/supabaseSync';
 import { runDemoSeed } from '../lib/demoSeed';
 
 const PLANS = [
-  { key: 'SETTER',   label: 'Setter',   setup: '10%', rec: '3%',  color: '#9B7FE0' },
+  { key: 'SETTER',   label: 'Setter',   setup: '10%', rec: '3%',  color: '#8B7EC8' },
   { key: 'AUTONOMO', label: 'Autônomo', setup: '10%', rec: '10%', color: '#888' },
-  { key: 'PARTNER',  label: 'Partner',  setup: '30%', rec: '20%', color: '#5B9AF5' },
-  { key: 'FOUNDER',  label: 'Founder',  setup: '50%', rec: '40%', color: '#FFD130' },
+  { key: 'PARTNER',  label: 'Partner',  setup: '30%', rec: '20%', color: '#6B8FBF' },
+  { key: 'FOUNDER',  label: 'Founder',  setup: '50%', rec: '40%', color: '#C8963E' },
 ];
 
 const PRIZES = [
