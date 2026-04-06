@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { KpiCard } from '../components/ui/KpiCard';
 import { Badge } from '../components/ui/Badge';
 import {
@@ -82,6 +83,7 @@ export function DashboardPage() {
   const teamData = users.map(u => {
     const fill = fills.find(f => f.userId === u.id || f.userName === u.name);
     return {
+      id: u.id,
       name: u.name,
       role: u.role,
       score: fill ? calcScore(fill) : 0,
@@ -299,7 +301,7 @@ export function DashboardPage() {
                   })()}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold truncate">{member.name}</span>
+                      <Link to={`/perfil/${member.id}`} className="text-sm font-semibold truncate hover:text-vred transition-colors">{member.name}</Link>
                       <Badge variant={roleVariant(member.role)}>{member.role}</Badge>
                     </div>
                     {member.filled && (
@@ -447,7 +449,7 @@ export function DashboardPage() {
                     <td className="px-5 py-2.5 text-sm font-semibold">
                       <div className="flex items-center gap-2">
                         {av ? <img src={av} alt="" className="w-7 h-7 rounded-full object-cover border border-b1 shrink-0" /> : <div className="w-7 h-7 rounded-full bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-[9px] font-bold shrink-0">{ini}</div>}
-                        {s.sellerName}
+                        <Link to={`/perfil/${s.sellerId}`} className="hover:text-vred transition-colors">{s.sellerName}</Link>
                       </div>
                     </td>
                     <td className="px-5 py-2.5 text-sm text-t3 font-mono">{s.date}</td>

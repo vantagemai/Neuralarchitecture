@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { UserPlus, Trash2, Pencil, X, Check, Target } from 'lucide-react';
 import { db, getUsers, type UserData } from '../lib/store';
 import { Badge } from '../components/ui/Badge';
@@ -176,7 +177,7 @@ export function TimePage() {
                         {u.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm font-semibold truncate">{u.name}</div>
+                        <Link to={`/perfil/${u.id}`} className="text-sm font-semibold truncate hover:text-vred transition-colors block">{u.name}</Link>
                         <div className="text-[11px] text-t4 font-mono">{u.email}</div>
                       </div>
                       <Badge variant={roleVariant(u.role)}>{u.role}</Badge>
