@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Plus, X, Pencil, Trash2, Download } from 'lucide-react';
 import { KpiCard } from '../components/ui/KpiCard';
 import { DollarSign, Target, TrendingUp } from 'lucide-react';
-import { db, today, getMonthSales, getUsers, getSession, fmt$, type SaleData } from '../lib/store';
+import { db, today, getMonthSales, getUsers, getSession, fmt$, currentMonth, type SaleData } from '../lib/store';
 import { awardSaleXp } from '../lib/xp';
 import { checkAchievements } from '../lib/achievements';
 import { showToast } from '../components/ui/Toast';
@@ -24,11 +24,17 @@ export function VendasPage() {
   const [setterId, setSetterId] = useState('');
   const [saved, setSaved] = useState('');
   const [refreshKey, setRefreshKey] = useState(0);
+  const [month, setMonth] = useState(currentMonth());
+
+  const months = Array.from({ length: 6 }, (_, i) => {
+    const d = new Date(); d.setMonth(d.getMonth() - i);
+    return { value: d.toISOString().slice(0, 7), label: d.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' }) };
+  });
 
   const session = getSession() || { id: 'anon', name: 'Anon', role: 'Setter', email: '' };
   const isManager = session.role === 'Head' || session.role === 'Founder' || session.role === 'Partner';
   const users = getUsers().filter(u => u.active && u.role === 'Setter');
-  const sales = getMonthSales();
+  const sales = getMonthSales(month);
   const mySales = isManager ? sales : sales.filter(s => s.sellerId === session.id || s.sellerName === session.name);
 
   const totalSetupComm = mySales.reduce((t, s) => t + (s.sellerSetupComm || 0), 0);
@@ -128,7 +134,11 @@ export function VendasPage() {
           <p className="text-sm text-t3 mt-1">Registre vendas e acompanhe comissoes</p>
         </div>
         <div className="flex items-center gap-2">
-        <button onClick={() => exportSalesCSV()} className="flex items-center gap-1.5 bg-elevated border border-b1 rounded-lg px-3 py-2.5 text-sm text-t3 hover:text-t1 hover:border-b3 transition-colors">
+        <select value={month} onChange={e => setMonth(e.target.value)}
+          className="bg-elevated border border-b1 rounded-lg px-3 py-2.5 text-sm font-mono outline-none cursor-pointer">
+          {months.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
+        </select>
+        <button onClick={() => exportSalesCSV(month)} className="flex items-center gap-1.5 bg-elevated border border-b1 rounded-lg px-3 py-2.5 text-sm text-t3 hover:text-t1 hover:border-b3 transition-colors">
           <Download size={14} /> CSV
         </button>
         <button

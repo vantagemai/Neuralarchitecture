@@ -16,6 +16,7 @@ import { BadgesPage } from './pages/BadgesPage';
 import { DesafiosPage } from './pages/DesafiosPage';
 import { CoachingPage } from './pages/CoachingPage';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { PerfilPage } from './pages/PerfilPage';
 import { ToastContainer } from './components/ui/Toast';
 import { ConfettiContainer } from './components/ui/Confetti';
 import { OnboardingTour, shouldShowOnboarding } from './components/ui/OnboardingTour';
@@ -150,6 +151,7 @@ function App() {
           <Route path="badges" element={<BadgesPage />} />
           <Route path="desafios" element={<DesafiosPage />} />
           <Route path="tv" element={<TvPage />} />
+          <Route path="perfil/:userId" element={<PerfilPage />} />
           {/* Manager+ only */}
           <Route path="premiacoes" element={<PremiacoesPage />} />
           {isManager && <Route path="extratos" element={<ExtratosPage />} />}

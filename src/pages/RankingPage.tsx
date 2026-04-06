@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Badge } from '../components/ui/Badge';
 import { CHANNELS, getTodayFills, getMonthSales, getUsers, calcScore, fmt$, getSession, db, currentMonth } from '../lib/store';
 import { getTotalXp } from '../lib/xp';
@@ -179,7 +180,7 @@ export function RankingPage() {
                     {renderAvatar(person.name, person.avatar)}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold truncate">{person.name}</span>
+                        <Link to={`/perfil/${person.id}`} className="text-sm font-semibold truncate hover:text-vred transition-colors">{person.name}</Link>
                         <span className={`text-xs ${person.level.color}`}>{person.level.icon}</span>
                         <Badge variant={roleVariant(person.role)}>{person.role}</Badge>
                       </div>
@@ -217,7 +218,7 @@ export function RankingPage() {
                     {renderAvatar(person.name, person.avatar)}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold truncate">{person.name}</span>
+                        <Link to={`/perfil/${person.id}`} className="text-sm font-semibold truncate hover:text-vred transition-colors">{person.name}</Link>
                         <Badge variant={roleVariant(person.role)}>{person.role}</Badge>
                       </div>
                       <div className="text-[10px] text-t4 mt-0.5">
@@ -248,7 +249,7 @@ export function RankingPage() {
                     {renderAvatar(person.name, person.avatar)}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold truncate">{person.name}</span>
+                        <Link to={`/perfil/${person.id}`} className="text-sm font-semibold truncate hover:text-vred transition-colors">{person.name}</Link>
                         <span className={`text-xs ${person.level.color}`}>{person.level.icon} {person.level.name}</span>
                         <Badge variant={roleVariant(person.role)}>{person.role}</Badge>
                       </div>

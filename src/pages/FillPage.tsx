@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
-import { Send, RefreshCw, CheckCircle2, Target, Flame } from 'lucide-react';
-import { db, today, CHANNELS, getSession, type FillData, type ChannelData } from '../lib/store';
+import { Send, RefreshCw, CheckCircle2, Target, Flame, Calendar } from 'lucide-react';
+import { db, today, CHANNELS, getSession, calcScore, type FillData, type ChannelData } from '../lib/store';
 import { Badge } from '../components/ui/Badge';
 import { awardFillXp } from '../lib/xp';
 import { updateStreak } from '../lib/streaks';
@@ -259,6 +259,55 @@ export function FillPage() {
           )}
         </button>
       </div>
+
+      {/* Fill history — last 14 days */}
+      {(() => {
+        const history = Array.from({ length: 14 }, (_, i) => {
+          const d = new Date(); d.setDate(d.getDate() - i);
+          const dateStr = d.toISOString().split('T')[0];
+          const key = `ops_fill_${dateStr}_${userId}`;
+          const fill = db.get<FillData>(key);
+          const sc = fill ? calcScore(fill) : 0;
+          const label = d.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' });
+          const time = fill ? new Date(fill.ts).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '';
+          return { dateStr, fill, score: sc, label, time, isToday: i === 0 };
+        });
+        const streak = history.filter(h => h.fill).length;
+        return (
+          <div className="bg-surface border border-b1 rounded-lg overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-b1">
+              <div className="flex items-center gap-2">
+                <Calendar size={14} className="text-t3" />
+                <span className="text-[11px] font-bold text-t3 uppercase tracking-wider">Historico de Fills</span>
+              </div>
+              <span className="text-[10px] font-mono text-t4">{streak}/14 dias preenchidos</span>
+            </div>
+            <div className="divide-y divide-b1">
+              {history.map(h => (
+                <div key={h.dateStr} className={`flex items-center gap-3 px-4 py-2 ${h.isToday ? 'bg-vred/5' : 'hover:bg-elevated/30'} transition-colors`}>
+                  <div className={`w-2 h-2 rounded-full shrink-0 ${h.fill ? 'bg-vgreen' : 'bg-overlay'}`} />
+                  <span className="text-xs text-t3 font-mono w-32 shrink-0">{h.label}</span>
+                  {h.fill ? (
+                    <>
+                      <div className="flex-1 flex gap-2">
+                        {CHANNELS.map(ch => {
+                          const v = h.fill!.channels?.[ch.id];
+                          const val = typeof v === 'object' ? parseInt(v.a) || 0 : 0;
+                          return <span key={ch.id} className="text-[10px] text-t4">{ch.icon}<span className="font-mono ml-0.5">{val}</span></span>;
+                        })}
+                      </div>
+                      <span className="font-mono text-xs font-bold text-vred">{h.score} pts</span>
+                      <span className="text-[10px] text-t4 font-mono w-12 text-right">{h.time}</span>
+                    </>
+                  ) : (
+                    <span className="flex-1 text-[10px] text-t4 italic">{h.isToday ? 'Preencha acima' : 'Nao preenchido'}</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
