@@ -3,7 +3,6 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Toolbar } from './Toolbar';
 import { RightSidebar } from './RightSidebar';
-import { BottomTerminal } from './BottomTerminal';
 import { StatusBar } from './StatusBar';
 
 interface AppLayoutProps {
@@ -37,15 +36,11 @@ export function AppLayout({ userName, onLogout }: AppLayoutProps) {
           mobileOpen={mobileOpen}
           onMobileClose={() => setMobileOpen(false)}
         />
-        <div className="flex-1 flex flex-col overflow-hidden">
-          <div className="flex flex-1 overflow-hidden">
-            <main className="flex-1 overflow-y-auto bg-canvas p-2 sm:p-3">
-              <Outlet />
-            </main>
-            {isDashboard && <RightSidebar />}
-          </div>
-          {/* Bottom terminal (dashboard only on desktop) */}
-          {isDashboard && <BottomTerminal />}
+        <div className="flex-1 flex overflow-hidden">
+          <main className="flex-1 overflow-y-auto bg-canvas p-2 sm:p-3">
+            <Outlet />
+          </main>
+          {isDashboard && <RightSidebar />}
         </div>
       </div>
 
