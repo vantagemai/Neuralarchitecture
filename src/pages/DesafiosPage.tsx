@@ -143,7 +143,7 @@ export function DesafiosPage() {
 
       {/* Create form */}
       {showForm && (
-        <div className="bg-surface border border-vgold/20 rounded-lg p-6 animate-in shadow-lg shadow-vgold/5">
+        <div className="bg-surface border border-vgold/20 rounded-lg p-4 animate-in shadow-lg shadow-vgold/5">
           <h3 className="font-bold mb-4 flex items-center gap-2"><Trophy size={18} className="text-vgold" /> Criar Desafio</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div>
@@ -181,7 +181,7 @@ export function DesafiosPage() {
                 className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-vgold/40" />
             </div>
           </div>
-          <button onClick={handleCreate} className="bg-vgold hover:bg-vgold-dark text-canvas font-bold px-6 py-3 rounded-lg w-full transition-colors shadow-lg shadow-vgold/20">
+          <button onClick={handleCreate} className="bg-vgold hover:bg-vgold-dark text-canvas font-bold px-4 py-2 rounded-lg w-full transition-colors shadow-lg shadow-vgold/20">
             🏆 Criar Desafio
           </button>
         </div>
@@ -209,7 +209,7 @@ export function DesafiosPage() {
             return (
               <div key={c.id} className="bg-surface border border-vgold/15 rounded-lg overflow-hidden shadow-lg shadow-vgold/5 hover:shadow-vgold/10 transition-shadow">
                 {/* Header */}
-                <div className="px-6 py-4 border-b border-vgold/10">
+                <div className="px-4 py-2.5 border-b border-vgold/10">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg bg-vgold/15 flex items-center justify-center">
@@ -239,7 +239,7 @@ export function DesafiosPage() {
                 </div>
 
                 {/* Leaderboard */}
-                <div className="px-6 py-4">
+                <div className="px-4 py-2.5">
                   {progress.length > 0 ? (
                     <div className="space-y-2.5">
                       {progress.slice(0, 5).map((p, i) => {

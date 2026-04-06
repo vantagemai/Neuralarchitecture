@@ -84,7 +84,7 @@ export function IdentidadePage() {
           "A maioria das pessoas subestima o que pode construir em 180 dias com execução diária."
         </div>
 
-        <div className="bg-surface border border-b1 rounded-lg p-6 space-y-5">
+        <div className="bg-surface border border-b1 rounded-lg p-4 space-y-5">
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-[11px] text-t3 uppercase tracking-wider font-semibold">Meta mensal (USD)</label>
@@ -157,7 +157,7 @@ export function IdentidadePage() {
       {/* Hero */}
       <div className="relative bg-gradient-to-br from-vred/15 via-canvas to-canvas border border-vred/15 rounded-lg overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-canvas via-transparent to-transparent" />
-        <div className="relative p-8">
+        <div className="relative p-5">
           <div className="text-[10px] text-t4 uppercase tracking-[0.2em] mb-2">SUA NOVA IDENTIDADE</div>
           <h1 className="text-3xl font-bold mb-2">{session.name}</h1>
           {profile.car && <p className="text-sm text-t3">→ {profile.car}</p>}
@@ -184,7 +184,7 @@ export function IdentidadePage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Vision */}
-        <div className="bg-surface border border-b1 rounded-lg p-6">
+        <div className="bg-surface border border-b1 rounded-lg p-4">
           <h2 className="text-sm font-bold text-t3 uppercase tracking-wider mb-4">Minha vida construída</h2>
           <div className="space-y-3">
             {[

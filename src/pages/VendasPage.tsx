@@ -130,7 +130,7 @@ export function VendasPage() {
     <div className="space-y-4 animate-in" key={refreshKey}>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Vendas</h1>
+          <h1 className="text-lg font-bold">Vendas</h1>
           <p className="text-sm text-t3 mt-1">Registre vendas e acompanhe comissoes</p>
         </div>
         <div className="flex items-center gap-2">
@@ -159,7 +159,7 @@ export function VendasPage() {
 
       {/* Sale form */}
       {showForm && (
-        <div className="bg-surface border border-b1 rounded-lg p-6 animate-in">
+        <div className="bg-surface border border-b1 rounded-lg p-4 animate-in">
           <h3 className="font-bold mb-4">{editingId ? 'Editar Venda' : 'Registrar Nova Venda'}</h3>
           {saved && (
             <div className="bg-vgreen/10 border border-vgreen/20 text-vgreen rounded-lg px-4 py-3 mb-4 text-sm font-medium">
@@ -206,7 +206,7 @@ export function VendasPage() {
               </div>
             </div>
           </div>
-          <button onClick={handleSubmit} className="bg-vgreen hover:bg-emerald-600 text-white font-bold px-6 py-3 rounded-lg w-full transition-colors">
+          <button onClick={handleSubmit} className="bg-vgreen hover:bg-emerald-600 text-white font-bold px-4 py-2 rounded-lg w-full transition-colors">
             {editingId ? '💾 Salvar Alteracoes' : '✅ Confirmar Venda'}
           </button>
         </div>

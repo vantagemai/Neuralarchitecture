@@ -248,7 +248,7 @@ export function FillPage() {
         <button
           onClick={handleSubmit}
           disabled={saving || score === 0}
-          className="flex items-center gap-2 bg-vred hover:bg-vred-dark disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold px-6 py-3 rounded-lg transition-all duration-200 shadow-lg shadow-vred/20 hover:shadow-vred/40"
+          className="flex items-center gap-2 bg-vred hover:bg-vred-dark disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold px-4 py-2 rounded-lg transition-all duration-200 shadow-lg shadow-vred/20 hover:shadow-vred/40"
         >
           {saving ? (
             <><RefreshCw size={16} className="animate-spin" /> Salvando...</>

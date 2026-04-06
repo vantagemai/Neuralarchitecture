@@ -46,7 +46,7 @@ export function ConfigPage() {
   return (
     <div className="space-y-4 animate-in max-w-4xl">
       <div>
-        <h1 className="text-2xl font-bold">Configurações</h1>
+        <h1 className="text-lg font-bold">Configurações</h1>
         <p className="text-sm text-t3 mt-1">PINs, comissões e premiações</p>
       </div>
 
@@ -58,7 +58,7 @@ export function ConfigPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* PIN */}
-        <div className="bg-surface border border-b1 rounded-lg p-6">
+        <div className="bg-surface border border-b1 rounded-lg p-4">
           <div className="flex items-center gap-2 mb-5">
             <Shield size={18} className="text-vred" />
             <h2 className="text-[15px] font-bold">Acesso Head</h2>
@@ -66,7 +66,7 @@ export function ConfigPage() {
           <div>
             <label className="text-[11px] text-t3 uppercase tracking-wider font-semibold">PIN do Head</label>
             <input value={pin} onChange={e => setPin(e.target.value)} maxLength={6}
-              className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-3 font-mono text-2xl text-center tracking-[12px] outline-none focus:border-vred/40" />
+              className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-3 font-mono text-lg text-center tracking-[12px] outline-none focus:border-vred/40" />
           </div>
           <button onClick={savePin} className="mt-4 w-full flex items-center justify-center gap-2 bg-vred hover:bg-vred-dark text-white font-bold py-3 rounded-lg transition-colors">
             <Save size={16} /> Salvar PIN
@@ -74,7 +74,7 @@ export function ConfigPage() {
         </div>
 
         {/* Commissions */}
-        <div className="bg-surface border border-b1 rounded-lg p-6">
+        <div className="bg-surface border border-b1 rounded-lg p-4">
           <h2 className="text-[15px] font-bold mb-5">💰 Tabela de Comissões</h2>
           <div className="space-y-3">
             {PLANS.map(p => (
@@ -93,7 +93,7 @@ export function ConfigPage() {
       </div>
 
       {/* Cloud Sync */}
-      <div className="bg-surface border border-b1 rounded-lg p-6">
+      <div className="bg-surface border border-b1 rounded-lg p-4">
         <div className="flex items-center gap-2 mb-4">
           {isOnline() ? <Cloud size={18} className="text-vgreen" /> : <CloudOff size={18} className="text-t4" />}
           <h2 className="text-[15px] font-bold">Supabase Cloud</h2>
@@ -131,7 +131,7 @@ export function ConfigPage() {
       </div>
 
       {/* Demo Seed */}
-      <div className="bg-surface border border-b1 rounded-lg p-6">
+      <div className="bg-surface border border-b1 rounded-lg p-4">
         <div className="flex items-center gap-2 mb-4">
           <Users size={18} className="text-vpurp" />
           <h2 className="text-[15px] font-bold">Dados Demo</h2>
@@ -153,7 +153,7 @@ export function ConfigPage() {
       </div>
 
       {/* Sound Effects */}
-      <div className="bg-surface border border-b1 rounded-lg p-6">
+      <div className="bg-surface border border-b1 rounded-lg p-4">
         <div className="flex items-center gap-2 mb-4">
           <Volume2 size={18} className="text-vblue" />
           <h2 className="text-[15px] font-bold">Som</h2>
@@ -178,7 +178,7 @@ export function ConfigPage() {
       </div>
 
       {/* Theme */}
-      <div className="bg-surface border border-b1 rounded-lg p-6">
+      <div className="bg-surface border border-b1 rounded-lg p-4">
         <div className="flex items-center gap-2 mb-4">
           {dark ? <Moon size={18} className="text-vpurp" /> : <Sun size={18} className="text-vgold" />}
           <h2 className="text-[15px] font-bold">Tema</h2>
@@ -198,7 +198,7 @@ export function ConfigPage() {
       </div>
 
       {/* Prizes */}
-      <div className="bg-surface border border-b1 rounded-lg p-6">
+      <div className="bg-surface border border-b1 rounded-lg p-4">
         <div className="flex items-center gap-2 mb-5">
           <Trophy size={18} className="text-vgold" />
           <h2 className="text-[15px] font-bold">Premiações</h2>

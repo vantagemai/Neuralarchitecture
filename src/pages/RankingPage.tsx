@@ -112,7 +112,7 @@ export function RankingPage() {
     <div className="space-y-4 animate-in">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Ranking</h1>
+          <h1 className="text-lg font-bold">Ranking</h1>
           <p className="text-sm text-t3 mt-1">Atividade vs Resultado vs XP</p>
         </div>
         <select value={month} onChange={e => setMonth(e.target.value)}

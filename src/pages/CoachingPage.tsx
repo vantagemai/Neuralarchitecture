@@ -146,7 +146,7 @@ export function CoachingPage() {
               <div>
                 <h3 className="font-bold text-sm mb-3">Historico ({history.length})</h3>
                 {history.length === 0 ? (
-                  <div className="text-center py-8 bg-surface border border-b1 rounded-lg text-t4 text-sm">
+                  <div className="text-center py-5 bg-surface border border-b1 rounded-lg text-t4 text-sm">
                     Primeira sessao de coaching
                   </div>
                 ) : (
