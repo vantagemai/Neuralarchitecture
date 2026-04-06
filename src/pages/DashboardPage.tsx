@@ -439,15 +439,24 @@ export function DashboardPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-b1">
-                {sales.sort((a, b) => b.ts - a.ts).slice(0, 5).map(s => (
+                {sales.sort((a, b) => b.ts - a.ts).slice(0, 5).map(s => {
+                  const av = localStorage.getItem(`vantagem_avatar_${s.sellerId}`);
+                  const ini = s.sellerName.split(' ').map(n => n[0]).join('').slice(0, 2);
+                  return (
                   <tr key={s.id} className="hover:bg-elevated/30 transition-colors">
-                    <td className="px-5 py-3.5 text-sm font-semibold">{s.sellerName}</td>
-                    <td className="px-5 py-3.5 text-sm text-t3 font-mono">{s.date}</td>
-                    <td className="px-5 py-3.5 text-sm font-mono">${s.setupValue}</td>
-                    <td className="px-5 py-3.5 text-sm font-mono">${s.recValue}</td>
-                    <td className="px-5 py-3.5 text-sm font-mono font-bold text-vgreen">{fmt$(s.sellerSetupComm + s.sellerRecComm)}</td>
+                    <td className="px-5 py-2.5 text-sm font-semibold">
+                      <div className="flex items-center gap-2">
+                        {av ? <img src={av} alt="" className="w-7 h-7 rounded-full object-cover border border-b1 shrink-0" /> : <div className="w-7 h-7 rounded-full bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-[9px] font-bold shrink-0">{ini}</div>}
+                        {s.sellerName}
+                      </div>
+                    </td>
+                    <td className="px-5 py-2.5 text-sm text-t3 font-mono">{s.date}</td>
+                    <td className="px-5 py-2.5 text-sm font-mono">${s.setupValue}</td>
+                    <td className="px-5 py-2.5 text-sm font-mono">${s.recValue}</td>
+                    <td className="px-5 py-2.5 text-sm font-mono font-bold text-vgreen">{fmt$(s.sellerSetupComm + s.sellerRecComm)}</td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>

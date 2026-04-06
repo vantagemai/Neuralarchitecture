@@ -94,7 +94,7 @@ export function ShoutoutFeed() {
   return (
     <div className="space-y-4">
       {/* Compose */}
-      <div className="bg-surface border border-b1 rounded-xl p-4">
+      <div className="bg-surface border border-b1 rounded-lg p-4">
         <div className="text-[10px] text-t4 uppercase tracking-wider font-bold mb-3">Reconhecer alguem</div>
         <div className="flex gap-3 mb-3">
           <select value={toId} onChange={e => setToId(e.target.value)}
@@ -134,7 +134,7 @@ export function ShoutoutFeed() {
       ) : (
         <div className="space-y-2">
           {shoutouts.slice(0, 10).map(s => (
-            <div key={s.id} className="bg-surface border border-b1 rounded-xl px-4 py-3 hover:border-b3 transition-colors animate-in">
+            <div key={s.id} className="bg-surface border border-b1 rounded-lg px-4 py-3 hover:border-b3 transition-colors animate-in">
               <div className="flex items-start gap-3">
                 <Avatar userId={s.fromId} name={s.fromName} />
                 <div className="flex-1 min-w-0">

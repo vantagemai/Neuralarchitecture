@@ -93,7 +93,7 @@ export function RightSidebar() {
 
         {/* 180d Goal Donut */}
         {meta180 > 0 && (
-          <div className="bg-elevated rounded-xl p-4 border border-b1">
+          <div className="bg-elevated rounded-lg p-4 border border-b1">
             <div className="flex items-center gap-2 mb-3">
               <Target size={14} className="text-vred" />
               <span className="text-[11px] font-bold uppercase tracking-wider">Meta 180 Dias</span>
@@ -121,7 +121,7 @@ export function RightSidebar() {
         )}
 
         {/* Scorecard */}
-        <div className="bg-elevated rounded-xl p-4 border border-b1">
+        <div className="bg-elevated rounded-lg p-4 border border-b1">
           <div className="flex items-center justify-between mb-3">
             <span className="text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5">
               <Star size={12} className="text-vgold" /> Scorecard
@@ -150,7 +150,7 @@ export function RightSidebar() {
         </div>
 
         {/* Goals today */}
-        <div className="bg-elevated rounded-xl p-4 border border-b1">
+        <div className="bg-elevated rounded-lg p-4 border border-b1">
           <span className="text-[11px] font-bold uppercase tracking-wider">Metas Hoje</span>
           <div className="mt-2 space-y-1.5">
             {[
@@ -197,7 +197,7 @@ export function RightSidebar() {
 
         {/* Anchor phrase */}
         {profile?.anchor && (
-          <div className="bg-vred/8 border border-vred/15 rounded-xl p-3 text-center">
+          <div className="bg-vred/8 border border-vred/15 rounded-lg p-3 text-center">
             <div className="text-[10px] text-vred uppercase font-bold mb-1">Frase Ancora</div>
             <p className="text-xs text-t2 italic leading-relaxed">"{profile.anchor}"</p>
           </div>

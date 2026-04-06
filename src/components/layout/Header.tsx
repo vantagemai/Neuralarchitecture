@@ -157,7 +157,7 @@ export function Header({ userName, userRole, onLogout, onToggleSidebar, onAvatar
           )}
           {/* Search dropdown */}
           {showSearch && (
-            <div className="absolute top-full left-0 right-0 mt-1 bg-surface border border-b1 rounded-xl shadow-xl z-50 overflow-hidden">
+            <div className="absolute top-full left-0 right-0 mt-1 bg-surface border border-b1 rounded-lg shadow-xl z-50 overflow-hidden">
               {searchResults.map((r, i) => (
                 <a
                   key={i}
@@ -232,7 +232,7 @@ export function Header({ userName, userRole, onLogout, onToggleSidebar, onAvatar
           </button>
           {/* Notifications dropdown */}
           {showNotifs && (
-            <div className="absolute top-full right-0 mt-1 w-80 bg-surface border border-b1 rounded-xl shadow-xl z-50 overflow-hidden">
+            <div className="absolute top-full right-0 mt-1 w-80 bg-surface border border-b1 rounded-lg shadow-xl z-50 overflow-hidden">
               <div className="px-4 py-3 border-b border-b1 flex items-center justify-between">
                 <span className="text-sm font-bold">Notificacoes</span>
                 <button onClick={() => setShowNotifs(false)} className="text-t4 hover:text-t2"><X size={14} /></button>
