@@ -62,7 +62,7 @@ function App() {
   });
 
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [supabaseStatus, setSupabaseStatus] = useState<'connecting' | 'online' | 'offline'>('connecting');
+  const [, setSupabaseStatus] = useState<'connecting' | 'online' | 'offline'>('connecting');
 
   // Initialize Supabase on mount
   useEffect(() => {
@@ -122,18 +122,7 @@ function App() {
       <ConfettiContainer />
       {showOnboarding && <OnboardingTour onClose={() => setShowOnboarding(false)} />}
 
-      {/* Supabase status indicator */}
-      <div className={`fixed bottom-3 right-3 z-50 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-mono border transition-all ${
-        supabaseStatus === 'online' ? 'bg-vgreen/10 text-vgreen border-vgreen/20' :
-        supabaseStatus === 'offline' ? 'bg-vgold/10 text-vgold border-vgold/20' :
-        'bg-elevated text-t4 border-b1'
-      }`}>
-        <div className={`w-1.5 h-1.5 rounded-full ${
-          supabaseStatus === 'online' ? 'bg-vgreen' :
-          supabaseStatus === 'offline' ? 'bg-vgold' : 'bg-t4 animate-pulse'
-        }`} />
-        {supabaseStatus === 'online' ? 'Sync' : supabaseStatus === 'offline' ? 'Local' : '...'}
-      </div>
+      {/* Supabase status now shown in StatusBar */}
 
       <Routes>
         <Route element={
