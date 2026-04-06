@@ -142,6 +142,8 @@ export function ConfigPage() {
           <p className="text-xs text-t3 mb-3">Remove todos os dados (usuarios, vendas, fills, XP, etc.) para comecar do zero. Configuracoes sao preservadas.</p>
           <button
             onClick={() => {
+              const pin = window.prompt('Digite a senha de 4 digitos para confirmar:');
+              if (pin !== '1173') { if (pin !== null) setSaved('Senha incorreta.'); return; }
               if (!window.confirm('Tem certeza? Todos os dados serao removidos permanentemente. Configuracoes serao mantidas.')) return;
               const result = clearAllData();
               setSaved(`Dados limpos! ${result.removed} registros removidos.`);
