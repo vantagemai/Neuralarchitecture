@@ -151,11 +151,78 @@ export function VendasPage() {
       </div>
 
       {/* KPIs */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <KpiCard label="Vendas no Mes" value={mySales.length} icon={Target} color="gold" />
         <KpiCard label="Comissao Setup" value={fmt$(totalSetupComm)} icon={DollarSign} color="green" />
         <KpiCard label="Comissao Rec" value={fmt$(totalRecComm)} icon={TrendingUp} color="blue" />
+        <KpiCard label="Ticket Medio" value={mySales.length > 0 ? fmt$(Math.round(mySales.reduce((t, s) => t + s.setupValue, 0) / mySales.length)) : '$0'} icon={TrendingUp} color="red" />
       </div>
+
+      {/* Analytics: Setter → Founder flow */}
+      {isManager && sales.length > 0 && (() => {
+        // Build setter→founder pairs
+        const pairs: Record<string, { setter: string; founders: Record<string, { name: string; count: number; comm: number }> }> = {};
+        let directSales = 0;
+        sales.forEach(s => {
+          if (s.setterName && s.setterId) {
+            if (!pairs[s.setterId]) pairs[s.setterId] = { setter: s.setterName, founders: {} };
+            const fid = s.sellerId || s.sellerName;
+            if (!pairs[s.setterId].founders[fid]) pairs[s.setterId].founders[fid] = { name: s.sellerName, count: 0, comm: 0 };
+            pairs[s.setterId].founders[fid].count++;
+            pairs[s.setterId].founders[fid].comm += (s.sellerSetupComm || 0) + (s.sellerRecComm || 0);
+          } else {
+            directSales++;
+          }
+        });
+        const pairEntries = Object.entries(pairs).sort((a, b) => {
+          const totalA = Object.values(a[1].founders).reduce((t, f) => t + f.count, 0);
+          const totalB = Object.values(b[1].founders).reduce((t, f) => t + f.count, 0);
+          return totalB - totalA;
+        });
+        if (pairEntries.length === 0) return null;
+
+        return (
+          <div className="bg-surface border border-b1 rounded-lg p-4">
+            <div className="text-[11px] font-bold text-t3 uppercase tracking-wider mb-3">
+              Setter → Closer — Quem originou, quem fechou
+            </div>
+            <div className="space-y-3">
+              {pairEntries.map(([sid, data]) => {
+                const totalFromSetter = Object.values(data.founders).reduce((t, f) => t + f.count, 0);
+                const foundersSorted = Object.values(data.founders).sort((a, b) => b.count - a.count);
+                return (
+                  <div key={sid} className="bg-elevated/50 rounded-lg p-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-vpurp text-xs font-bold">📞 {data.setter}</span>
+                      <span className="text-t4 text-xs">→ {totalFromSetter} vendas originadas</span>
+                    </div>
+                    <div className="space-y-1">
+                      {foundersSorted.map(f => {
+                        const pct = totalFromSetter > 0 ? Math.round((f.count / totalFromSetter) * 100) : 0;
+                        return (
+                          <div key={f.name} className="flex items-center gap-2">
+                            <span className="text-xs text-t2 w-28 truncate">{f.name}</span>
+                            <div className="flex-1 h-4 bg-overlay rounded-sm overflow-hidden relative">
+                              <div className="h-full bg-vgreen/60 rounded-sm transition-all" style={{ width: `${pct}%` }} />
+                              <span className="absolute inset-0 flex items-center justify-center text-[9px] font-mono font-bold text-t1">{f.count} ({pct}%)</span>
+                            </div>
+                            <span className="text-[10px] font-mono text-vgreen w-14 text-right">{fmt$(f.comm)}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+              {directSales > 0 && (
+                <div className="text-[10px] text-t4 text-center mt-1">
+                  + {directSales} venda(s) direta(s) sem setter
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Sale form */}
       {showForm && (
