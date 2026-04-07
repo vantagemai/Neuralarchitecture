@@ -47,7 +47,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
         email: email.toLowerCase().trim(),
         password,
         role,
-        plan: role === 'Setter' ? 'SETTER' : role === 'Founder' ? 'FOUNDER' : 'PARTNER',
+        plan: role === 'Setter' || role === 'Social Seller' ? 'SETTER' : role === 'Founder' ? 'FOUNDER' : 'PARTNER',
         active: true,
         createdAt: Date.now(),
       };
@@ -182,7 +182,8 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                   className="w-full bg-elevated border border-b1 rounded-lg px-4 py-3 text-sm text-t1 outline-none focus:border-vred/40 transition-colors appearance-none cursor-pointer"
                 >
                   <option value="Setter">Setter</option>
-                  <option value="Vendedor">Vendedor</option>
+                  <option value="Vendedor">Closer / Vendedor</option>
+                  <option value="Social Seller">Social Seller</option>
                 </select>
               </div>
             )}
