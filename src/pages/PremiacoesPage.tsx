@@ -1,12 +1,25 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Trophy, CheckCircle2, Clock, Crown } from 'lucide-react';
+import { Trophy, CheckCircle2, Clock, Crown, Gift } from 'lucide-react';
 import { db, getUsers, getMonthSales, getTodayFills, calcScore, fmt$, getSession } from '../lib/store';
 import { getStreak } from '../lib/streaks';
+import { getTotalFichas } from '../lib/xp';
 import { showToast } from '../components/ui/Toast';
 import { Badge } from '../components/ui/Badge';
 import { playAchievement } from '../lib/sounds';
 import { triggerConfetti } from '../components/ui/Confetti';
+
+// Prize catalog — real rewards redeemable with fichas
+const PRIZE_CATALOG = [
+  { id: 'caneca',  name: 'Caneca Vantagem',          fichas: 500,    icon: '☕',  tier: 1 },
+  { id: 'jantar',  name: 'Jantar com Acompanhante',   fichas: 2000,   icon: '🍽️', tier: 2 },
+  { id: 'viagem',  name: 'Viagem',                    fichas: 10000,  icon: '✈️',  tier: 3 },
+  { id: 'pcx',     name: 'Honda PCX 160',             fichas: 30000,  icon: '🏍️', tier: 4 },
+  { id: 'iphone',  name: 'iPhone 17 Pro Max',         fichas: 50000,  icon: '📱',  tier: 4 },
+  { id: 'macbook', name: 'MacBook Pro',               fichas: 60000,  icon: '💻',  tier: 5 },
+  { id: 'civic',   name: 'Honda Civic',               fichas: 150000, icon: '🚗',  tier: 6 },
+  { id: 'bmw',     name: 'BMW 320i',                  fichas: 300000, icon: '🏎️', tier: 7 },
+];
 
 interface PrizeWinner {
   odId: string;
@@ -138,6 +151,50 @@ export function PremiacoesPage() {
           <p className="text-[11px] text-t4 font-mono">Rankings ao vivo · Aprove vencedores</p>
         </div>
         <div className="text-[10px] font-mono text-t4">{new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }).toUpperCase()}</div>
+      </div>
+
+      {/* Prize Catalog — Fichas Redemption */}
+      <div className="bg-surface border border-b1 rounded-lg overflow-hidden">
+        <div className="px-5 py-3 border-b border-b1 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Gift size={14} className="text-vgold" />
+            <span className="text-[11px] font-bold text-vgold uppercase tracking-[0.12em] font-mono">Catalogo de Premios</span>
+          </div>
+          <div className="flex items-center gap-1.5 bg-vgold/10 border border-vgold/15 rounded-lg px-3 py-1">
+            <span className="text-sm">🪙</span>
+            <span className="text-sm font-bold font-mono text-vgold">{getTotalFichas(session?.id).toLocaleString()}</span>
+            <span className="text-[10px] text-t4">fichas</span>
+          </div>
+        </div>
+        <div className="p-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {PRIZE_CATALOG.map(prize => {
+            const myFichas = getTotalFichas(session?.id);
+            const pct = Math.min(100, Math.round((myFichas / prize.fichas) * 100));
+            const canRedeem = myFichas >= prize.fichas;
+            return (
+              <div key={prize.id} className={`rounded-lg border p-3 text-center transition-all ${
+                canRedeem ? 'border-vgreen/30 bg-vgreen/5 hover:border-vgreen/50' : 'border-b1 bg-elevated/30 hover:border-b2'
+              }`}>
+                <div className="text-2xl mb-2">{prize.icon}</div>
+                <div className="text-xs font-bold truncate">{prize.name}</div>
+                <div className="text-[10px] font-mono text-vgold mt-1">🪙 {prize.fichas.toLocaleString()}</div>
+                <div className="h-1.5 bg-overlay rounded-full overflow-hidden mt-2">
+                  <div className={`h-full rounded-full transition-all ${canRedeem ? 'bg-vgreen' : 'bg-vgold/50'}`}
+                    style={{ width: `${pct}%` }} />
+                </div>
+                <div className="text-[9px] text-t4 mt-1">{pct}%</div>
+                {canRedeem && (
+                  <button
+                    onClick={() => { showToast('success', `Resgate de ${prize.name} solicitado!`); playAchievement(); triggerConfetti(); }}
+                    className="mt-2 w-full text-[10px] font-bold bg-vgreen/15 hover:bg-vgreen/25 text-vgreen border border-vgreen/20 rounded px-2 py-1 transition-colors"
+                  >
+                    Resgatar
+                  </button>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* Month winners summary */}
