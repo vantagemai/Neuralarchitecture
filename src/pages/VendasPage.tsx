@@ -78,7 +78,7 @@ export function VendasPage() {
 
     if (!editingId) {
       const xpGained = awardSaleXp();
-      showToast('xp', `+${xpGained} XP`, 'Venda registrada!');
+      showToast('xp', `+${xpGained} Fichas`, 'Venda registrada!');
       triggerConfetti();
       playSale();
       broadcastNotification({

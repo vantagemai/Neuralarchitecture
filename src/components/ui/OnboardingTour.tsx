@@ -13,8 +13,8 @@ const STEPS: Step[] = [
   { title: 'Dashboard', description: 'Visao geral do time: KPIs, graficos, atividade do dia.', icon: '📊', link: '/' },
   { title: 'Fill Diario', description: 'Registre sua atividade de prospeccao por canal, todos os dias.', icon: '📋', link: '/fill' },
   { title: 'Vendas', description: 'Registre vendas e acompanhe suas comissoes em tempo real.', icon: '💰', link: '/vendas' },
-  { title: 'Ranking', description: 'Compare seu desempenho com o time. Atividade, receita e XP.', icon: '🏆', link: '/ranking' },
-  { title: 'Conquistas', description: 'Desbloqueie badges, suba de nivel e acompanhe seu XP.', icon: '⭐', link: '/badges' },
+  { title: 'Ranking', description: 'Compare seu desempenho com o time. Atividade, receita e fichas.', icon: '🏆', link: '/ranking' },
+  { title: 'Conquistas', description: 'Desbloqueie badges, suba de nivel e acumule fichas.', icon: '⭐', link: '/badges' },
 ];
 
 function onboardingKey(): string {

@@ -57,12 +57,12 @@ export function FillPage() {
     const totalContacts = Object.values(channels).reduce((t, ch) => t + (parseInt(ch.a) || 0), 0);
     const totalResponses = Object.values(channels).reduce((t, ch) => t + (parseInt(ch.b) || 0), 0);
 
-    // Award XP
+    // Award Fichas
     const xpGained = awardFillXp(totalContacts, totalResponses);
     if (xpGained > 0) {
-      showToast('xp', `+${xpGained} XP`, 'Fill diario registrado');
+      showToast('xp', `+${xpGained} Fichas`, 'Fill diario registrado');
       playSuccess();
-      addNotification({ type: 'badge', title: `+${xpGained} XP ganho`, detail: `${totalContacts} contatos, ${totalResponses} respostas`, icon: '⚡' });
+      addNotification({ type: 'badge', title: `+${xpGained} fichas ganhas`, detail: `${totalContacts} contatos, ${totalResponses} respostas`, icon: '🪙' });
     }
 
     // Update streak

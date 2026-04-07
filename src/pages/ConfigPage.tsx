@@ -139,7 +139,7 @@ export function ConfigPage() {
 
         {/* Clear Data */}
         <div className="mb-4 pb-4 border-b border-b1">
-          <p className="text-xs text-t3 mb-3">Remove todos os dados (usuarios, vendas, fills, XP, etc.) para comecar do zero. Configuracoes sao preservadas.</p>
+          <p className="text-xs text-t3 mb-3">Remove todos os dados (usuarios, vendas, fills, fichas, etc.) para comecar do zero. Configuracoes sao preservadas.</p>
           <button
             onClick={() => {
               const pin = window.prompt('Digite a senha de 4 digitos para confirmar:');
@@ -157,7 +157,7 @@ export function ConfigPage() {
 
         {/* Demo Seed */}
         <div>
-          <p className="text-xs text-t3 mb-3">Gera 100 usuarios com 90 dias de dados realistas — vendas, fills, XP, streaks, conquistas, pipeline. Ideal para apresentacao ao time.</p>
+          <p className="text-xs text-t3 mb-3">Gera 100 usuarios com 90 dias de dados realistas — vendas, fills, fichas, streaks, conquistas, pipeline. Ideal para apresentacao ao time.</p>
           <button
             onClick={async () => {
               if (!window.confirm('Isso vai limpar os dados atuais e gerar 100 usuarios demo com 90 dias de historico. Continuar?')) return;

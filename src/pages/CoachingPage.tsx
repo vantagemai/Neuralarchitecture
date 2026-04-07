@@ -85,7 +85,7 @@ export function CoachingPage() {
                     <span className={`text-[10px] ${level.color}`}>{level.icon}</span>
                   </div>
                   <div className="text-[10px] text-t4">
-                    {u.role} · {getTotalXp(u.id)} XP
+                    {u.role} · 🪙 {getTotalXp(u.id)}
                     {streak.current > 0 && <> · 🔥{streak.current}d</>}
                   </div>
                 </div>

@@ -55,7 +55,7 @@ export function PerfilPage() {
     { m: 'Atividade', v: scorecard.activity },
     { m: 'Receita', v: scorecard.revenue },
     { m: 'Consistencia', v: scorecard.consistency },
-    { m: 'XP', v: scorecard.xp },
+    { m: 'Fichas', v: scorecard.xp },
     { m: 'Badges', v: scorecard.badges },
   ];
 
@@ -78,16 +78,16 @@ export function PerfilPage() {
           <div className="flex items-center gap-3 mt-1.5">
             <Badge variant={roleVariant(user.role)}>{user.role}</Badge>
             <span className={`text-sm font-bold ${level.color}`}>{level.icon} {level.name}</span>
-            <span className="text-xs font-mono text-vgold neon-gold">{xp.toLocaleString()} XP</span>
+            <span className="text-xs font-mono text-vgold neon-gold">🪙 {xp.toLocaleString()}</span>
             {streak.current > 0 && <span className="text-xs font-mono text-orange-400">🔥 {streak.current}d</span>}
           </div>
-          {/* XP progress */}
+          {/* Fichas progress */}
           {next && (
             <div className="flex items-center gap-2 mt-2">
               <div className="flex-1 max-w-[200px] h-2 bg-overlay rounded-sm overflow-hidden">
                 <div className="h-full bg-vred rounded-sm transition-all" style={{ width: `${progress}%` }} />
               </div>
-              <span className="text-[10px] text-t4 font-mono">{xpNeeded} XP para {next.icon} {next.name}</span>
+              <span className="text-[10px] text-t4 font-mono">{xpNeeded} fichas para {next.icon} {next.name}</span>
             </div>
           )}
         </div>
