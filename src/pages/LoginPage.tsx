@@ -79,8 +79,8 @@ export function LoginPage({ onLogin }: LoginPageProps) {
         backgroundImage: 'linear-gradient(rgba(241,16,19,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(241,16,19,.5) 1px, transparent 1px)',
         backgroundSize: '60px 60px'
       }} />
-      <div className="fixed top-[-20%] right-[-10%] w-[500px] h-[500px] rounded-full bg-vred/5 blur-[120px]" />
-      <div className="fixed bottom-[-20%] left-[-10%] w-[400px] h-[400px] rounded-full bg-vpurp/5 blur-[100px]" />
+      <div className="fixed top-[-20%] right-[-10%] w-[50vw] max-w-[500px] h-[50vw] max-h-[500px] rounded-full bg-vred/5 blur-[120px]" />
+      <div className="fixed bottom-[-20%] left-[-10%] w-[40vw] max-w-[400px] h-[40vw] max-h-[400px] rounded-full bg-vpurp/5 blur-[100px]" />
 
       <div className="relative w-full max-w-md animate-in">
         {/* Logo */}

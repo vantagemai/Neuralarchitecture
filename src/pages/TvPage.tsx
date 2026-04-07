@@ -350,7 +350,7 @@ export function TvPage() {
       )}
 
       {/* Hero KPIs */}
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
           { val: `${animFill}%`, label: 'FILL HOJE', color: filledPct >= 100 ? 'text-vgreen' : 'text-vred', bg: filledPct >= 100 ? 'from-vgreen/10 to-vgreen/5' : 'from-vred/10 to-vred/5' },
           { val: animScore.toLocaleString(), label: 'SCORE TOTAL', color: 'text-vred', bg: 'from-vred/10 to-vred/5' },
@@ -379,11 +379,11 @@ export function TvPage() {
       </div>
 
       {/* Groups grid — each role group gets its own section */}
-      <div className={`flex-1 grid gap-3 min-h-0 ${
-        activeGroups.length <= 2 ? 'grid-cols-2' :
-        activeGroups.length <= 3 ? 'grid-cols-3' :
-        activeGroups.length <= 4 ? 'grid-cols-2 grid-rows-2' :
-        'grid-cols-3 grid-rows-2'
+      <div className={`flex-1 grid gap-3 min-h-0 grid-cols-1 ${
+        activeGroups.length <= 2 ? 'md:grid-cols-2' :
+        activeGroups.length <= 3 ? 'md:grid-cols-2 xl:grid-cols-3' :
+        activeGroups.length <= 4 ? 'md:grid-cols-2' :
+        'md:grid-cols-2 xl:grid-cols-3'
       }`}>
         {activeGroups.map(g => (
           <GroupSection

@@ -85,7 +85,7 @@ export function IdentidadePage() {
         </div>
 
         <div className="bg-surface border border-b1 rounded-lg p-4 space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="text-[11px] text-t3 uppercase tracking-wider font-semibold">Meta mensal (USD)</label>
               <input type="number" value={form.metaM} onChange={e => setForm({ ...form, metaM: e.target.value })} placeholder="5000"

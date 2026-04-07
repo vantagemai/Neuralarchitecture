@@ -128,7 +128,7 @@ export function Toolbar({ userName, onLogout, onToggleSidebar, onAvatarChange }:
             </button>
           )}
           {showSearch && (
-            <div className="absolute top-full left-0 right-0 mt-px bg-surface border border-b1 shadow-xl z-50 overflow-hidden w-64">
+            <div className="absolute top-full left-0 mt-px bg-surface border border-b1 shadow-xl z-50 overflow-hidden w-64 max-w-[calc(100vw-2rem)]">
               {searchResults.map((r, i) => (
                 <a key={i} href={`/Neuralarchitecture${r.url}`}
                   className="flex items-center gap-2 px-3 py-1.5 hover:bg-elevated transition-colors text-[11px]"
@@ -160,7 +160,7 @@ export function Toolbar({ userName, onLogout, onToggleSidebar, onAvatarChange }:
             {unreadCount > 0 && <span className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-vred text-white text-[7px] flex items-center justify-center font-bold">{unreadCount > 9 ? '9+' : unreadCount}</span>}
           </button>
           {showNotifs && (
-            <div className="absolute right-0 top-full mt-px w-72 bg-surface border border-b1 shadow-xl z-50" onClick={e => e.stopPropagation()}>
+            <div className="absolute right-0 top-full mt-px w-72 max-w-[calc(100vw-2rem)] bg-surface border border-b1 shadow-xl z-50" onClick={e => e.stopPropagation()}>
               <div className="h-6 bg-elevated/50 border-b border-b1 px-2 flex items-center">
                 <span className="text-[10px] text-t3 uppercase tracking-wider">Notificacoes</span>
               </div>
