@@ -33,7 +33,7 @@ const PANEL_DURATION = 10000;
 const PANEL_LABELS: Record<Panel, string> = {
   activity: '📊 ATIVIDADE',
   revenue: '💰 RECEITA',
-  xp: '⚡ XP',
+  xp: '🪙 FICHAS',
   streaks: '🔥 STREAKS',
   achievements: '⭐ CONQUISTAS',
 };
@@ -180,7 +180,7 @@ function GroupSection({ group, users, fills, sales, panel }: {
         if (revSorted.length === 0) return <div className="text-center py-4 text-t4 text-sm">Sem vendas</div>;
         return revSorted.map((r, i) => renderRow(i, r.id, r.name, fmt$(r.comm), Math.round((r.comm / maxComm) * 100), `${r.cnt} venda(s)`));
       case 'xp':
-        if (xpData.length === 0) return <div className="text-center py-4 text-t4 text-sm">Sem XP</div>;
+        if (xpData.length === 0) return <div className="text-center py-4 text-t4 text-sm">Sem fichas</div>;
         return xpData.map((u, i) => renderRow(i, u.id, u.name, u.xp.toLocaleString(), Math.round((u.xp / (xpData[0]?.xp || 1)) * 100), `${u.level.icon} ${u.level.name}`));
       case 'streaks':
         if (streakData.length === 0) return <div className="text-center py-4 text-t4 text-sm">Nenhum streak</div>;

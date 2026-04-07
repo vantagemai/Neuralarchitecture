@@ -181,7 +181,7 @@ export function TimePage() {
                         <div className="text-[11px] text-t4 font-mono">{u.email}</div>
                       </div>
                       <Badge variant={roleVariant(u.role)}>{u.role}</Badge>
-                      <span className="text-[10px] text-t4 font-mono">{getTotalXp(u.id)} XP</span>
+                      <span className="text-[10px] text-t4 font-mono">🪙 {getTotalXp(u.id)}</span>
                       {getStreak(u.id).current > 0 && <span className="text-[10px] text-orange-400">🔥{getStreak(u.id).current}</span>}
                       <button onClick={() => { setGoalsId(goalsId === u.id ? null : u.id); setEditGoals(getGoals(u.id)); }} className="p-2 text-t4 hover:text-vgold transition-colors" title="Metas">
                         <Target size={14} />

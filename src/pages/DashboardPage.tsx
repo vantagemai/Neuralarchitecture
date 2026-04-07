@@ -135,7 +135,7 @@ export function DashboardPage() {
             <h1 className="text-lg font-bold font-mono">{greeting}, {session?.name?.split(' ')[0] || 'User'}</h1>
             <div className="flex items-center gap-3">
               <span className={`text-[10px] font-bold font-mono ${myLevel.color}`}>{myLevel.icon} {myLevel.name}</span>
-              <span className="text-[10px] font-mono text-vgold neon-gold">{myXp.toLocaleString()} XP</span>
+              <span className="text-[10px] font-mono text-vgold neon-gold">🪙 {myXp.toLocaleString()} Fichas</span>
               {myStreak.current > 0 && <span className="text-[10px] font-mono text-orange-400">🔥{myStreak.current}d</span>}
             </div>
           </div>
@@ -214,7 +214,7 @@ export function DashboardPage() {
           { metric: 'Atividade', value: sc.activity },
           { metric: 'Receita', value: sc.revenue },
           { metric: 'Consistencia', value: sc.consistency },
-          { metric: 'XP', value: sc.xp },
+          { metric: 'Fichas', value: sc.xp },
           { metric: 'Badges', value: sc.badges },
         ];
         return (

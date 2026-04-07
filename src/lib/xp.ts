@@ -1,7 +1,7 @@
 import { db, getSession } from './store';
 
-// XP values per action
-export const XP_VALUES = {
+// Ficha values per action (formerly XP)
+export const FICHA_VALUES = {
   fill_contact: 1,       // per contact in fill
   fill_response: 2,      // per response in fill
   fill_complete: 10,     // bonus for completing daily fill
@@ -13,16 +13,22 @@ export const XP_VALUES = {
   streak_60d: 1000,      // 60-day streak bonus
 } as const;
 
-export interface XpEvent {
-  type: keyof typeof XP_VALUES;
+/** @deprecated Use FICHA_VALUES */
+export const XP_VALUES = FICHA_VALUES;
+
+export interface FichaEvent {
+  type: keyof typeof FICHA_VALUES;
   amount: number;
   ts: number;
   description: string;
 }
 
-function xpKey(userId?: string): string {
+/** @deprecated Use FichaEvent */
+export type XpEvent = FichaEvent;
+
+function fichaKey(userId?: string): string {
   const id = userId || getSession()?.id || 'anon';
-  return `xp_${id}`;
+  return `xp_${id}`; // keep storage key for backward compat
 }
 
 function eventsKey(userId?: string): string {
@@ -30,21 +36,27 @@ function eventsKey(userId?: string): string {
   return `xp_events_${id}`;
 }
 
-export function getTotalXp(userId?: string): number {
-  return db.get<number>(xpKey(userId)) || 0;
+export function getTotalFichas(userId?: string): number {
+  return db.get<number>(fichaKey(userId)) || 0;
 }
 
-export function getXpEvents(userId?: string): XpEvent[] {
-  return db.get<XpEvent[]>(eventsKey(userId)) || [];
+/** @deprecated Use getTotalFichas */
+export const getTotalXp = getTotalFichas;
+
+export function getFichaEvents(userId?: string): FichaEvent[] {
+  return db.get<FichaEvent[]>(eventsKey(userId)) || [];
 }
 
-export function awardXp(type: keyof typeof XP_VALUES, amount?: number, description?: string, userId?: string): number {
-  const pts = amount ?? XP_VALUES[type];
-  const total = getTotalXp(userId) + pts;
-  db.set(xpKey(userId), total);
+/** @deprecated Use getFichaEvents */
+export const getXpEvents = getFichaEvents;
+
+export function awardFichas(type: keyof typeof FICHA_VALUES, amount?: number, description?: string, userId?: string): number {
+  const pts = amount ?? FICHA_VALUES[type];
+  const total = getTotalFichas(userId) + pts;
+  db.set(fichaKey(userId), total);
 
   // Log event (keep last 100)
-  const events = getXpEvents(userId);
+  const events = getFichaEvents(userId);
   events.unshift({
     type,
     amount: pts,
@@ -57,21 +69,30 @@ export function awardXp(type: keyof typeof XP_VALUES, amount?: number, descripti
   return pts;
 }
 
-// Calculate XP from a fill submission
-export function awardFillXp(contacts: number, responses: number): number {
+/** @deprecated Use awardFichas */
+export const awardXp = awardFichas;
+
+// Calculate fichas from a fill submission
+export function awardFillFichas(contacts: number, responses: number): number {
   let total = 0;
   if (contacts > 0) {
-    total += awardXp('fill_contact', contacts * XP_VALUES.fill_contact, `${contacts} contatos`);
+    total += awardFichas('fill_contact', contacts * FICHA_VALUES.fill_contact, `${contacts} contatos`);
   }
   if (responses > 0) {
-    total += awardXp('fill_response', responses * XP_VALUES.fill_response, `${responses} respostas`);
+    total += awardFichas('fill_response', responses * FICHA_VALUES.fill_response, `${responses} respostas`);
   }
   if (contacts > 0) {
-    total += awardXp('fill_complete', XP_VALUES.fill_complete, 'Fill diario completo');
+    total += awardFichas('fill_complete', FICHA_VALUES.fill_complete, 'Fill diario completo');
   }
   return total;
 }
 
-export function awardSaleXp(): number {
-  return awardXp('sale_setup', XP_VALUES.sale_setup, 'Venda registrada');
+/** @deprecated Use awardFillFichas */
+export const awardFillXp = awardFillFichas;
+
+export function awardSaleFichas(): number {
+  return awardFichas('sale_setup', FICHA_VALUES.sale_setup, 'Venda registrada');
 }
+
+/** @deprecated Use awardSaleFichas */
+export const awardSaleXp = awardSaleFichas;

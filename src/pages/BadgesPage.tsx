@@ -27,7 +27,7 @@ export function BadgesPage() {
       {/* Header stats */}
       <div>
         <h1 className="text-lg font-bold">Conquistas</h1>
-        <p className="text-sm text-t3 mt-1">Seus badges, XP e progresso</p>
+        <p className="text-sm text-t3 mt-1">Seus badges, fichas e progresso</p>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -61,7 +61,7 @@ export function BadgesPage() {
               <span>{next.icon}</span>
               <span className={`text-sm font-bold ${next.color}`}>{next.name}</span>
             </div>
-            <span className="text-xs text-t3 font-mono">{xpNeeded.toLocaleString()} XP restam</span>
+            <span className="text-xs text-t3 font-mono">🪙 {xpNeeded.toLocaleString()} fichas restam</span>
           </div>
           <div className="h-2 bg-overlay rounded-sm overflow-hidden">
             <div className="h-full bg-gradient-to-r from-vred to-vgold rounded-full transition-all duration-1000" style={{ width: `${progress}%` }} />

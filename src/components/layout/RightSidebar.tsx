@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronRight, ChevronLeft, Flame, Target, Star, Zap, Car, Home, Dumbbell, Sparkles } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Flame, Target, Star, Car, Home, Dumbbell, Sparkles } from 'lucide-react';
 import { db, getSession, getMonthSales, fmt$ } from '../../lib/store';
 import { getLevel } from '../../lib/levels';
 import { getStreak } from '../../lib/streaks';
@@ -86,7 +86,7 @@ export function RightSidebar() {
             <span className={`text-[11px] font-bold ${level.color}`}>{level.name}</span>
           </div>
           <div className="flex items-center justify-center gap-3 mt-2 text-[10px] font-mono">
-            <span className="text-vgold flex items-center gap-0.5"><Zap size={10} />{xp.toLocaleString()} XP</span>
+            <span className="text-vgold flex items-center gap-0.5">🪙 {xp.toLocaleString()} Fichas</span>
             {streak.current > 0 && (
               <span className="text-orange-400 flex items-center gap-0.5"><Flame size={10} />{streak.current}d</span>
             )}
@@ -135,7 +135,7 @@ export function RightSidebar() {
               { label: 'Atividade', value: scorecard.activity, color: 'bg-vred' },
               { label: 'Receita', value: scorecard.revenue, color: 'bg-vgreen' },
               { label: 'Consistencia', value: scorecard.consistency, color: 'bg-vgold' },
-              { label: 'XP', value: scorecard.xp, color: 'bg-vpurp' },
+              { label: 'Fichas', value: scorecard.xp, color: 'bg-vpurp' },
               { label: 'Badges', value: scorecard.badges, color: 'bg-vblue' },
             ].map(m => (
               <div key={m.label}>

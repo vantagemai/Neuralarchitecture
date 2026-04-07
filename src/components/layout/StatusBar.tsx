@@ -25,7 +25,7 @@ export function StatusBar() {
           {online ? 'Conectado' : 'Offline'}
         </span>
         <span className="text-t2">{level.icon} {level.name}</span>
-        <span className="text-t2 font-mono">{xp.toLocaleString()} XP</span>
+        <span className="text-t2 font-mono">🪙 {xp.toLocaleString()}</span>
         {streak.current > 0 && <span className="text-t2">{streak.current}d streak</span>}
       </div>
       <div className="flex items-center gap-4">

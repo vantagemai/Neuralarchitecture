@@ -1,5 +1,5 @@
 import { db, getSession } from './store';
-import { getTotalXp } from './xp';
+import { getTotalFichas } from './xp';
 import { getStreak } from './streaks';
 import { insertAchievement as syncAchievement } from './supabaseSync';
 
@@ -35,12 +35,10 @@ function unlockAchievement(achievementId: string, userId?: string): void {
   if (list.some(a => a.id === achievementId)) return;
   list.push({ id: achievementId, unlockedAt: Date.now() });
   db.set(achKey(userId), list);
-  // Sync to Supabase
   const id = userId || getSession()?.id || 'anon';
   syncAchievement(id, achievementId);
 }
 
-// Count fills for user
 function countFills(userId?: string): number {
   const id = userId || getSession()?.id || 'anon';
   return db.list(`ops_fill_`).filter(k => {
@@ -49,7 +47,6 @@ function countFills(userId?: string): number {
   }).length;
 }
 
-// Count sales for user
 function countSales(userId?: string): number {
   const id = userId || getSession()?.id || 'anon';
   return db.list('ops_sale_').filter(k => {
@@ -82,17 +79,21 @@ export const ACHIEVEMENTS: Achievement[] = [
     check: (uid) => getStreak(uid).best >= 14 },
   { id: 'streak_30', name: 'Mes de Ferro', description: '30 dias consecutivos de fill', icon: '🏆', category: 'streak',
     check: (uid) => getStreak(uid).best >= 30 },
-  { id: 'streak_60', name: 'Inarparavel', description: '60 dias consecutivos de fill', icon: '👑', category: 'streak',
+  { id: 'streak_60', name: 'Imparavel', description: '60 dias consecutivos de fill', icon: '👑', category: 'streak',
     check: (uid) => getStreak(uid).best >= 60 },
 
-  // Milestones
-  { id: 'xp_1000', name: '1K Club', description: 'Alcance 1.000 XP', icon: '⭐', category: 'milestone',
-    check: (uid) => getTotalXp(uid) >= 1000 },
-  { id: 'xp_10000', name: '10K Club', description: 'Alcance 10.000 XP', icon: '🌟', category: 'milestone',
-    check: (uid) => getTotalXp(uid) >= 10000 },
+  // Milestones (Fichas)
+  { id: 'fichas_1000', name: '1K Fichas', description: 'Alcance 1.000 fichas', icon: '🪙', category: 'milestone',
+    check: (uid) => getTotalFichas(uid) >= 1000 },
+  { id: 'fichas_10000', name: '10K Fichas', description: 'Alcance 10.000 fichas', icon: '🪙', category: 'milestone',
+    check: (uid) => getTotalFichas(uid) >= 10000 },
+  // Legacy compat: also check old xp_1000/xp_10000 ids
+  { id: 'xp_1000', name: '1K Fichas', description: 'Alcance 1.000 fichas', icon: '🪙', category: 'milestone',
+    check: (uid) => getTotalFichas(uid) >= 1000 },
+  { id: 'xp_10000', name: '10K Fichas', description: 'Alcance 10.000 fichas', icon: '🪙', category: 'milestone',
+    check: (uid) => getTotalFichas(uid) >= 10000 },
 ];
 
-// Check all achievements and return newly unlocked ones
 export function checkAchievements(userId?: string): Achievement[] {
   const newlyUnlocked: Achievement[] = [];
   for (const ach of ACHIEVEMENTS) {

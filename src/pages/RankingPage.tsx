@@ -113,7 +113,7 @@ export function RankingPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-lg font-bold">Ranking</h1>
-          <p className="text-sm text-t3 mt-1">Atividade vs Resultado vs XP</p>
+          <p className="text-sm text-t3 mt-1">Atividade vs Resultado vs Fichas</p>
         </div>
         <select value={month} onChange={e => setMonth(e.target.value)}
           className="bg-elevated border border-b1 rounded-lg px-3 py-2 text-sm font-mono outline-none cursor-pointer">
@@ -128,7 +128,7 @@ export function RankingPage() {
           <div className={`text-xs font-bold ${myLevel.color}`}>{myLevel.name}</div>
         </div>
         <div className="bg-surface border border-b1 rounded-lg p-3 text-center">
-          <div className="font-mono text-sm font-bold text-vgold">{myXp.toLocaleString()} XP</div>
+          <div className="font-mono text-sm font-bold text-vgold">🪙 {myXp.toLocaleString()}</div>
         </div>
         <div className="bg-surface border border-b1 rounded-lg p-3 text-center">
           <div className="font-mono text-sm font-bold text-orange-400">🔥 {myStreak.current}d</div>
@@ -152,7 +152,7 @@ export function RankingPage() {
         {[
           { key: 'activity' as Tab, label: '📊 Atividade Hoje' },
           { key: 'revenue' as Tab, label: '💰 Receita Mes' },
-          { key: 'xp' as Tab, label: '⚡ XP Total' },
+          { key: 'xp' as Tab, label: '🪙 Fichas Total' },
         ].map(t => (
           <button
             key={t.key}
@@ -238,7 +238,7 @@ export function RankingPage() {
         )}
 
         {tab === 'xp' && (
-          xpData.length === 0 ? emptyMsg('Nenhum XP registrado ainda') : (
+          xpData.length === 0 ? emptyMsg('Nenhuma ficha registrada ainda') : (
             <div className="divide-y divide-b1">
               {xpData.map((person, i) => (
                 <div key={person.id} className={`px-5 py-4 hover:bg-elevated/30 transition-colors ${person.id === session?.id ? 'bg-vgold/5 border-l-2 border-l-vgold' : ''}`}>
@@ -258,7 +258,7 @@ export function RankingPage() {
                         <span className="text-[10px] text-vpurp">{person.badges} badges</span>
                       </div>
                     </div>
-                    <span className="font-mono font-bold text-vgold">{person.xp.toLocaleString()} XP</span>
+                    <span className="font-mono font-bold text-vgold">🪙 {person.xp.toLocaleString()}</span>
                   </div>
                   <div className="ml-10 mt-2 h-2 bg-overlay rounded-sm overflow-hidden">
                     <div className="h-full bg-gradient-to-r from-vgold-dark to-vgold rounded-sm transition-all duration-1000" style={{ width: `${Math.round((person.xp / maxXp) * 100)}%` }} />
