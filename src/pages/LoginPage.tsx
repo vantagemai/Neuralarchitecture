@@ -183,8 +183,6 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                 >
                   <option value="Setter">Setter</option>
                   <option value="Vendedor">Vendedor</option>
-                  <option value="Partner">Partner</option>
-                  <option value="Founder">Founder</option>
                 </select>
               </div>
             )}
