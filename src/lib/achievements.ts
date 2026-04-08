@@ -87,11 +87,6 @@ export const ACHIEVEMENTS: Achievement[] = [
     check: (uid) => getTotalFichas(uid) >= 1000 },
   { id: 'fichas_10000', name: '10K Fichas', description: 'Alcance 10.000 fichas', icon: '🪙', category: 'milestone',
     check: (uid) => getTotalFichas(uid) >= 10000 },
-  // Legacy compat: also check old xp_1000/xp_10000 ids
-  { id: 'xp_1000', name: '1K Fichas', description: 'Alcance 1.000 fichas', icon: '🪙', category: 'milestone',
-    check: (uid) => getTotalFichas(uid) >= 1000 },
-  { id: 'xp_10000', name: '10K Fichas', description: 'Alcance 10.000 fichas', icon: '🪙', category: 'milestone',
-    check: (uid) => getTotalFichas(uid) >= 10000 },
 ];
 
 export function checkAchievements(userId?: string): Achievement[] {

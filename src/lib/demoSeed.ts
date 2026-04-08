@@ -303,8 +303,8 @@ export async function runDemoSeed(): Promise<{ users: number; sales: number; fil
     if (best >= 14) addAch('streak_14', rand(10, 40));
     if (best >= 30) addAch('streak_30', rand(5, 20));
     if (best >= 60) addAch('streak_60', rand(1, 10));
-    if (xp >= 1000) addAch('xp_1000', rand(20, 60));
-    if (xp >= 10000) addAch('xp_10000', rand(1, 20));
+    if (xp >= 1000) addAch('fichas_1000', rand(20, 60));
+    if (xp >= 10000) addAch('fichas_10000', rand(1, 20));
     bulkSet(`achievements_${u.id}`, achs);
 
     // Goals

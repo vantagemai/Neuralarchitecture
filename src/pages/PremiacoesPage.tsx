@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Trophy, CheckCircle2, Clock, Crown, Gift } from 'lucide-react';
 import { db, getUsers, getMonthSales, getTodayFills, calcScore, fmt$, getSession } from '../lib/store';
 import { getStreak } from '../lib/streaks';
+import { getMonthBonus } from '../lib/bonus';
 import { getTotalFichas } from '../lib/xp';
 import { showToast } from '../components/ui/Toast';
 import { Badge } from '../components/ui/Badge';
@@ -196,6 +197,53 @@ export function PremiacoesPage() {
           })}
         </div>
       </div>
+
+      {/* Setter Bonus — $100/10 meetings */}
+      {(() => {
+        const setters = users.filter(u => u.role === 'Setter' || u.role === 'Social Seller');
+        if (setters.length === 0) return null;
+        const bonusData = setters.map(u => ({ ...u, ...getMonthBonus(u.id) })).sort((a, b) => b.meetings - a.meetings);
+        const totalBonusPaid = bonusData.reduce((t, s) => t + s.bonus, 0);
+        return (
+          <div className="bg-surface border border-b1 rounded-lg overflow-hidden">
+            <div className="px-5 py-3 border-b border-b1 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-sm">🎯</span>
+                <span className="text-[11px] font-bold text-vgold uppercase tracking-[0.12em] font-mono">Bonus Setter — $100 / 10 Reunioes</span>
+              </div>
+              <div className="text-xs font-mono text-vgold">${totalBonusPaid} total pago</div>
+            </div>
+            <div className="divide-y divide-b1">
+              {bonusData.map(s => (
+                <div key={s.id} className="flex items-center gap-3 px-5 py-3 hover:bg-elevated/30 transition-colors">
+                  {(() => {
+                    const av = localStorage.getItem(`vantagem_avatar_${s.id}`);
+                    const ini = s.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
+                    return av
+                      ? <img src={av} alt="" className="w-8 h-8 rounded-full object-cover border border-b1 shrink-0" />
+                      : <div className="w-8 h-8 rounded-full bg-gradient-to-br from-vpurp to-vpurp-light flex items-center justify-center text-white text-[10px] font-bold shrink-0">{ini}</div>;
+                  })()}
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold truncate">{s.name}</div>
+                    <div className="text-[10px] text-t4">{s.meetings} reunioes realizadas · {s.cyclesDone} ciclos completos</div>
+                  </div>
+                  <div className="w-24">
+                    <div className="h-1.5 bg-overlay rounded-full overflow-hidden">
+                      <div className="h-full bg-vgold rounded-full" style={{ width: `${s.progress}%` }} />
+                    </div>
+                    <div className="text-[9px] text-t4 text-center mt-0.5">
+                      {s.nextAt > 0 && s.meetings > 0 ? `${s.nextAt} para +$100` : s.meetings > 0 ? 'Ciclo!' : '—'}
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div className={`font-mono font-bold text-sm ${s.bonus > 0 ? 'text-vgold' : 'text-t4'}`}>${s.bonus}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Month winners summary */}
       {monthWinners.length > 0 && (

@@ -21,8 +21,7 @@ export function BadgesPage() {
     { key: 'milestone', label: 'Milestones', icon: '🪙' },
   ];
 
-  // Deduplicate achievements (remove legacy xp_1000/xp_10000 if fichas_ versions exist)
-  const uniqueAchs = ACHIEVEMENTS.filter(a => !a.id.startsWith('xp_'));
+  const uniqueAchs = ACHIEVEMENTS;
 
   return (
     <div className="space-y-4 animate-in">

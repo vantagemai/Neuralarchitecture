@@ -11,6 +11,7 @@ import { triggerConfetti } from '../components/ui/Confetti';
 import { playSuccess, playAchievement } from '../lib/sounds';
 import { addNotification } from '../lib/notifications';
 import { getGoalProgress } from '../lib/goals';
+import { getMonthBonus } from '../lib/bonus';
 
 export function FillPage() {
   const session = getSession();
@@ -124,6 +125,52 @@ export function FillPage() {
           </span>
         </div>
       )}
+
+      {/* Setter Bonus Card — $100 per 10 meetings */}
+      {(() => {
+        const isSetter = session?.role === 'Setter' || session?.role === 'Social Seller';
+        if (!isSetter) return null;
+        const b = getMonthBonus(userId);
+        return (
+          <div className="bg-surface border border-vgold/20 border-l-[3px] border-l-vgold rounded-lg p-4">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <span className="text-lg">🎯</span>
+                <div>
+                  <div className="text-xs font-bold text-vgold uppercase tracking-wider">Bonus Setter</div>
+                  <div className="text-[10px] text-t4">$100 a cada 10 reunioes realizadas</div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="font-mono text-lg font-bold text-vgold">${b.bonus}</div>
+                <div className="text-[10px] text-t4">acumulado no mes</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="flex-1">
+                <div className="flex justify-between text-[10px] text-t3 mb-1">
+                  <span>{b.meetings} reunioes realizadas</span>
+                  <span>{b.meetings > 0 && b.nextAt > 0 ? `faltam ${b.nextAt} para +$100` : b.meetings > 0 ? 'Ciclo completo!' : 'Preencha visitas realizadas'}</span>
+                </div>
+                <div className="h-2 bg-overlay rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-vgold-dark to-vgold rounded-full transition-all duration-700"
+                    style={{ width: `${b.progress}%` }} />
+                </div>
+              </div>
+              {/* Cycle dots */}
+              <div className="flex gap-1 shrink-0">
+                {Array.from({ length: Math.min(10, Math.max(1, b.cyclesDone + 1)) }, (_, i) => (
+                  <div key={i} className={`w-3 h-3 rounded-full border ${
+                    i < b.cyclesDone
+                      ? 'bg-vgold border-vgold'
+                      : 'border-vgold/30 bg-transparent'
+                  }`} />
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Goal progress */}
       {(() => {

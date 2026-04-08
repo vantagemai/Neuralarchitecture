@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { getUsers, getTodayFills, getMonthSales, calcScore, fmt$, db, type UserData, type FillData, type SaleData } from '../lib/store';
-import { getTotalXp } from '../lib/xp';
+import { getTotalFichas } from '../lib/xp';
 import { getStreak } from '../lib/streaks';
 import { getLevelByXp } from '../lib/levels';
 import { getUnlocked, ACHIEVEMENTS } from '../lib/achievements';
@@ -123,7 +123,7 @@ function GroupSection({ group, users, fills, sales, panel }: {
 
   // XP data
   const xpData = users.map(u => {
-    const xp = getTotalXp(u.id);
+    const xp = getTotalFichas(u.id);
     return { id: u.id, name: u.name, xp, level: getLevelByXp(xp) };
   }).filter(u => u.xp > 0).sort((a, b) => b.xp - a.xp).slice(0, 5);
 
