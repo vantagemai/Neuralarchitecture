@@ -42,7 +42,7 @@ type Role = 'Founder' | 'Partner' | 'Vendedor' | 'Setter';
 
 interface ChannelRange { min: number; max: number }
 const CHANNEL_RANGES: Record<Role, Record<string, ChannelRange>> = {
-  Setter:   { coldcall: {min:20,max:60}, instagram: {min:15,max:50}, whatsapp: {min:10,max:30}, calls: {min:3,max:10}, visitas: {min:0,max:2} },
+  Setter:   { coldcall: {min:20,max:60}, instagram: {min:15,max:50}, whatsapp: {min:10,max:30}, calls: {min:3,max:10}, visitas: {min:3,max:8} },
   Vendedor: { coldcall: {min:5,max:25},  instagram: {min:10,max:35}, whatsapp: {min:10,max:30}, calls: {min:10,max:30}, visitas: {min:2,max:8} },
   Partner:  { coldcall: {min:3,max:15},  instagram: {min:5,max:20},  whatsapp: {min:5,max:20},  calls: {min:8,max:25}, visitas: {min:3,max:10} },
   Founder:  { coldcall: {min:0,max:8},   instagram: {min:3,max:15},  whatsapp: {min:5,max:15},  calls: {min:5,max:20}, visitas: {min:2,max:6} },

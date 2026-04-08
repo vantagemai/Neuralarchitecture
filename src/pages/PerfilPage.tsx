@@ -102,7 +102,7 @@ export function PerfilPage() {
         {[
           { label: 'Vendas Mes', value: mySales.length, icon: Target, color: 'text-vgold' },
           { label: 'Comissao', value: fmt$(totalComm), icon: DollarSign, color: 'text-vgreen' },
-          { label: 'XP Total', value: xp.toLocaleString(), icon: Zap, color: 'text-vgold' },
+          { label: '🪙 Fichas Total', value: xp.toLocaleString(), icon: Zap, color: 'text-vgold' },
           { label: 'Streak', value: `${streak.current}d`, icon: Flame, color: 'text-orange-400' },
           { label: 'Best Streak', value: `${streak.best}d`, icon: Flame, color: 'text-t3' },
           { label: 'Badges', value: `${badges.length}/${ACHIEVEMENTS.length}`, icon: Award, color: 'text-vpurp' },

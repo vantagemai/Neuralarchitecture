@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getUsers, getMonthSales, currentMonth, fmt$ } from '../lib/store';
+import { getTotalFichas } from '../lib/xp';
+import { getMonthBonus } from '../lib/bonus';
 import { Badge } from '../components/ui/Badge';
 import { KpiCard } from '../components/ui/KpiCard';
 import { DollarSign, BarChart3, Download } from 'lucide-react';
@@ -73,7 +75,7 @@ export function ExtratosPage() {
           <table className="w-full">
             <thead>
               <tr className="bg-elevated/30">
-                {['Membro', 'Função', 'Vendas', 'C. Setup', 'C. Rec', 'Total'].map(h => (
+                {['Membro', 'Funcao', 'Vendas', 'C. Setup', 'C. Rec', '🪙 Fichas', 'Bonus', 'Total'].map(h => (
                   <th key={h} className="text-left text-[10px] text-t4 uppercase tracking-wider font-semibold px-3 py-1">{h}</th>
                 ))}
               </tr>
@@ -86,17 +88,21 @@ export function ExtratosPage() {
                   <td className="px-3 py-1.5 font-mono text-sm">{r.cnt}</td>
                   <td className="px-3 py-1.5 font-mono text-sm text-vgreen">{fmt$(r.su)}</td>
                   <td className="px-3 py-1.5 font-mono text-sm text-vgold">{fmt$(r.re)}</td>
+                  <td className="px-3 py-1.5 font-mono text-sm text-vpurp">{getTotalFichas(r.userId).toLocaleString()}</td>
+                  <td className="px-3 py-1.5 font-mono text-sm text-orange-400">${getMonthBonus(r.userId).bonus}</td>
                   <td className="px-3 py-1.5 font-mono text-sm font-bold text-vred">{fmt$(r.su + r.re)}</td>
                 </tr>
               ))}
               {filtered.length === 0 && (
-                <tr><td colSpan={6} className="text-center py-12 text-t3 text-sm">Sem dados no período</td></tr>
+                <tr><td colSpan={8} className="text-center py-12 text-t3 text-sm">Sem dados no período</td></tr>
               )}
               {filtered.length > 0 && (
                 <tr className="bg-elevated/30">
                   <td colSpan={3} className="px-3 py-1 font-bold text-sm">TOTAL</td>
                   <td className="px-3 py-1 font-mono font-bold text-vgreen">{fmt$(filtered.reduce((t, r) => t + r.su, 0))}</td>
                   <td className="px-3 py-1 font-mono font-bold text-vgold">{fmt$(filtered.reduce((t, r) => t + r.re, 0))}</td>
+                  <td className="px-3 py-1 font-mono font-bold text-vpurp">{filtered.reduce((t, r) => t + getTotalFichas(r.userId), 0).toLocaleString()}</td>
+                  <td className="px-3 py-1 font-mono font-bold text-orange-400">${filtered.reduce((t, r) => t + getMonthBonus(r.userId).bonus, 0)}</td>
                   <td className="px-3 py-1 font-mono font-bold text-vred">{fmt$(filtered.reduce((t, r) => t + r.su + r.re, 0))}</td>
                 </tr>
               )}

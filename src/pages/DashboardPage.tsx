@@ -17,6 +17,7 @@ import { getTheme } from '../lib/theme';
 import { getStreak } from '../lib/streaks';
 import { getLevel } from '../lib/levels';
 import { getTotalXp } from '../lib/xp';
+import { getMonthBonus } from '../lib/bonus';
 
 // Clean monochrome chart colors
 function chartColors() {
@@ -158,6 +159,29 @@ export function DashboardPage() {
         <KpiCard label="Time" value={`${filledCount}/${totalMembers}`} icon={Users} color="blue" trendLabel="preencheram" />
         <KpiCard label="Score Total" value={totalScore} icon={TrendingUp} color="red" trendLabel="pts hoje" sparkData={activityTrend.map(d => d.score)} />
       </div>
+
+      {/* Setter Bonus Mini Card */}
+      {(session?.role === 'Setter' || session?.role === 'Social Seller') && (() => {
+        const b = getMonthBonus(session?.id || 'anon');
+        return (
+          <div className="bg-surface border border-vgold/20 border-l-[3px] border-l-vgold rounded-lg px-4 py-3 flex items-center gap-4">
+            <span className="text-lg">🎯</span>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-vgold">Bonus Setter</span>
+                <span className="text-[10px] text-t4">{b.meetings} reunioes realizadas</span>
+              </div>
+              <div className="h-1.5 bg-overlay rounded-full overflow-hidden mt-1 max-w-[200px]">
+                <div className="h-full bg-vgold rounded-full transition-all" style={{ width: `${b.progress}%` }} />
+              </div>
+            </div>
+            <div className="text-right shrink-0">
+              <div className="font-mono font-bold text-vgold">${b.bonus}</div>
+              <div className="text-[10px] text-t4">{b.nextAt > 0 && b.meetings > 0 ? `${b.nextAt} para +$100` : ''}</div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
