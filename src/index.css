@@ -34,8 +34,8 @@
   --color-mt4-grid: rgba(0,0,0,.06);
 
   /* Typography scale */
-  --font-size-2xs: 0.625rem;        /* 10px — small labels, metadata */
-  --font-size-2xs--line-height: 0.875rem;
+  --text-2xs: 0.625rem;
+  --text-2xs--line-height: 0.875rem;
 }
 
 /* ==========================================

@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { KpiCard } from '../components/ui/KpiCard';
 import { Badge } from '../components/ui/Badge';
@@ -121,11 +121,19 @@ export function DashboardPage() {
     saveLayout(DEFAULT_SECTIONS);
   }, []);
 
-  const users = useMemo(() => getUsers().filter(u => u.active), []);
-  const fills = useMemo(() => getTodayFills(), []);
-  const sales = useMemo(() => getMonthSales(), []);
-  const activityTrend = useMemo(() => getLast7DaysFills(), []);
-  const salesTrend = useMemo(() => getMonthSalesTrend(), []);
+  // Refresh key: incremented when xp-update fires (fill/sale added)
+  const [dataKey, setDataKey] = useState(0);
+  useEffect(() => {
+    const refresh = () => setDataKey(k => k + 1);
+    document.addEventListener('xp-update', refresh);
+    return () => document.removeEventListener('xp-update', refresh);
+  }, []);
+
+  const users = useMemo(() => getUsers().filter(u => u.active), [dataKey]);
+  const fills = useMemo(() => getTodayFills(), [dataKey]);
+  const sales = useMemo(() => getMonthSales(), [dataKey]);
+  const activityTrend = useMemo(() => getLast7DaysFills(), [dataKey]);
+  const salesTrend = useMemo(() => getMonthSalesTrend(), [dataKey]);
 
 
   // KPI calculations

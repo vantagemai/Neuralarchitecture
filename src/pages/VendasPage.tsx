@@ -115,7 +115,8 @@ export function VendasPage() {
       trendTicket: trendPct(ticketMedio, prevTicket),
       spark, salesByDay, revByRoleSorted, totalRevByRole, topSellers, setterPipeline,
     };
-  }, [mySales, sales, month, isManager, session.id, setterUsers]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [month, refreshKey]);
 
   // ── Form logic (unchanged) ──
   const validate = (): string | null => {

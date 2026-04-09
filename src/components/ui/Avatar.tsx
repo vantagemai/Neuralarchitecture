@@ -7,8 +7,8 @@ interface AvatarProps {
 }
 
 export function Avatar({ userId, name, size = 'w-8 h-8', ring = false, className = '' }: AvatarProps) {
-  const url = localStorage.getItem(`vantagem_avatar_${userId}`);
-  const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  const url = userId ? localStorage.getItem(`vantagem_avatar_${userId}`) : null;
+  const initials = (name || 'U').split(' ').filter(Boolean).map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'U';
 
   const img = url ? (
     <img src={url} alt={name} className={`${size} rounded-full object-cover ${className}`} />
