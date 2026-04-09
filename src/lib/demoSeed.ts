@@ -38,28 +38,31 @@ const ANCHORS = ['Cada dia e uma oportunidade.','Disciplina e a ponte entre meta
 
 const DEAL_NAMES = ['TechCorp - Enterprise','StartupXYZ - Growth','GlobalTrade - Expansao','InnovateLtd - Consultoria','AlphaGroup - Full Stack','BetaInc - Marketing','OmegaSys - Integration','DeltaTech - Custom','SigmaCorp - Scale','LambdaDev - Pro','CloudFirst - Migration','DataPro - Analytics','FinanceHub - Premium','EduTech - Campus','HealthPlus - Platform','RetailMax - Omnichannel','LogiFlow - Automation','MediaPulse - Content','LegalEase - Compliance','GreenEnergy - Smart','AgroTech - Field','CyberShield - Security','FoodChain - Delivery','TravelNow - Booking','PropTech - Management','AutoDrive - Fleet','SportsPro - Tracking','FashionAI - Styling','PetCare - Wellness','SocialBuzz - Engagement'];
 
-type Role = 'Founder' | 'Partner' | 'Vendedor' | 'Setter';
+type Role = 'Founder' | 'Partner' | 'Vendedor' | 'Setter' | 'Social Seller';
 
 interface ChannelRange { min: number; max: number }
 const CHANNEL_RANGES: Record<Role, Record<string, ChannelRange>> = {
-  Setter:   { coldcall: {min:20,max:60}, instagram: {min:15,max:50}, whatsapp: {min:10,max:30}, calls: {min:3,max:10}, visitas: {min:3,max:8} },
-  Vendedor: { coldcall: {min:5,max:25},  instagram: {min:10,max:35}, whatsapp: {min:10,max:30}, calls: {min:10,max:30}, visitas: {min:2,max:8} },
-  Partner:  { coldcall: {min:3,max:15},  instagram: {min:5,max:20},  whatsapp: {min:5,max:20},  calls: {min:8,max:25}, visitas: {min:3,max:10} },
-  Founder:  { coldcall: {min:0,max:8},   instagram: {min:3,max:15},  whatsapp: {min:5,max:15},  calls: {min:5,max:20}, visitas: {min:2,max:6} },
+  Setter:          { coldcall: {min:20,max:60}, instagram: {min:15,max:50}, whatsapp: {min:10,max:30}, calls: {min:3,max:10}, visitas: {min:3,max:8} },
+  Vendedor:        { coldcall: {min:5,max:25},  instagram: {min:10,max:35}, whatsapp: {min:10,max:30}, calls: {min:10,max:30}, visitas: {min:2,max:8} },
+  Partner:         { coldcall: {min:3,max:15},  instagram: {min:5,max:20},  whatsapp: {min:5,max:20},  calls: {min:8,max:25}, visitas: {min:3,max:10} },
+  Founder:         { coldcall: {min:0,max:8},   instagram: {min:3,max:15},  whatsapp: {min:5,max:15},  calls: {min:5,max:20}, visitas: {min:2,max:6} },
+  'Social Seller': { coldcall: {min:5,max:15},  instagram: {min:30,max:80}, whatsapp: {min:20,max:50}, calls: {min:2,max:8},  visitas: {min:2,max:6} },
 };
-const DISCIPLINE: Record<Role, number> = { Founder: 0.85, Partner: 0.8, Vendedor: 0.75, Setter: 0.7 };
+const DISCIPLINE: Record<Role, number> = { Founder: 0.85, Partner: 0.8, Vendedor: 0.75, Setter: 0.7, 'Social Seller': 0.75 };
 
 const SETUP_VALUES: Record<Role, number[]> = {
   Founder: [997, 1497, 1997, 2997],
   Partner: [497, 997, 1497, 1997],
   Vendedor: [197, 297, 497, 997],
   Setter: [],
+  'Social Seller': [],
 };
 const REC_VALUES: Record<Role, number[]> = {
   Founder: [197, 297, 497],
   Partner: [147, 197, 297],
   Vendedor: [47, 97, 147],
   Setter: [],
+  'Social Seller': [],
 };
 const COMM_RATES: Record<string, { setup: number; rec: number }> = {
   FOUNDER: { setup: 0.5, rec: 0.4 },
@@ -112,6 +115,7 @@ export async function runDemoSeed(): Promise<{ users: number; sales: number; fil
     if (idx <= 5) { role = 'Founder'; plan = 'FOUNDER'; daysBack = rand(70, 90); }
     else if (idx <= 15) { role = 'Partner'; plan = 'PARTNER'; daysBack = rand(50, 80); }
     else if (idx <= 40) { role = 'Vendedor'; plan = 'PARTNER'; daysBack = rand(30, 70); }
+    else if (idx <= 50) { role = 'Social Seller'; plan = 'SETTER'; daysBack = rand(10, 50); }
     else { role = 'Setter'; plan = 'SETTER'; daysBack = rand(5, 60); }
 
     const { first, last, full } = makeName(i);
@@ -190,8 +194,8 @@ export async function runDemoSeed(): Promise<{ users: number; sales: number; fil
   // ── Generate sales (~300 with weekly ramp-up) ──
   let saleCount = 0;
   const totalSales = rand(250, 350);
-  const closers = users.filter(u => u.role !== 'Setter');
-  const setters = users.filter(u => u.role === 'Setter');
+  const closers = users.filter(u => u.role !== 'Setter' && u.role !== 'Social Seller');
+  const setters = users.filter(u => u.role === 'Setter' || u.role === 'Social Seller');
   const salesPerUser = new Map<string, number>();
 
   // Weekly weights (13 weeks, ramp up)
@@ -209,7 +213,7 @@ export async function runDemoSeed(): Promise<{ users: number; sales: number; fil
     const weekSales = Math.round((week.weight / totalWeight) * totalSales);
     for (let s = 0; s < weekSales && salesPlaced < totalSales; s++) {
       // Weight seller by role
-      const roleWeights: Record<Role, number> = { Founder: 4, Partner: 3, Vendedor: 2, Setter: 0 };
+      const roleWeights: Record<Role, number> = { Founder: 4, Partner: 3, Vendedor: 2, Setter: 0, 'Social Seller': 0 };
       const weighted: DemoUser[] = closers.flatMap(c => Array(roleWeights[c.role]).fill(c) as DemoUser[]);
       const seller = pick(weighted);
       const setter = Math.random() < 0.4 ? pick(setters) : null;
@@ -308,7 +312,7 @@ export async function runDemoSeed(): Promise<{ users: number; sales: number; fil
     bulkSet(`achievements_${u.id}`, achs);
 
     // Goals
-    const goals = u.role === 'Setter' ? { dailyContacts: rand(50, 80), dailyScore: rand(40, 70), monthlySales: 0, monthlyRevenue: 0 }
+    const goals = (u.role === 'Setter' || u.role === 'Social Seller') ? { dailyContacts: rand(50, 80), dailyScore: rand(40, 70), monthlySales: 0, monthlyRevenue: 0 }
       : u.role === 'Vendedor' ? { dailyContacts: rand(40, 60), dailyScore: rand(35, 55), monthlySales: rand(5, 12), monthlyRevenue: rand(3000, 8000) }
       : u.role === 'Partner' ? { dailyContacts: rand(25, 40), dailyScore: rand(25, 45), monthlySales: rand(8, 15), monthlyRevenue: rand(5000, 15000) }
       : { dailyContacts: rand(15, 30), dailyScore: rand(20, 40), monthlySales: rand(10, 20), monthlyRevenue: rand(10000, 30000) };

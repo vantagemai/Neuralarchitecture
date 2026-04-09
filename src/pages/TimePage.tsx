@@ -8,7 +8,7 @@ import { getGoals, setGoals, type UserGoals } from '../lib/goals';
 import { getTotalXp } from '../lib/xp';
 import { getStreak } from '../lib/streaks';
 
-const ROLES = ['Setter', 'Vendedor', 'Partner', 'Founder'];
+const ROLES = ['Setter', 'Vendedor', 'Partner', 'Founder', 'Social Seller'];
 const roleVariant = (r: string) => r === 'Setter' ? 'purp' as const : r === 'Founder' ? 'red' as const : r === 'Partner' ? 'blue' as const : 'gold' as const;
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
