@@ -33,7 +33,7 @@ function chartColors() {
 }
 
 const MEDALS = ['🥇', '🥈', '🥉'];
-const roleVariant = (r: string) => r === 'Setter' ? 'purp' as const : r === 'Founder' ? 'red' as const : 'gold' as const;
+const roleVariant = (r: string) => r === 'Setter' ? 'purp' as const : r === 'Founder' ? 'red' as const : r === 'Social Seller' ? 'pink' as const : 'gold' as const;
 
 function getLast7DaysFills(): { date: string; label: string; score: number }[] {
   const result: { date: string; label: string; score: number }[] = [];

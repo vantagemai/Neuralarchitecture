@@ -8,7 +8,7 @@ import { KpiCard } from '../components/ui/KpiCard';
 import { DollarSign, BarChart3, Download } from 'lucide-react';
 import { exportCommissionsCSV, exportSalesCSV } from '../lib/export';
 
-const roleVariant = (r: string) => r === 'Setter' ? 'purp' as const : r === 'Founder' ? 'red' as const : 'gold' as const;
+const roleVariant = (r: string) => r === 'Setter' ? 'purp' as const : r === 'Founder' ? 'red' as const : r === 'Social Seller' ? 'pink' as const : 'gold' as const;
 
 export function ExtratosPage() {
   const [uid, setUid] = useState('all');
