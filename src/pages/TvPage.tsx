@@ -187,7 +187,7 @@ function GroupSection({ group, users, fills, sales, panel }: {
   };
 
   return (
-    <div className="tv-glass rounded-lg p-4 flex flex-col overflow-hidden">
+    <div className="tv-glass rounded-lg p-4 flex flex-col">
       {/* Group header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
@@ -208,7 +208,7 @@ function GroupSection({ group, users, fills, sales, panel }: {
         </div>
       </div>
       {/* Content */}
-      <div className="flex-1 overflow-hidden space-y-0.5">
+      <div className="flex-1 overflow-y-auto space-y-0.5">
         {renderContent()}
       </div>
     </div>
@@ -279,7 +279,7 @@ export function TvPage() {
   const activeGroups = ROLE_GROUPS.filter(g => groupedUsers[g.key].length > 0);
 
   return (
-    <div className="h-full flex flex-col gap-3 p-2">
+    <div className="min-h-full flex flex-col gap-3 p-2">
       {/* Header */}
       <div className="flex items-center justify-between px-2">
         <Logo size="lg" />
@@ -365,7 +365,7 @@ export function TvPage() {
       </div>
 
       {/* Groups grid — each role group gets its own section */}
-      <div className={`flex-1 grid gap-3 min-h-0 grid-cols-1 ${
+      <div className={`grid gap-3 grid-cols-1 ${
         activeGroups.length <= 2 ? 'md:grid-cols-2' :
         activeGroups.length <= 3 ? 'md:grid-cols-2 xl:grid-cols-3' :
         activeGroups.length <= 4 ? 'md:grid-cols-2' :
