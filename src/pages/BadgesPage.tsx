@@ -35,20 +35,20 @@ export function BadgesPage() {
         <div className="bg-surface border border-b1 rounded-lg p-3 text-center">
           <div className="text-2xl mb-1">{level.icon}</div>
           <div className={`text-base font-bold ${level.color}`}>{level.name}</div>
-          <div className="text-[10px] text-t4 uppercase">Nivel {level.rank}</div>
+          <div className="text-2xs text-t4 uppercase">Nivel {level.rank}</div>
         </div>
         <div className="bg-surface border border-b1 rounded-lg p-3 text-center">
           <div className="text-lg mb-0.5">🪙</div>
           <div className="font-mono text-base font-bold text-vgold">{fichas.toLocaleString()}</div>
-          <div className="text-[10px] text-t4 uppercase">Fichas Total</div>
+          <div className="text-2xs text-t4 uppercase">Fichas Total</div>
         </div>
         <div className="bg-surface border border-b1 rounded-lg p-3 text-center">
           <div className="font-mono text-base font-bold text-orange-400">{streak.current}d</div>
-          <div className="text-[10px] text-t4 uppercase">Streak Atual</div>
+          <div className="text-2xs text-t4 uppercase">Streak Atual</div>
         </div>
         <div className="bg-surface border border-b1 rounded-lg p-3 text-center">
           <div className="font-mono text-base font-bold text-vpurp">{unlocked.length}/{uniqueAchs.length}</div>
-          <div className="text-[10px] text-t4 uppercase">Badges</div>
+          <div className="text-2xs text-t4 uppercase">Badges</div>
         </div>
       </div>
 
@@ -73,7 +73,7 @@ export function BadgesPage() {
 
       {/* Career Staircase — Spark → Diamond */}
       <div className="bg-surface border border-b1 rounded-lg p-4">
-        <h2 className="text-[11px] font-bold text-t3 uppercase tracking-wider mb-4 flex items-center gap-2">
+        <h2 className="text-xs font-bold text-t3 uppercase tracking-wider mb-4 flex items-center gap-2">
           🏆 Plano de Carreira
         </h2>
         <div className="space-y-1">
@@ -105,10 +105,10 @@ export function BadgesPage() {
                       {lvl.name}
                     </span>
                     {isCurrent && <Badge variant="gold">Voce esta aqui</Badge>}
-                    {isCurrentOrPast && !isCurrent && <span className="text-[10px] text-vgreen">✓</span>}
+                    {isCurrentOrPast && !isCurrent && <span className="text-2xs text-vgreen">✓</span>}
                   </div>
                   {lvl.criteria && (
-                    <div className="text-[10px] text-t4 mt-0.5">{lvl.criteria}</div>
+                    <div className="text-2xs text-t4 mt-0.5">{lvl.criteria}</div>
                   )}
                   {/* Progress bar for current level */}
                   {(isCurrent || isCurrentOrPast) && (
@@ -122,9 +122,9 @@ export function BadgesPage() {
 
                 {/* Fichas requirement */}
                 <div className="text-right shrink-0">
-                  <div className="text-[10px] font-mono text-t4">🪙 {lvl.minXp.toLocaleString()}</div>
+                  <div className="text-2xs font-mono text-t4">🪙 {lvl.minXp.toLocaleString()}</div>
                   {lvl.award && (
-                    <div className="text-[9px] text-vgold mt-0.5 max-w-[120px] truncate">{lvl.award}</div>
+                    <div className="text-2xs text-vgold mt-0.5 max-w-[120px] truncate">{lvl.award}</div>
                   )}
                 </div>
               </div>
@@ -158,7 +158,7 @@ export function BadgesPage() {
                       </div>
                       <div className="text-xs text-t3 mt-0.5">{ach.description}</div>
                       {earnedAt && (
-                        <div className="text-[10px] text-t4 mt-1">
+                        <div className="text-2xs text-t4 mt-1">
                           {new Date(earnedAt).toLocaleDateString('pt-BR')}
                         </div>
                       )}

@@ -29,3 +29,21 @@ export function applyTheme(theme?: Theme): void {
 
 // Apply immediately on import to prevent FOUC
 applyTheme();
+
+// Centralized chart color helper (used by DashboardPage, PerfilPage, RankingPage)
+export function chartColors() {
+  const dark = getTheme() === 'dark';
+  return {
+    grid: dark ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.06)',
+    tick: dark ? '#737373' : '#8F8F8F',
+    tooltipBg: dark ? '#1F1F1F' : '#FFFFFF',
+    tooltipBorder: dark ? '1px solid rgba(255,255,255,.1)' : '1px solid rgba(0,0,0,.08)',
+    tooltipLabel: dark ? '#999' : '#6B6B6B',
+    // Brand colors
+    red: '#D4634B',
+    green: '#5A9E6F',
+    gold: '#C8963E',
+    purp: '#8B7EC8',
+    blue: '#6B8FBF',
+  };
+}

@@ -183,7 +183,7 @@ export function VendasPage() {
 
         return (
           <div className="bg-surface border border-b1 rounded-lg p-4">
-            <div className="text-[11px] font-bold text-t3 uppercase tracking-wider mb-3">
+            <div className="text-xs font-bold text-t3 uppercase tracking-wider mb-3">
               Setter → Closer — Quem originou, quem fechou
             </div>
             <div className="space-y-3">
@@ -204,9 +204,9 @@ export function VendasPage() {
                             <span className="text-xs text-t2 w-28 truncate">{f.name}</span>
                             <div className="flex-1 h-4 bg-overlay rounded-sm overflow-hidden relative">
                               <div className="h-full bg-vgreen/60 rounded-sm transition-all" style={{ width: `${pct}%` }} />
-                              <span className="absolute inset-0 flex items-center justify-center text-[9px] font-mono font-bold text-t1">{f.count} ({pct}%)</span>
+                              <span className="absolute inset-0 flex items-center justify-center text-2xs font-mono font-bold text-t1">{f.count} ({pct}%)</span>
                             </div>
-                            <span className="text-[10px] font-mono text-vgreen w-14 text-right">{fmt$(f.comm)}</span>
+                            <span className="text-2xs font-mono text-vgreen w-14 text-right">{fmt$(f.comm)}</span>
                           </div>
                         );
                       })}
@@ -215,7 +215,7 @@ export function VendasPage() {
                 );
               })}
               {directSales > 0 && (
-                <div className="text-[10px] text-t4 text-center mt-1">
+                <div className="text-2xs text-t4 text-center mt-1">
                   + {directSales} venda(s) direta(s) sem setter
                 </div>
               )}
@@ -235,21 +235,21 @@ export function VendasPage() {
           )}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
             <div>
-              <label className="text-[11px] text-t3 uppercase tracking-wider font-semibold">Setup ($) <span className="text-t4 normal-case">({MIN_SETUP}-{MAX_SETUP})</span></label>
+              <label className="text-xs text-t3 uppercase tracking-wider font-semibold">Setup ($) <span className="text-t4 normal-case">({MIN_SETUP}-{MAX_SETUP})</span></label>
               <input
                 type="number" min={MIN_SETUP} max={MAX_SETUP} value={setup} onChange={e => setSetup(e.target.value)}
                 className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-3 py-2.5 font-mono text-center text-lg outline-none focus:border-vred/40"
               />
             </div>
             <div>
-              <label className="text-[11px] text-t3 uppercase tracking-wider font-semibold">Rec/mes ($) <span className="text-t4 normal-case">({MIN_REC}-{MAX_REC})</span></label>
+              <label className="text-xs text-t3 uppercase tracking-wider font-semibold">Rec/mes ($) <span className="text-t4 normal-case">({MIN_REC}-{MAX_REC})</span></label>
               <input
                 type="number" min={MIN_REC} max={MAX_REC} value={rec} onChange={e => setRec(e.target.value)}
                 className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-3 py-2.5 font-mono text-center text-lg outline-none focus:border-vred/40"
               />
             </div>
             <div>
-              <label className="text-[11px] text-t3 uppercase tracking-wider font-semibold">Setter (opcional)</label>
+              <label className="text-xs text-t3 uppercase tracking-wider font-semibold">Setter (opcional)</label>
               <select
                 value={setterId} onChange={e => setSetterId(e.target.value)}
                 className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-vred/40 cursor-pointer"
@@ -282,7 +282,7 @@ export function VendasPage() {
       {/* Sales list */}
       <div className="bg-surface border border-b1 rounded-lg overflow-hidden">
         <div className="px-5 py-4 border-b border-b1">
-          <h2 className="text-[12px] font-bold">Vendas deste mes ({sales.length})</h2>
+          <h2 className="text-xs font-bold">Vendas deste mes ({sales.length})</h2>
         </div>
         {sales.length ? (
           <div className="divide-y divide-b1">
@@ -291,7 +291,7 @@ export function VendasPage() {
                 {(() => {
                   const av = localStorage.getItem(`vantagem_avatar_${s.sellerId}`);
                   const ini = s.sellerName.split(' ').map(n => n[0]).join('').slice(0, 2);
-                  return av ? <img src={av} alt="" className="w-8 h-8 rounded-full object-cover border border-b1 shrink-0" /> : <div className="w-8 h-8 rounded-full bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-[9px] font-bold shrink-0">{ini}</div>;
+                  return av ? <img src={av} alt="" className="w-8 h-8 rounded-full object-cover border border-b1 shrink-0" /> : <div className="w-8 h-8 rounded-full bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-2xs font-bold shrink-0">{ini}</div>;
                 })()}
                 <div className="flex-1">
                   <div className="text-sm font-semibold">{s.sellerName}</div>
@@ -302,7 +302,7 @@ export function VendasPage() {
                 </div>
                 <div className="text-right">
                   <div className="font-mono font-bold text-vgreen text-sm">{fmt$(s.sellerSetupComm + s.sellerRecComm)}</div>
-                  <div className="text-[10px] text-t4 font-mono">{new Date(s.ts).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div>
+                  <div className="text-2xs text-t4 font-mono">{new Date(s.ts).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div>
                 </div>
                 {canEditSale(s) && (
                   <div className="flex items-center gap-1">

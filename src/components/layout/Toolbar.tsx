@@ -119,7 +119,7 @@ export function Toolbar({ userName, onLogout, onToggleSidebar, onAvatarChange }:
             onFocus={() => searchResults.length > 0 && setShowSearch(true)}
             onBlur={() => setTimeout(() => setShowSearch(false), 200)}
             placeholder="Buscar..."
-            className="bg-transparent text-[11px] text-t1 placeholder:text-t4 outline-none w-full"
+            className="bg-transparent text-xs text-t1 placeholder:text-t4 outline-none w-full"
             aria-label="Buscar"
           />
           {searchQuery && (
@@ -131,13 +131,13 @@ export function Toolbar({ userName, onLogout, onToggleSidebar, onAvatarChange }:
             <div className="absolute top-full left-0 mt-px bg-surface border border-b1 shadow-xl z-50 overflow-hidden w-64 max-w-[calc(100vw-2rem)]">
               {searchResults.map((r, i) => (
                 <a key={i} href={`/Neuralarchitecture${r.url}`}
-                  className="flex items-center gap-2 px-3 py-1.5 hover:bg-elevated transition-colors text-[11px]"
+                  className="flex items-center gap-2 px-3 py-1.5 hover:bg-elevated transition-colors text-xs"
                   onClick={() => setShowSearch(false)}
                 >
                   <span className="text-t4 w-5">{r.type === 'user' ? '👤' : r.type === 'sale' ? '💰' : '📋'}</span>
                   <div className="min-w-0 flex-1">
                     <div className="font-medium truncate">{r.label}</div>
-                    <div className="text-[9px] text-t4">{r.detail}</div>
+                    <div className="text-2xs text-t4">{r.detail}</div>
                   </div>
                 </a>
               ))}
@@ -157,16 +157,16 @@ export function Toolbar({ userName, onLogout, onToggleSidebar, onAvatarChange }:
         <div className="relative">
           <button onClick={openNotifs} className="w-6 h-6 flex items-center justify-center text-t3 hover:text-t1 transition-colors relative" aria-label="Notificacoes">
             <Bell size={12} />
-            {unreadCount > 0 && <span className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-vred text-white text-[7px] flex items-center justify-center font-bold">{unreadCount > 9 ? '9+' : unreadCount}</span>}
+            {unreadCount > 0 && <span className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-vred text-white text-2xs flex items-center justify-center font-bold">{unreadCount > 9 ? '9+' : unreadCount}</span>}
           </button>
           {showNotifs && (
             <div className="absolute right-0 top-full mt-px w-72 max-w-[calc(100vw-2rem)] bg-surface border border-b1 shadow-xl z-50" onClick={e => e.stopPropagation()}>
               <div className="h-6 bg-elevated/50 border-b border-b1 px-2 flex items-center">
-                <span className="text-[10px] text-t3 uppercase tracking-wider">Notificacoes</span>
+                <span className="text-2xs text-t3 uppercase tracking-wider">Notificacoes</span>
               </div>
               <div className="max-h-52 overflow-y-auto">
                 {notifications.length === 0 ? (
-                  <div className="text-center py-6 text-t4 text-[10px]">Sem notificacoes</div>
+                  <div className="text-center py-6 text-t4 text-2xs">Sem notificacoes</div>
                 ) : (
                   notifications.slice(0, 15).map(n => {
                     const routes: Record<string, string> = { sale: '/vendas', badge: '/badges', challenge: '/desafios', shoutout: '/ranking', levelup: '/ranking', streak: '/fill' };
@@ -176,12 +176,12 @@ export function Toolbar({ userName, onLogout, onToggleSidebar, onAvatarChange }:
                         onClick={() => { setShowNotifs(false); navigate(routes[n.type] || '/'); }}
                       >
                         <div className="flex items-start gap-1.5">
-                          <span className="text-[10px] mt-0.5">{n.icon}</span>
+                          <span className="text-2xs mt-0.5">{n.icon}</span>
                           <div className="flex-1 min-w-0">
-                            <div className="text-[10px] font-medium truncate">{n.title}</div>
-                            {n.detail && <div className="text-[9px] text-t4 truncate">{n.detail}</div>}
+                            <div className="text-2xs font-medium truncate">{n.title}</div>
+                            {n.detail && <div className="text-2xs text-t4 truncate">{n.detail}</div>}
                           </div>
-                          <span className="text-[8px] text-t4 shrink-0">{relTime(n.ts)}</span>
+                          <span className="text-2xs text-t4 shrink-0">{relTime(n.ts)}</span>
                         </div>
                       </div>
                     );
@@ -200,7 +200,7 @@ export function Toolbar({ userName, onLogout, onToggleSidebar, onAvatarChange }:
           {avatar ? (
             <img src={avatar} alt="" className="w-5 h-5 object-cover border border-b1 cursor-pointer" onClick={() => fileRef.current?.click()} />
           ) : (
-            <div className="w-5 h-5 bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-[8px] font-bold cursor-pointer" onClick={() => fileRef.current?.click()}>
+            <div className="w-5 h-5 bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-2xs font-bold cursor-pointer" onClick={() => fileRef.current?.click()}>
               {initials}
             </div>
           )}
@@ -209,7 +209,7 @@ export function Toolbar({ userName, onLogout, onToggleSidebar, onAvatarChange }:
           </button>
         </div>
 
-        <span className="text-[10px] text-t2 hidden md:block max-w-[80px] truncate">{userName.split(' ')[0]}</span>
+        <span className="text-2xs text-t2 hidden md:block max-w-[80px] truncate">{userName.split(' ')[0]}</span>
 
         <button onClick={onLogout} className="w-6 h-6 flex items-center justify-center text-t3 hover:text-vred transition-colors" aria-label="Sair">
           <LogOut size={12} />

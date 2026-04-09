@@ -10,9 +10,8 @@ import { getGoalProgress } from '../lib/goals';
 import { getScorecard } from '../lib/scorecard';
 import { Badge } from '../components/ui/Badge';
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
-import { getTheme } from '../lib/theme';
-
-const roleVariant = (r: string) => r === 'Setter' ? 'purp' as const : r === 'Founder' ? 'red' as const : r === 'Social Seller' ? 'pink' as const : 'gold' as const;
+import { chartColors } from '../lib/theme';
+import { roleVariant } from '../lib/roles';
 
 export function PerfilPage() {
   const { userId } = useParams<{ userId: string }>();
@@ -50,7 +49,7 @@ export function PerfilPage() {
     return { date: dateStr, score: fill ? calcScore(fill) : 0, filled: !!fill };
   });
 
-  const dark = getTheme() === 'dark';
+  const cc = chartColors();
   const radarData = [
     { m: 'Atividade', v: scorecard.activity },
     { m: 'Receita', v: scorecard.revenue },
@@ -87,13 +86,13 @@ export function PerfilPage() {
               <div className="flex-1 max-w-[200px] h-2 bg-overlay rounded-sm overflow-hidden">
                 <div className="h-full bg-vred rounded-sm transition-all" style={{ width: `${progress}%` }} />
               </div>
-              <span className="text-[10px] text-t4 font-mono">{xpNeeded} fichas para {next.icon} {next.name}</span>
+              <span className="text-2xs text-t4 font-mono">{xpNeeded} fichas para {next.icon} {next.name}</span>
             </div>
           )}
         </div>
         <div className="text-right hidden sm:block">
           <div className="text-xl font-bold font-mono text-vred neon-red">{scorecard.overall}</div>
-          <div className="text-[10px] text-t4 uppercase tracking-wider">Scorecard</div>
+          <div className="text-2xs text-t4 uppercase tracking-wider">Scorecard</div>
         </div>
       </div>
 
@@ -107,10 +106,10 @@ export function PerfilPage() {
           { label: 'Best Streak', value: `${streak.best}d`, icon: Flame, color: 'text-t3' },
           { label: 'Badges', value: `${badges.length}/${ACHIEVEMENTS.length}`, icon: Award, color: 'text-vpurp' },
         ].map(s => (
-          <div key={s.label} className="bg-surface border border-b1 border-l-[3px] border-l-b3 rounded-lg p-3">
+          <div key={s.label} className="bg-surface border border-b1 border-l-2 border-l-b3 rounded-lg p-3">
             <div className="flex items-center gap-1 mb-1">
               <s.icon size={12} className="text-t4" />
-              <span className="text-[9px] text-t4 uppercase tracking-wider">{s.label}</span>
+              <span className="text-2xs text-t4 uppercase tracking-wider">{s.label}</span>
             </div>
             <div className={`text-lg font-bold font-mono ${s.color}`}>{s.value}</div>
           </div>
@@ -120,20 +119,20 @@ export function PerfilPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Scorecard radar */}
         <div className="bg-surface border border-b1 rounded-lg p-4">
-          <h2 className="text-[11px] font-bold text-t3 uppercase tracking-wider mb-2">Scorecard</h2>
+          <h2 className="text-xs font-bold text-t3 uppercase tracking-wider mb-2">Scorecard</h2>
           <ResponsiveContainer width="100%" height={200}>
             <RadarChart data={radarData}>
-              <PolarGrid stroke={dark ? 'rgba(100,116,139,.15)' : 'rgba(0,0,0,.06)'} />
-              <PolarAngleAxis dataKey="m" tick={{ fontSize: 10, fill: dark ? '#6B6B76' : '#7A7A88' }} />
+              <PolarGrid stroke={cc.grid} />
+              <PolarAngleAxis dataKey="m" tick={{ fontSize: 10, fill: cc.tick }} />
               <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
-              <Radar dataKey="v" stroke="#D4634B" fill="#D4634B" fillOpacity={0.2} strokeWidth={2} />
+              <Radar dataKey="v" stroke={cc.red} fill={cc.red} fillOpacity={0.2} strokeWidth={2} />
             </RadarChart>
           </ResponsiveContainer>
         </div>
 
         {/* Goals */}
         <div className="bg-surface border border-b1 rounded-lg p-4">
-          <h2 className="text-[11px] font-bold text-t3 uppercase tracking-wider mb-3">Metas</h2>
+          <h2 className="text-xs font-bold text-t3 uppercase tracking-wider mb-3">Metas</h2>
           <div className="space-y-3">
             {[
               { label: 'Contatos/dia', ...goalProgress.dailyContacts, color: 'bg-vred' },
@@ -159,8 +158,8 @@ export function PerfilPage() {
       <div className="bg-surface border border-b1 rounded-lg p-4">
         <div className="flex items-center gap-2 mb-3">
           <Calendar size={14} className="text-t3" />
-          <h2 className="text-[11px] font-bold text-t3 uppercase tracking-wider">Fills — Ultimos 14 dias</h2>
-          <span className="text-[10px] font-mono text-t4 ml-auto">{fillHistory.filter(f => f.filled).length}/14 dias</span>
+          <h2 className="text-xs font-bold text-t3 uppercase tracking-wider">Fills — Ultimos 14 dias</h2>
+          <span className="text-2xs font-mono text-t4 ml-auto">{fillHistory.filter(f => f.filled).length}/14 dias</span>
         </div>
         <div className="flex gap-1">
           {fillHistory.reverse().map(h => {
@@ -174,14 +173,14 @@ export function PerfilPage() {
           })}
         </div>
         <div className="flex justify-between mt-1">
-          <span className="text-[9px] text-t4 font-mono">14d atras</span>
-          <span className="text-[9px] text-t4 font-mono">Hoje</span>
+          <span className="text-2xs text-t4 font-mono">14d atras</span>
+          <span className="text-2xs text-t4 font-mono">Hoje</span>
         </div>
       </div>
 
       {/* Badges */}
       <div className="bg-surface border border-b1 rounded-lg p-4">
-        <h2 className="text-[11px] font-bold text-t3 uppercase tracking-wider mb-3">Conquistas ({badges.length}/{ACHIEVEMENTS.length})</h2>
+        <h2 className="text-xs font-bold text-t3 uppercase tracking-wider mb-3">Conquistas ({badges.length}/{ACHIEVEMENTS.length})</h2>
         <div className="flex flex-wrap gap-2">
           {ACHIEVEMENTS.map(ach => {
             const unlocked = badges.some(b => b.id === ach.id);

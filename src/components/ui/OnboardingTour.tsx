@@ -67,7 +67,7 @@ export function OnboardingTour({ onClose }: { onClose: () => void }) {
         <p className="text-sm text-t3 mb-6 leading-relaxed">{current.description}</p>
 
         {/* Step indicator */}
-        <div className="text-[10px] text-t4 uppercase tracking-wider mb-4">
+        <div className="text-2xs text-t4 uppercase tracking-wider mb-4">
           Passo {step + 1} de {STEPS.length}
         </div>
 

@@ -132,23 +132,23 @@ export function FillPage() {
         if (!isSetter) return null;
         const b = getMonthBonus(userId);
         return (
-          <div className="bg-surface border border-vgold/20 border-l-[3px] border-l-vgold rounded-lg p-4">
+          <div className="bg-surface border border-vgold/20 border-l-2 border-l-vgold rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <span className="text-lg">🎯</span>
                 <div>
                   <div className="text-xs font-bold text-vgold uppercase tracking-wider">Bonus Setter</div>
-                  <div className="text-[10px] text-t4">$100 a cada 10 reunioes realizadas</div>
+                  <div className="text-2xs text-t4">$100 a cada 10 reunioes realizadas</div>
                 </div>
               </div>
               <div className="text-right">
                 <div className="font-mono text-lg font-bold text-vgold">${b.bonus}</div>
-                <div className="text-[10px] text-t4">acumulado no mes</div>
+                <div className="text-2xs text-t4">acumulado no mes</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex-1">
-                <div className="flex justify-between text-[10px] text-t3 mb-1">
+                <div className="flex justify-between text-2xs text-t3 mb-1">
                   <span>{b.meetings} reunioes realizadas</span>
                   <span>{b.meetings > 0 && b.nextAt > 0 ? `faltam ${b.nextAt} para +$100` : b.meetings > 0 ? 'Ciclo completo!' : 'Preencha visitas realizadas'}</span>
                 </div>
@@ -181,11 +181,11 @@ export function FillPage() {
             <div className="bg-surface border border-b1 rounded-lg p-3">
               <div className="flex items-center gap-1.5 mb-1">
                 <Target size={12} className="text-vred" />
-                <span className="text-[10px] text-t3 uppercase font-bold">Contatos</span>
+                <span className="text-2xs text-t3 uppercase font-bold">Contatos</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="font-mono text-sm font-bold">{score}/{gp.dailyContacts.target}</span>
-                <span className={`text-[10px] font-bold ${gp.dailyContacts.pct >= 100 ? 'text-vgreen' : 'text-t4'}`}>{gp.dailyContacts.pct}%</span>
+                <span className={`text-2xs font-bold ${gp.dailyContacts.pct >= 100 ? 'text-vgreen' : 'text-t4'}`}>{gp.dailyContacts.pct}%</span>
               </div>
               <div className="h-1 bg-overlay rounded-full overflow-hidden mt-1">
                 <div className={`h-full rounded-full transition-all ${gp.dailyContacts.pct >= 100 ? 'bg-vgreen' : 'bg-vred'}`} style={{ width: `${Math.min(100, Math.round((score / gp.dailyContacts.target) * 100))}%` }} />
@@ -194,11 +194,11 @@ export function FillPage() {
             <div className="bg-surface border border-b1 rounded-lg p-3">
               <div className="flex items-center gap-1.5 mb-1">
                 <Target size={12} className="text-vpurp" />
-                <span className="text-[10px] text-t3 uppercase font-bold">Score</span>
+                <span className="text-2xs text-t3 uppercase font-bold">Score</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="font-mono text-sm font-bold">{score}/{gp.dailyScore.target}</span>
-                <span className={`text-[10px] font-bold ${gp.dailyScore.pct >= 100 ? 'text-vgreen' : 'text-t4'}`}>{Math.min(100, Math.round((score / gp.dailyScore.target) * 100))}%</span>
+                <span className={`text-2xs font-bold ${gp.dailyScore.pct >= 100 ? 'text-vgreen' : 'text-t4'}`}>{Math.min(100, Math.round((score / gp.dailyScore.target) * 100))}%</span>
               </div>
               <div className="h-1 bg-overlay rounded-full overflow-hidden mt-1">
                 <div className={`h-full rounded-full transition-all ${gp.dailyScore.pct >= 100 ? 'bg-vgreen' : 'bg-vpurp'}`} style={{ width: `${Math.min(100, Math.round((score / gp.dailyScore.target) * 100))}%` }} />
@@ -207,21 +207,21 @@ export function FillPage() {
             <div className="bg-surface border border-b1 rounded-lg p-3">
               <div className="flex items-center gap-1.5 mb-1">
                 <Flame size={12} className="text-orange-400" />
-                <span className="text-[10px] text-t3 uppercase font-bold">Streak</span>
+                <span className="text-2xs text-t3 uppercase font-bold">Streak</span>
               </div>
               <div className="font-mono text-sm font-bold text-orange-400">
                 {streak.current > 0 ? `🔥 ${streak.current}d` : 'Comece hoje!'}
               </div>
-              <div className="text-[10px] text-t4 mt-0.5">Recorde: {streak.best}d</div>
+              <div className="text-2xs text-t4 mt-0.5">Recorde: {streak.best}d</div>
             </div>
             <div className="bg-surface border border-b1 rounded-lg p-3">
               <div className="flex items-center gap-1.5 mb-1">
                 <Target size={12} className="text-vgreen" />
-                <span className="text-[10px] text-t3 uppercase font-bold">Vendas Mes</span>
+                <span className="text-2xs text-t3 uppercase font-bold">Vendas Mes</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="font-mono text-sm font-bold">{gp.monthlySales.current}/{gp.monthlySales.target}</span>
-                <span className={`text-[10px] font-bold ${gp.monthlySales.pct >= 100 ? 'text-vgreen' : 'text-t4'}`}>{gp.monthlySales.pct}%</span>
+                <span className={`text-2xs font-bold ${gp.monthlySales.pct >= 100 ? 'text-vgreen' : 'text-t4'}`}>{gp.monthlySales.pct}%</span>
               </div>
               <div className="h-1 bg-overlay rounded-full overflow-hidden mt-1">
                 <div className={`h-full rounded-full transition-all ${gp.monthlySales.pct >= 100 ? 'bg-vgreen' : 'bg-vgreen/60'}`} style={{ width: `${gp.monthlySales.pct}%` }} />
@@ -244,7 +244,7 @@ export function FillPage() {
             </div>
             <div className="space-y-3">
               <div>
-                <label className="text-[10px] text-t4 uppercase tracking-wider font-semibold">{ch.fieldA}</label>
+                <label className="text-2xs text-t4 uppercase tracking-wider font-semibold">{ch.fieldA}</label>
                 <input
                   type="number"
                   min="0"
@@ -255,7 +255,7 @@ export function FillPage() {
                 />
               </div>
               <div>
-                <label className="text-[10px] text-t4 uppercase tracking-wider font-semibold">{ch.fieldB}</label>
+                <label className="text-2xs text-t4 uppercase tracking-wider font-semibold">{ch.fieldB}</label>
                 <input
                   type="number"
                   min="0"
@@ -272,7 +272,7 @@ export function FillPage() {
 
       {/* Observation */}
       <div>
-        <label className="text-[11px] text-t3 uppercase tracking-wider font-semibold">
+        <label className="text-xs text-t3 uppercase tracking-wider font-semibold">
           Observação / Bloqueios (opcional)
         </label>
         <textarea
@@ -325,9 +325,9 @@ export function FillPage() {
             <div className="flex items-center justify-between px-4 py-3 border-b border-b1">
               <div className="flex items-center gap-2">
                 <Calendar size={14} className="text-t3" />
-                <span className="text-[11px] font-bold text-t3 uppercase tracking-wider">Historico de Fills</span>
+                <span className="text-xs font-bold text-t3 uppercase tracking-wider">Historico de Fills</span>
               </div>
-              <span className="text-[10px] font-mono text-t4">{streak}/14 dias preenchidos</span>
+              <span className="text-2xs font-mono text-t4">{streak}/14 dias preenchidos</span>
             </div>
             <div className="divide-y divide-b1">
               {history.map(h => (
@@ -340,14 +340,14 @@ export function FillPage() {
                         {CHANNELS.map(ch => {
                           const v = h.fill!.channels?.[ch.id];
                           const val = typeof v === 'object' ? parseInt(v.a) || 0 : 0;
-                          return <span key={ch.id} className="text-[10px] text-t4">{ch.icon}<span className="font-mono ml-0.5">{val}</span></span>;
+                          return <span key={ch.id} className="text-2xs text-t4">{ch.icon}<span className="font-mono ml-0.5">{val}</span></span>;
                         })}
                       </div>
                       <span className="font-mono text-xs font-bold text-vred">{h.score} pts</span>
-                      <span className="text-[10px] text-t4 font-mono w-12 text-right">{h.time}</span>
+                      <span className="text-2xs text-t4 font-mono w-12 text-right">{h.time}</span>
                     </>
                   ) : (
-                    <span className="flex-1 text-[10px] text-t4 italic">{h.isToday ? 'Preencha acima' : 'Nao preenchido'}</span>
+                    <span className="flex-1 text-2xs text-t4 italic">{h.isToday ? 'Preencha acima' : 'Nao preenchido'}</span>
                   )}
                 </div>
               ))}

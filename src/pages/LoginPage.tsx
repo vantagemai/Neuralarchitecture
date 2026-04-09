@@ -123,7 +123,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === 'register' && (
               <div>
-                <label className="block text-[11px] text-t3 uppercase tracking-wider font-semibold mb-2">
+                <label className="block text-xs text-t3 uppercase tracking-wider font-semibold mb-2">
                   Nome completo
                 </label>
                 <input
@@ -137,7 +137,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             )}
 
             <div>
-              <label className="block text-[11px] text-t3 uppercase tracking-wider font-semibold mb-2">
+              <label className="block text-xs text-t3 uppercase tracking-wider font-semibold mb-2">
                 Email
               </label>
               <input
@@ -150,7 +150,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             </div>
 
             <div>
-              <label className="block text-[11px] text-t3 uppercase tracking-wider font-semibold mb-2">
+              <label className="block text-xs text-t3 uppercase tracking-wider font-semibold mb-2">
                 Senha
               </label>
               <div className="relative">
@@ -173,7 +173,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
 
             {mode === 'register' && (
               <div>
-                <label className="block text-[11px] text-t3 uppercase tracking-wider font-semibold mb-2">
+                <label className="block text-xs text-t3 uppercase tracking-wider font-semibold mb-2">
                   Função
                 </label>
                 <select
@@ -198,7 +198,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
         </div>
 
         <div className="flex items-center justify-center gap-3 mt-5">
-          <p className="text-[10px] text-t4 font-mono tracking-wider">
+          <p className="text-2xs text-t4 font-mono tracking-wider">
             v2.0 · Sistemas de Escala
           </p>
           <button

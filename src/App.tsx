@@ -1,28 +1,46 @@
-import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useState, useEffect, lazy, Suspense } from 'react';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AppLayout } from './components/layout/AppLayout';
 import { LoginPage } from './pages/LoginPage';
-import { DashboardPage } from './pages/DashboardPage';
-import { FillPage } from './pages/FillPage';
-import { PremiacoesPage } from './pages/PremiacoesPage';
-import { RankingPage } from './pages/RankingPage';
-import { VendasPage } from './pages/VendasPage';
-import { ExtratosPage } from './pages/ExtratosPage';
-import { TimePage } from './pages/TimePage';
-import { IdentidadePage } from './pages/IdentidadePage';
-import { ConfigPage } from './pages/ConfigPage';
-import { TvPage } from './pages/TvPage';
-import { BadgesPage } from './pages/BadgesPage';
-import { DesafiosPage } from './pages/DesafiosPage';
-import { CoachingPage } from './pages/CoachingPage';
-import { NotFoundPage } from './pages/NotFoundPage';
-import { PerfilPage } from './pages/PerfilPage';
 import { ToastContainer } from './components/ui/Toast';
 import { ConfettiContainer } from './components/ui/Confetti';
 import { OnboardingTour, shouldShowOnboarding } from './components/ui/OnboardingTour';
 import { initSupabase, isOnline } from './lib/supabase';
 import { hydrateFromSupabase, subscribeSales, subscribeShoutouts, subscribeNotifications } from './lib/supabaseSync';
 import { playNotification } from './lib/sounds';
+
+// Lazy-loaded pages (code splitting)
+const DashboardPage = lazy(() => import('./pages/DashboardPage').then(m => ({ default: m.DashboardPage })));
+const FillPage = lazy(() => import('./pages/FillPage').then(m => ({ default: m.FillPage })));
+const PremiacoesPage = lazy(() => import('./pages/PremiacoesPage').then(m => ({ default: m.PremiacoesPage })));
+const RankingPage = lazy(() => import('./pages/RankingPage').then(m => ({ default: m.RankingPage })));
+const VendasPage = lazy(() => import('./pages/VendasPage').then(m => ({ default: m.VendasPage })));
+const ExtratosPage = lazy(() => import('./pages/ExtratosPage').then(m => ({ default: m.ExtratosPage })));
+const TimePage = lazy(() => import('./pages/TimePage').then(m => ({ default: m.TimePage })));
+const IdentidadePage = lazy(() => import('./pages/IdentidadePage').then(m => ({ default: m.IdentidadePage })));
+const ConfigPage = lazy(() => import('./pages/ConfigPage').then(m => ({ default: m.ConfigPage })));
+const TvPage = lazy(() => import('./pages/TvPage').then(m => ({ default: m.TvPage })));
+const BadgesPage = lazy(() => import('./pages/BadgesPage').then(m => ({ default: m.BadgesPage })));
+const DesafiosPage = lazy(() => import('./pages/DesafiosPage').then(m => ({ default: m.DesafiosPage })));
+const CoachingPage = lazy(() => import('./pages/CoachingPage').then(m => ({ default: m.CoachingPage })));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then(m => ({ default: m.NotFoundPage })));
+const PerfilPage = lazy(() => import('./pages/PerfilPage').then(m => ({ default: m.PerfilPage })));
+
+// Scroll restoration on route change
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
+
+// Loading fallback
+function PageLoader() {
+  return (
+    <div className="flex items-center justify-center py-24">
+      <div className="w-6 h-6 border-2 border-vred/30 border-t-vred rounded-full animate-spin" />
+    </div>
+  );
+}
 
 export interface UserSession {
   id: string;
@@ -118,12 +136,12 @@ function App() {
 
   return (
     <BrowserRouter basename="/Neuralarchitecture">
+      <ScrollToTop />
       <ToastContainer />
       <ConfettiContainer />
       {showOnboarding && <OnboardingTour onClose={() => setShowOnboarding(false)} />}
 
-      {/* Supabase status now shown in StatusBar */}
-
+      <Suspense fallback={<PageLoader />}>
       <Routes>
         <Route element={
           <AppLayout
@@ -151,6 +169,7 @@ function App() {
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }

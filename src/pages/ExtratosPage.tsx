@@ -7,8 +7,7 @@ import { Badge } from '../components/ui/Badge';
 import { KpiCard } from '../components/ui/KpiCard';
 import { DollarSign, BarChart3, Download } from 'lucide-react';
 import { exportCommissionsCSV, exportSalesCSV } from '../lib/export';
-
-const roleVariant = (r: string) => r === 'Setter' ? 'purp' as const : r === 'Founder' ? 'red' as const : r === 'Social Seller' ? 'pink' as const : 'gold' as const;
+import { roleVariant } from '../lib/roles';
 
 export function ExtratosPage() {
   const [uid, setUid] = useState('all');
@@ -46,18 +45,18 @@ export function ExtratosPage() {
       {/* Filters + Export */}
       <div className="flex gap-3 flex-wrap items-center">
         <select value={uid} onChange={e => setUid(e.target.value)}
-          className="bg-elevated border border-b1 rounded-lg px-4 py-2 text-sm outline-none cursor-pointer">
+          className="bg-elevated border border-b1 rounded-lg px-4 py-2.5 text-sm outline-none cursor-pointer">
           <option value="all">Todos</option>
           {users.map(u => <option key={u.id} value={u.name}>{u.name}</option>)}
         </select>
         <select value={ym} onChange={e => setYm(e.target.value)}
-          className="bg-elevated border border-b1 rounded-lg px-4 py-2 text-sm outline-none cursor-pointer">
+          className="bg-elevated border border-b1 rounded-lg px-4 py-2.5 text-sm outline-none cursor-pointer">
           {months.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
         </select>
-        <button onClick={() => exportCommissionsCSV(ym)} className="flex items-center gap-1.5 bg-elevated border border-b1 rounded-lg px-4 py-2 text-sm text-t3 hover:text-t1 hover:border-b3 transition-colors">
+        <button onClick={() => exportCommissionsCSV(ym)} className="flex items-center gap-1.5 bg-elevated border border-b1 rounded-lg px-4 py-2.5 text-sm text-t3 hover:text-t1 hover:border-b3 transition-colors">
           <Download size={14} /> Exportar CSV
         </button>
-        <button onClick={() => exportSalesCSV(ym)} className="flex items-center gap-1.5 bg-elevated border border-b1 rounded-lg px-4 py-2 text-sm text-t3 hover:text-t1 hover:border-b3 transition-colors">
+        <button onClick={() => exportSalesCSV(ym)} className="flex items-center gap-1.5 bg-elevated border border-b1 rounded-lg px-4 py-2.5 text-sm text-t3 hover:text-t1 hover:border-b3 transition-colors">
           <Download size={14} /> Vendas CSV
         </button>
       </div>
@@ -72,11 +71,11 @@ export function ExtratosPage() {
       {/* Table */}
       <div className="bg-surface border border-b1 rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full" aria-label="Comissoes por membro">
             <thead>
               <tr className="bg-elevated/30">
                 {['Membro', 'Funcao', 'Vendas', 'C. Setup', 'C. Rec', '🪙 Fichas', 'Bonus', 'Total'].map(h => (
-                  <th key={h} className="text-left text-[10px] text-t4 uppercase tracking-wider font-semibold px-3 py-1">{h}</th>
+                  <th key={h} className="text-left text-2xs text-t4 uppercase tracking-wider font-semibold px-3 py-1">{h}</th>
                 ))}
               </tr>
             </thead>

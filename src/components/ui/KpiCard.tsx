@@ -44,7 +44,7 @@ export function KpiCard({ label, value, icon: Icon, trend, trendLabel, color = '
   return (
     <div className={`bg-surface border border-b1 border-l-2 ${c.border} p-3 transition-all hover:bg-elevated/30`}>
       <div className="flex items-center justify-between mb-1">
-        <span className="text-[9px] text-t4 uppercase tracking-[0.12em]">{label}</span>
+        <span className="text-2xs text-t4 uppercase tracking-[0.12em]">{label}</span>
         {Icon && <Icon size={12} className={`${c.icon} opacity-40`} />}
       </div>
       <div className="flex items-end justify-between gap-2">
@@ -53,12 +53,12 @@ export function KpiCard({ label, value, icon: Icon, trend, trendLabel, color = '
           {(trend !== undefined || trendLabel) && (
             <div className="flex items-center gap-1 mt-0.5">
               {trend !== undefined && (
-                <span className={`flex items-center gap-0.5 text-[10px] font-bold ${isUp ? 'text-vgreen' : 'text-vred'}`}>
+                <span className={`flex items-center gap-0.5 text-2xs font-bold ${isUp ? 'text-vgreen' : 'text-vred'}`}>
                   {isUp ? <ArrowUpRight size={10} /> : <ArrowDownRight size={10} />}
                   {Math.abs(trend)}%
                 </span>
               )}
-              {trendLabel && <span className="text-[9px] text-t4">{trendLabel}</span>}
+              {trendLabel && <span className="text-2xs text-t4">{trendLabel}</span>}
             </div>
           )}
         </div>

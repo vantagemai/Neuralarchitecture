@@ -13,7 +13,7 @@ export function PanelHeader({ title, onCollapse, collapsed, actions }: PanelHead
       className="h-7 bg-elevated border-b border-b1 px-2 flex items-center justify-between select-none shrink-0"
       onDoubleClick={onCollapse}
     >
-      <span className="text-[10px] font-medium text-t3 uppercase tracking-wider truncate">{title}</span>
+      <span className="text-2xs font-medium text-t3 uppercase tracking-wider truncate">{title}</span>
       <div className="flex items-center gap-1">
         {actions}
         {onCollapse && (

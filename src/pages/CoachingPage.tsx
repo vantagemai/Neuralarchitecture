@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { MessageSquare, Star, Save, ChevronDown, ChevronUp } from 'lucide-react';
 import { db, getUsers, getSession, today } from '../lib/store';
 import { showToast } from '../components/ui/Toast';
+import { Avatar } from '../components/ui/Avatar';
 import { getLevel } from '../lib/levels';
 import { getStreak } from '../lib/streaks';
 import { getTotalXp } from '../lib/xp';
@@ -76,21 +77,19 @@ export function CoachingPage() {
                   selectedId === u.id ? 'border-vred/30 bg-vred/5' : 'border-b1 hover:border-b3'
                 }`}
               >
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-[10px] font-bold shrink-0">
-                  {u.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                </div>
+                <Avatar userId={u.id} name={u.name} size="w-8 h-8" />
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-semibold truncate flex items-center gap-1.5">
                     {u.name}
-                    <span className={`text-[10px] ${level.color}`}>{level.icon}</span>
+                    <span className={`text-2xs ${level.color}`}>{level.icon}</span>
                   </div>
-                  <div className="text-[10px] text-t4">
+                  <div className="text-2xs text-t4">
                     {u.role} · 🪙 {getTotalXp(u.id)}
                     {streak.current > 0 && <> · 🔥{streak.current}d</>}
                   </div>
                 </div>
                 {noteCount > 0 && (
-                  <span className="text-[9px] text-t4 bg-elevated px-1.5 py-0.5 rounded-full font-mono">{noteCount}</span>
+                  <span className="text-2xs text-t4 bg-elevated px-1.5 py-0.5 rounded-full font-mono">{noteCount}</span>
                 )}
               </button>
             );
@@ -112,7 +111,7 @@ export function CoachingPage() {
 
                 {/* Rating */}
                 <div className="mb-4">
-                  <label className="text-[11px] text-t3 uppercase tracking-wider font-semibold">Performance (1-5)</label>
+                  <label className="text-xs text-t3 uppercase tracking-wider font-semibold">Performance (1-5)</label>
                   <div className="flex gap-1 mt-1">
                     {[1, 2, 3, 4, 5].map(n => (
                       <button key={n} onClick={() => setRating(n)}
@@ -124,14 +123,14 @@ export function CoachingPage() {
                 </div>
 
                 <div className="mb-3">
-                  <label className="text-[11px] text-t3 uppercase tracking-wider font-semibold">Notas</label>
+                  <label className="text-xs text-t3 uppercase tracking-wider font-semibold">Notas</label>
                   <textarea value={notes} onChange={e => setNotes(e.target.value)}
                     placeholder="Pontos fortes, areas de melhoria, observacoes..."
                     className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-3 text-sm outline-none focus:border-vred/40 min-h-[100px] resize-none" />
                 </div>
 
                 <div className="mb-4">
-                  <label className="text-[11px] text-t3 uppercase tracking-wider font-semibold">Action Items</label>
+                  <label className="text-xs text-t3 uppercase tracking-wider font-semibold">Action Items</label>
                   <textarea value={actionItems} onChange={e => setActionItems(e.target.value)}
                     placeholder="Tarefas, metas, proximos passos..."
                     className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-3 text-sm outline-none focus:border-vred/40 min-h-[60px] resize-none" />
@@ -172,7 +171,7 @@ export function CoachingPage() {
                             <p className="text-sm text-t2 whitespace-pre-wrap">{n.notes}</p>
                             {n.actionItems && (
                               <div className="bg-vgold/5 border border-vgold/15 rounded-lg px-3 py-2">
-                                <div className="text-[10px] text-vgold uppercase font-bold mb-1">Action Items</div>
+                                <div className="text-2xs text-vgold uppercase font-bold mb-1">Action Items</div>
                                 <p className="text-xs text-t2 whitespace-pre-wrap">{n.actionItems}</p>
                               </div>
                             )}

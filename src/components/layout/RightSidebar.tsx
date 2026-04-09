@@ -83,9 +83,9 @@ export function RightSidebar() {
           <div className="mt-1.5 font-bold text-xs">{session.name}</div>
           <div className="flex items-center justify-center gap-1.5 mt-1">
             <span className="text-sm">{level.icon}</span>
-            <span className={`text-[11px] font-bold ${level.color}`}>{level.name}</span>
+            <span className={`text-xs font-bold ${level.color}`}>{level.name}</span>
           </div>
-          <div className="flex items-center justify-center gap-3 mt-2 text-[10px] font-mono">
+          <div className="flex items-center justify-center gap-3 mt-2 text-2xs font-mono">
             <span className="text-vgold flex items-center gap-0.5">🪙 {xp.toLocaleString()} Fichas</span>
             {streak.current > 0 && (
               <span className="text-orange-400 flex items-center gap-0.5"><Flame size={10} />{streak.current}d</span>
@@ -98,7 +98,7 @@ export function RightSidebar() {
           <div className="bg-elevated p-3 border border-b1">
             <div className="flex items-center gap-2 mb-3">
               <Target size={14} className="text-vred" />
-              <span className="text-[11px] font-bold uppercase tracking-wider">Meta 180 Dias</span>
+              <span className="text-xs font-bold uppercase tracking-wider">Meta 180 Dias</span>
             </div>
             {/* SVG Donut */}
             <div className="relative w-20 h-20 mx-auto">
@@ -112,12 +112,12 @@ export function RightSidebar() {
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span className="text-lg font-bold font-mono">{metaProgress}%</span>
-                <span className="text-[9px] text-t4">{daysLeft}d restantes</span>
+                <span className="text-2xs text-t4">{daysLeft}d restantes</span>
               </div>
             </div>
             <div className="text-center mt-2">
               <div className="text-xs font-mono text-vgreen">{fmt$(myComm)}</div>
-              <div className="text-[10px] text-t4">de {fmt$(meta180)}</div>
+              <div className="text-2xs text-t4">de {fmt$(meta180)}</div>
             </div>
           </div>
         )}
@@ -125,7 +125,7 @@ export function RightSidebar() {
         {/* Scorecard */}
         <div className="bg-elevated p-3 border border-b1">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5">
+            <span className="text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
               <Star size={12} className="text-vgold" /> Scorecard
             </span>
             <span className="text-lg font-bold font-mono text-vred">{scorecard.overall}</span>
@@ -139,7 +139,7 @@ export function RightSidebar() {
               { label: 'Badges', value: scorecard.badges, color: 'bg-vblue' },
             ].map(m => (
               <div key={m.label}>
-                <div className="flex justify-between text-[10px] mb-0.5">
+                <div className="flex justify-between text-2xs mb-0.5">
                   <span className="text-t3">{m.label}</span>
                   <span className="font-mono text-t2">{m.value}</span>
                 </div>
@@ -153,13 +153,13 @@ export function RightSidebar() {
 
         {/* Goals today */}
         <div className="bg-elevated p-3 border border-b1">
-          <span className="text-[11px] font-bold uppercase tracking-wider">Metas Hoje</span>
+          <span className="text-xs font-bold uppercase tracking-wider">Metas Hoje</span>
           <div className="mt-2 space-y-1.5">
             {[
               { label: 'Contatos', ...goalProgress.dailyContacts, color: 'text-vred' },
               { label: 'Score', ...goalProgress.dailyScore, color: 'text-vpurp' },
             ].map(g => (
-              <div key={g.label} className="flex items-center justify-between text-[10px]">
+              <div key={g.label} className="flex items-center justify-between text-2xs">
                 <span className="text-t3">{g.label}</span>
                 <span className={`font-mono font-bold ${g.pct >= 100 ? 'text-vgreen' : g.color}`}>
                   {g.current}/{g.target}
@@ -172,7 +172,7 @@ export function RightSidebar() {
         {/* Dream images */}
         {profile && (
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-t3">Seus Sonhos</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-t3">Seus Sonhos</span>
             <div className="grid grid-cols-2 gap-2 mt-2">
               {DREAM_ITEMS.map(d => {
                 const img = profile.images?.[d.key];
@@ -187,8 +187,8 @@ export function RightSidebar() {
                       </div>
                     )}
                     <div className="px-2 py-1.5">
-                      <div className="text-[9px] text-t4 uppercase">{d.label}</div>
-                      {text && <div className="text-[10px] text-t2 truncate">{text}</div>}
+                      <div className="text-2xs text-t4 uppercase">{d.label}</div>
+                      {text && <div className="text-2xs text-t2 truncate">{text}</div>}
                     </div>
                   </div>
                 );
@@ -200,7 +200,7 @@ export function RightSidebar() {
         {/* Anchor phrase */}
         {profile?.anchor && (
           <div className="bg-vred/8 border border-vred/15 rounded-lg p-3 text-center">
-            <div className="text-[10px] text-vred uppercase font-bold mb-1">Frase Ancora</div>
+            <div className="text-2xs text-vred uppercase font-bold mb-1">Frase Ancora</div>
             <p className="text-xs text-t2 italic leading-relaxed">"{profile.anchor}"</p>
           </div>
         )}
@@ -209,7 +209,7 @@ export function RightSidebar() {
         {!profile && (
           <div className="text-center py-4">
             <Sparkles size={24} className="mx-auto mb-2 text-t4 opacity-30" />
-            <p className="text-[11px] text-t4">Configure sua Identidade 180d para ver seus sonhos aqui</p>
+            <p className="text-xs text-t4">Configure sua Identidade 180d para ver seus sonhos aqui</p>
           </div>
         )}
       </div>

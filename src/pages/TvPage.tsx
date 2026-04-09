@@ -6,6 +6,7 @@ import { getLevelByXp } from '../lib/levels';
 import { getUnlocked, ACHIEVEMENTS } from '../lib/achievements';
 import { getGoals } from '../lib/goals';
 import { Logo } from '../components/ui/Logo';
+import { Avatar } from '../components/ui/Avatar';
 
 const MEDALS = ['🥇', '🥈', '🥉'];
 
@@ -58,21 +59,6 @@ function useCountUp(target: number, duration = 1200): number {
     requestAnimationFrame(step);
   }, [target, duration]);
   return val;
-}
-
-function Avatar({ userId, name, size = 'w-10 h-10', ring = false }: { userId: string; name: string; size?: string; ring?: boolean }) {
-  const url = localStorage.getItem(`vantagem_avatar_${userId}`);
-  const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-  const img = url ? (
-    <img src={url} alt={name} className={`${size} rounded-full object-cover`} />
-  ) : (
-    <div className={`${size} rounded-full bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white font-bold`}
-      style={{ fontSize: size.includes('12') ? '16px' : size.includes('10') ? '13px' : '11px' }}>
-      {initials}
-    </div>
-  );
-  if (ring) return <div className="tv-avatar-ring shrink-0">{img}</div>;
-  return <div className="shrink-0">{img}</div>;
 }
 
 function getUserGroup(user: UserData): RoleGroup | undefined {
@@ -154,7 +140,7 @@ function GroupSection({ group, users, fills, sales, panel }: {
       <Avatar userId={userId} name={name} size={i === 0 ? 'w-10 h-10' : 'w-8 h-8'} ring={i === 0} />
       <div className="flex-1 min-w-0">
         <div className="font-bold truncate" style={{ fontSize: '14px' }}>{name}</div>
-        {sub && <div className="text-[11px] text-t4">{sub}</div>}
+        {sub && <div className="text-xs text-t4">{sub}</div>}
         <div className="relative h-1.5 bg-overlay rounded-full overflow-hidden mt-1">
           <div className={`h-full ${group.barColor} rounded-full transition-all duration-700 tv-bar-shine`}
             style={{ width: `${barPct}%` }} />
@@ -193,7 +179,7 @@ function GroupSection({ group, users, fills, sales, panel }: {
             <Avatar userId={a.userId} name={a.userName} size="w-8 h-8" />
             <div className="flex-1 min-w-0">
               <div className="font-bold truncate" style={{ fontSize: '14px' }}>{a.achievement!.name}</div>
-              <div className="text-[11px] text-t4">{a.userName}</div>
+              <div className="text-xs text-t4">{a.userName}</div>
             </div>
           </div>
         ));

@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { KpiCard } from '../components/ui/KpiCard';
 import { Badge } from '../components/ui/Badge';
+import { Avatar } from '../components/ui/Avatar';
 // PanelHeader available for chart wrappers if needed
 import {
   DollarSign, Users, Target, TrendingUp,
@@ -13,27 +14,14 @@ import { getUsers, getTodayFills, getMonthSales, calcScore, db, today, fmt$, CHA
 import { getScorecard } from '../lib/scorecard';
 import { getGoalProgress } from '../lib/goals';
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
-import { getTheme } from '../lib/theme';
+import { chartColors } from '../lib/theme';
 import { getStreak } from '../lib/streaks';
 import { getLevel } from '../lib/levels';
 import { getTotalXp } from '../lib/xp';
 import { getMonthBonus } from '../lib/bonus';
-
-// Clean monochrome chart colors
-function chartColors() {
-  const dark = getTheme() === 'dark';
-  return {
-    grid: dark ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.06)',
-    tick: dark ? '#737373' : '#8F8F8F',
-    tooltipBg: dark ? '#1F1F1F' : '#FFFFFF',
-    tooltipBorder: dark ? '1px solid rgba(255,255,255,.1)' : '1px solid rgba(0,0,0,.08)',
-    tooltipLabel: dark ? '#999' : '#6B6B6B',
-    polarGrid: dark ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.06)',
-  };
-}
+import { roleVariant } from '../lib/roles';
 
 const MEDALS = ['🥇', '🥈', '🥉'];
-const roleVariant = (r: string) => r === 'Setter' ? 'purp' as const : r === 'Founder' ? 'red' as const : r === 'Social Seller' ? 'pink' as const : 'gold' as const;
 
 function getLast7DaysFills(): { date: string; label: string; score: number }[] {
   const result: { date: string; label: string; score: number }[] = [];
@@ -123,29 +111,21 @@ export function DashboardPage() {
       {/* Terminal header bar */}
       <div className="flex items-center justify-between border-b border-b1 pb-3">
         <div className="flex items-center gap-3">
-          {(() => {
-            const avatar = localStorage.getItem(`vantagem_avatar_${session?.id || ''}`);
-            const initials = (session?.name || 'U').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-            return avatar ? (
-              <img src={avatar} alt="" className="w-10 h-10 rounded-lg object-cover border border-b1" />
-            ) : (
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-sm font-bold">{initials}</div>
-            );
-          })()}
+          <Avatar userId={session?.id || ''} name={session?.name || 'U'} size="w-10 h-10" />
           <div>
             <h1 className="text-lg font-bold font-mono">{greeting}, {session?.name?.split(' ')[0] || 'User'}</h1>
             <div className="flex items-center gap-3">
-              <span className={`text-[10px] font-bold font-mono ${myLevel.color}`}>{myLevel.icon} {myLevel.name}</span>
-              <span className="text-[10px] font-mono text-vgold neon-gold">🪙 {myXp.toLocaleString()} Fichas</span>
-              {myStreak.current > 0 && <span className="text-[10px] font-mono text-orange-400">🔥{myStreak.current}d</span>}
+              <span className={`text-2xs font-bold font-mono ${myLevel.color}`}>{myLevel.icon} {myLevel.name}</span>
+              <span className="text-2xs font-mono text-vgold neon-gold">🪙 {myXp.toLocaleString()} Fichas</span>
+              {myStreak.current > 0 && <span className="text-2xs font-mono text-orange-400">🔥{myStreak.current}d</span>}
             </div>
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-[11px] text-t3 font-mono hidden sm:block">
+          <span className="text-xs text-t3 font-mono hidden sm:block">
             {now.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' })}
           </span>
-          <span className="flex items-center gap-1.5 text-[10px] text-vgreen font-mono">
+          <span className="flex items-center gap-1.5 text-2xs text-vgreen font-mono">
             <span className="relative w-2 h-2"><span className="absolute inset-0 rounded-full bg-vgreen animate-pulse" /><span className="absolute inset-0 rounded-full tv-live-ring text-vgreen" /></span>
             LIVE
           </span>
@@ -164,12 +144,12 @@ export function DashboardPage() {
       {(session?.role === 'Setter' || session?.role === 'Social Seller') && (() => {
         const b = getMonthBonus(session?.id || 'anon');
         return (
-          <div className="bg-surface border border-vgold/20 border-l-[3px] border-l-vgold rounded-lg px-4 py-3 flex items-center gap-4">
+          <div className="bg-surface border border-vgold/20 border-l-2 border-l-vgold rounded-lg px-4 py-3 flex items-center gap-4">
             <span className="text-lg">🎯</span>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold text-vgold">Bonus Setter</span>
-                <span className="text-[10px] text-t4">{b.meetings} reunioes realizadas</span>
+                <span className="text-2xs text-t4">{b.meetings} reunioes realizadas</span>
               </div>
               <div className="h-1.5 bg-overlay rounded-full overflow-hidden mt-1 max-w-[200px]">
                 <div className="h-full bg-vgold rounded-full transition-all" style={{ width: `${b.progress}%` }} />
@@ -177,7 +157,7 @@ export function DashboardPage() {
             </div>
             <div className="text-right shrink-0">
               <div className="font-mono font-bold text-vgold">${b.bonus}</div>
-              <div className="text-[10px] text-t4">{b.nextAt > 0 && b.meetings > 0 ? `${b.nextAt} para +$100` : ''}</div>
+              <div className="text-2xs text-t4">{b.nextAt > 0 && b.meetings > 0 ? `${b.nextAt} para +$100` : ''}</div>
             </div>
           </div>
         );
@@ -252,7 +232,7 @@ export function DashboardPage() {
               {(() => { const cc = chartColors(); return (
               <ResponsiveContainer width="100%" height={220}>
                 <RadarChart data={radarData}>
-                  <PolarGrid stroke={cc.polarGrid} />
+                  <PolarGrid stroke={cc.grid} />
                   <PolarAngleAxis dataKey="metric" tick={{ fontSize: 10, fill: cc.tick }} />
                   <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
                   <Radar dataKey="value" stroke="#D4634B" fill="#D4634B" fillOpacity={0.2} strokeWidth={2} />
@@ -296,7 +276,7 @@ export function DashboardPage() {
         <div className="lg:col-span-2 bg-surface border border-b1 rounded-lg overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-b1">
             <div>
-              <h2 className="text-[12px] font-bold">Atividade do Time</h2>
+              <h2 className="text-xs font-bold">Atividade do Time</h2>
               <p className="text-xs text-t3 mt-0.5">Score por canal — hoje</p>
             </div>
             <Badge variant={filledCount === totalMembers ? 'green' : 'red'}>
@@ -314,16 +294,7 @@ export function DashboardPage() {
                   <span className="w-7 text-center text-lg">
                     {i < 3 ? MEDALS[i] : <span className="text-xs text-t4 font-mono">#{i + 1}</span>}
                   </span>
-                  {(() => {
-                    const u = users.find(x => x.name === member.name);
-                    const av = u ? localStorage.getItem(`vantagem_avatar_${u.id}`) : null;
-                    const ini = member.name.split(' ').map(n => n[0]).join('').slice(0, 2);
-                    return av ? (
-                      <img src={av} alt={member.name} className="w-9 h-9 rounded-full object-cover border border-b1 shrink-0" />
-                    ) : (
-                      <div className="w-9 h-9 rounded-full bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-[10px] font-bold shrink-0">{ini}</div>
-                    );
-                  })()}
+                  <Avatar userId={member.id} name={member.name} size="w-9 h-9" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <Link to={`/perfil/${member.id}`} className="text-sm font-semibold truncate hover:text-vred transition-colors">{member.name}</Link>
@@ -336,14 +307,14 @@ export function DashboardPage() {
                             const val = member.channels[ch.id];
                             const v = typeof val === 'object' ? (val as any).a : val;
                             return (
-                              <span key={ch.id} className="text-[10px] text-t4">
+                              <span key={ch.id} className="text-2xs text-t4">
                                 {ch.icon} <span className="font-mono">{v || 0}</span>
                               </span>
                             );
                           })}
                         </div>
                         {member.obs && (
-                          <div className="text-[10px] text-t3 mt-1 italic truncate max-w-[300px]" title={member.obs}>
+                          <div className="text-2xs text-t3 mt-1 italic truncate max-w-[300px]" title={member.obs}>
                             💬 {member.obs}
                           </div>
                         )}
@@ -354,7 +325,7 @@ export function DashboardPage() {
                     {member.filled ? (
                       <>
                         <div className="text-sm font-bold font-mono text-vred">{member.score} pts</div>
-                        <div className="text-[10px] text-t4 font-mono">{member.time}</div>
+                        <div className="text-2xs text-t4 font-mono">{member.time}</div>
                       </>
                     ) : (
                       <Badge variant="red">Pendente</Badge>
@@ -369,7 +340,7 @@ export function DashboardPage() {
         {/* Alerts */}
         <div className="bg-surface border border-b1 rounded-lg overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-b1">
-            <h2 className="text-[12px] font-bold">Alertas</h2>
+            <h2 className="text-xs font-bold">Alertas</h2>
           </div>
           <div className="divide-y divide-b1">
             {alerts.length === 0 ? (
@@ -383,7 +354,7 @@ export function DashboardPage() {
                     {alert.type === 'info' && <Clock size={16} className="text-vgold mt-0.5 shrink-0" />}
                     <div>
                       <p className="text-sm text-t2">{alert.msg}</p>
-                      {alert.time && <p className="text-[10px] text-t4 mt-1 font-mono">{alert.time}</p>}
+                      {alert.time && <p className="text-2xs text-t4 mt-1 font-mono">{alert.time}</p>}
                     </div>
                   </div>
                 </div>
@@ -395,14 +366,14 @@ export function DashboardPage() {
 
       {/* Activity heatmap — last 7 days */}
       <div className="bg-surface border border-b1 rounded-lg p-4">
-        <h2 className="text-[11px] font-bold text-t3 uppercase tracking-wider mb-3">Atividade do Time — 7 dias</h2>
+        <h2 className="text-xs font-bold text-t3 uppercase tracking-wider mb-3">Atividade do Time — 7 dias</h2>
         <div className="overflow-x-auto">
           <div className="min-w-[500px]">
             {/* Day headers */}
             <div className="flex items-center gap-1 mb-1 pl-24">
               {Array.from({ length: 7 }, (_, i) => {
                 const d = new Date(); d.setDate(d.getDate() - (6 - i));
-                return <div key={i} className="flex-1 text-center text-[9px] text-t4 font-mono">{d.toLocaleDateString('pt-BR', { weekday: 'short' }).slice(0, 3)}</div>;
+                return <div key={i} className="flex-1 text-center text-2xs text-t4 font-mono">{d.toLocaleDateString('pt-BR', { weekday: 'short' }).slice(0, 3)}</div>;
               })}
             </div>
             {/* Member rows */}
@@ -425,18 +396,18 @@ export function DashboardPage() {
               });
               return (
                 <div key={u.id} className="flex items-center gap-1 mb-1">
-                  <span className="w-24 text-[10px] text-t3 truncate shrink-0 font-mono">{u.name.split(' ')[0]}</span>
+                  <span className="w-24 text-2xs text-t3 truncate shrink-0 font-mono">{u.name.split(' ')[0]}</span>
                   {cells}
                 </div>
               );
             })}
             {/* Legend */}
             <div className="flex items-center gap-2 mt-2 pl-24">
-              <span className="text-[9px] text-t4">Menos</span>
+              <span className="text-2xs text-t4">Menos</span>
               {['bg-overlay', 'bg-vred/20', 'bg-vred/45', 'bg-vred'].map((c, i) => (
                 <div key={i} className={`w-4 h-4 rounded-sm ${c}`} />
               ))}
-              <span className="text-[9px] text-t4">Mais</span>
+              <span className="text-2xs text-t4">Mais</span>
             </div>
           </div>
         </div>

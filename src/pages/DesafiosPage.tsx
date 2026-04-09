@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Plus, X, Clock, Trophy, Target, Flame, Zap } from 'lucide-react';
 import { db, getSession, getUsers, getMonthSales, getTodayFills, calcScore } from '../lib/store';
 import { Badge } from '../components/ui/Badge';
+import { Avatar } from '../components/ui/Avatar';
 import { showToast } from '../components/ui/Toast';
 
 interface Challenge {
@@ -61,18 +62,6 @@ function timeRemaining(endDate: string): { text: string; urgent: boolean } {
   if (days > 0) return { text: `${days}d ${hours}h`, urgent: days <= 1 };
   const mins = Math.floor((diff % 3600000) / 60000);
   return { text: `${hours}h ${mins}m`, urgent: true };
-}
-
-function Avatar({ userId, name }: { userId: string; name: string }) {
-  const url = localStorage.getItem(`vantagem_avatar_${userId}`);
-  const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-  return url ? (
-    <img src={url} alt={name} className="w-8 h-8 rounded-full object-cover border border-b1 shrink-0" />
-  ) : (
-    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-[10px] font-bold shrink-0">
-      {initials}
-    </div>
-  );
 }
 
 const MEDALS = ['🥇', '🥈', '🥉'];
@@ -147,17 +136,17 @@ export function DesafiosPage() {
           <h3 className="font-bold mb-4 flex items-center gap-2"><Trophy size={18} className="text-vgold" /> Criar Desafio</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="text-[11px] text-t3 uppercase tracking-wider font-semibold">Titulo</label>
+              <label className="text-xs text-t3 uppercase tracking-wider font-semibold">Titulo</label>
               <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Ex: Sprint de Vendas"
-                className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-vgold/40" />
+                className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-vred/40" />
             </div>
             <div>
-              <label className="text-[11px] text-t3 uppercase tracking-wider font-semibold">Premio</label>
+              <label className="text-xs text-t3 uppercase tracking-wider font-semibold">Premio</label>
               <input value={prize} onChange={e => setPrize(e.target.value)} placeholder="Ex: $100 bonus"
-                className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-vgold/40" />
+                className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-vred/40" />
             </div>
             <div>
-              <label className="text-[11px] text-t3 uppercase tracking-wider font-semibold">Metrica</label>
+              <label className="text-xs text-t3 uppercase tracking-wider font-semibold">Metrica</label>
               <select value={metric} onChange={e => setMetric(e.target.value as typeof metric)}
                 className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-2.5 text-sm outline-none cursor-pointer">
                 <option value="sales">Vendas</option>
@@ -166,19 +155,19 @@ export function DesafiosPage() {
               </select>
             </div>
             <div>
-              <label className="text-[11px] text-t3 uppercase tracking-wider font-semibold">Meta</label>
+              <label className="text-xs text-t3 uppercase tracking-wider font-semibold">Meta</label>
               <input type="number" min="1" value={target} onChange={e => setTarget(e.target.value)}
-                className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-2.5 text-sm font-mono outline-none focus:border-vgold/40" />
+                className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-2.5 text-sm font-mono outline-none focus:border-vred/40" />
             </div>
             <div>
-              <label className="text-[11px] text-t3 uppercase tracking-wider font-semibold">Descricao (opcional)</label>
+              <label className="text-xs text-t3 uppercase tracking-wider font-semibold">Descricao (opcional)</label>
               <input value={description} onChange={e => setDescription(e.target.value)} placeholder="Detalhes..."
-                className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-vgold/40" />
+                className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-vred/40" />
             </div>
             <div>
-              <label className="text-[11px] text-t3 uppercase tracking-wider font-semibold">Data final</label>
+              <label className="text-xs text-t3 uppercase tracking-wider font-semibold">Data final</label>
               <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} min={now}
-                className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-vgold/40" />
+                className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-vred/40" />
             </div>
           </div>
           <button onClick={handleCreate} className="bg-vgold hover:bg-vgold-dark text-canvas font-bold px-4 py-2 rounded-lg w-full transition-colors shadow-sm shadow-vgold/15">
@@ -248,7 +237,7 @@ export function DesafiosPage() {
                         return (
                           <div key={p.userId} className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${i === 0 ? 'bg-vgold/5' : 'hover:bg-elevated/50'}`}>
                             <span className="w-6 text-center" style={{ fontSize: i < 3 ? '18px' : '13px' }}>
-                              {MEDALS[i] || <span className="text-[10px] text-t4 font-mono">#{i + 1}</span>}
+                              {MEDALS[i] || <span className="text-2xs text-t4 font-mono">#{i + 1}</span>}
                             </span>
                             <Avatar userId={p.userId} name={p.userName} />
                             <a href={`/Neuralarchitecture/perfil/${p.userId}`} className="flex-1 text-sm font-semibold truncate hover:text-vred transition-colors">{p.userName}</a>
@@ -291,7 +280,7 @@ export function DesafiosPage() {
                     </div>
                     <div>
                       <h3 className="font-bold text-sm">{c.title}</h3>
-                      <div className="text-[10px] text-t4">{c.prize} · {METRIC_LABELS[c.metric]}</div>
+                      <div className="text-2xs text-t4">{c.prize} · {METRIC_LABELS[c.metric]}</div>
                     </div>
                   </div>
                 </div>
@@ -303,7 +292,7 @@ export function DesafiosPage() {
                         <Avatar userId={w.userId} name={w.userName} />
                         <div>
                           <div className={`text-xs font-bold ${i === 0 ? 'text-vgold' : 'text-t2'}`}>{w.userName}</div>
-                          <div className="text-[10px] font-mono text-t4">{w.value} {METRIC_LABELS[c.metric].toLowerCase()}</div>
+                          <div className="text-2xs font-mono text-t4">{w.value} {METRIC_LABELS[c.metric].toLowerCase()}</div>
                         </div>
                       </div>
                     ))}

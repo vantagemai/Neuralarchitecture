@@ -18,7 +18,7 @@ export function StatusBar() {
   }, []);
 
   return (
-    <div className="h-[22px] bg-elevated border-t border-b1 flex items-center justify-between px-3 text-[10px] text-t3 shrink-0">
+    <div className="h-[22px] bg-elevated border-t border-b1 flex items-center justify-between px-3 text-2xs text-t3 shrink-0">
       <div className="flex items-center gap-4">
         <span className="flex items-center gap-1">
           {online ? <Wifi size={9} className="text-vgreen" /> : <WifiOff size={9} className="text-t4" />}

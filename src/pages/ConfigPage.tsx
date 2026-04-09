@@ -61,10 +61,10 @@ export function ConfigPage() {
         <div className="bg-surface border border-b1 rounded-lg p-4">
           <div className="flex items-center gap-2 mb-5">
             <Shield size={18} className="text-vred" />
-            <h2 className="text-[15px] font-bold">Acesso Head</h2>
+            <h2 className="text-sm font-bold">Acesso Head</h2>
           </div>
           <div>
-            <label className="text-[11px] text-t3 uppercase tracking-wider font-semibold">PIN do Head</label>
+            <label className="text-xs text-t3 uppercase tracking-wider font-semibold">PIN do Head</label>
             <input value={pin} onChange={e => setPin(e.target.value)} maxLength={6}
               className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-3 font-mono text-lg text-center tracking-[12px] outline-none focus:border-vred/40" />
           </div>
@@ -75,7 +75,7 @@ export function ConfigPage() {
 
         {/* Commissions */}
         <div className="bg-surface border border-b1 rounded-lg p-4">
-          <h2 className="text-[15px] font-bold mb-5">💰 Tabela de Comissões</h2>
+          <h2 className="text-sm font-bold mb-5">💰 Tabela de Comissões</h2>
           <div className="space-y-3">
             {PLANS.map(p => (
               <div key={p.key} className="flex items-center justify-between bg-elevated rounded-lg px-4 py-3 border border-b1">
@@ -96,8 +96,8 @@ export function ConfigPage() {
       <div className="bg-surface border border-b1 rounded-lg p-4">
         <div className="flex items-center gap-2 mb-4">
           {isOnline() ? <Cloud size={18} className="text-vgreen" /> : <CloudOff size={18} className="text-t4" />}
-          <h2 className="text-[15px] font-bold">Supabase Cloud</h2>
-          <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full ${isOnline() ? 'bg-vgreen/10 text-vgreen' : 'bg-muted text-t4'}`}>
+          <h2 className="text-sm font-bold">Supabase Cloud</h2>
+          <span className={`text-2xs font-mono px-2 py-0.5 rounded-full ${isOnline() ? 'bg-vgreen/10 text-vgreen' : 'bg-muted text-t4'}`}>
             {isOnline() ? 'Conectado' : 'Offline'}
           </span>
         </div>
@@ -134,7 +134,7 @@ export function ConfigPage() {
       <div className="bg-surface border border-b1 rounded-lg p-4">
         <div className="flex items-center gap-2 mb-4">
           <Users size={18} className="text-vpurp" />
-          <h2 className="text-[15px] font-bold">Gerenciamento de Dados</h2>
+          <h2 className="text-sm font-bold">Gerenciamento de Dados</h2>
         </div>
 
         {/* Clear Data */}
@@ -173,7 +173,7 @@ export function ConfigPage() {
           >
             <Users size={14} /> Demo 100 Usuarios (90 dias)
           </button>
-          <p className="text-[10px] text-t4 mt-2">Senha de todos os demo: demo123</p>
+          <p className="text-2xs text-t4 mt-2">Senha de todos os demo: demo123</p>
         </div>
       </div>
 
@@ -181,7 +181,7 @@ export function ConfigPage() {
       <div className="bg-surface border border-b1 rounded-lg p-4">
         <div className="flex items-center gap-2 mb-4">
           <Volume2 size={18} className="text-vblue" />
-          <h2 className="text-[15px] font-bold">Som</h2>
+          <h2 className="text-sm font-bold">Som</h2>
         </div>
         <div className="flex items-center justify-between">
           <div>
@@ -206,7 +206,7 @@ export function ConfigPage() {
       <div className="bg-surface border border-b1 rounded-lg p-4">
         <div className="flex items-center gap-2 mb-4">
           {dark ? <Moon size={18} className="text-vpurp" /> : <Sun size={18} className="text-vgold" />}
-          <h2 className="text-[15px] font-bold">Tema</h2>
+          <h2 className="text-sm font-bold">Tema</h2>
         </div>
         <div className="flex items-center justify-between">
           <div>
@@ -226,13 +226,13 @@ export function ConfigPage() {
       <div className="bg-surface border border-b1 rounded-lg p-4">
         <div className="flex items-center gap-2 mb-5">
           <Trophy size={18} className="text-vgold" />
-          <h2 className="text-[15px] font-bold">Premiações</h2>
+          <h2 className="text-sm font-bold">Premiações</h2>
         </div>
         <p className="text-xs text-t3 mb-5">Esses prêmios aparecem no Painel TV e no Ranking</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {PRIZES.map(p => (
             <div key={p.id}>
-              <label className="text-[11px] text-t3 font-semibold">{p.label}</label>
+              <label className="text-xs text-t3 font-semibold">{p.label}</label>
               <input
                 value={prizes[p.id] || ''}
                 onChange={e => setPrizes({ ...prizes, [p.id]: e.target.value })}

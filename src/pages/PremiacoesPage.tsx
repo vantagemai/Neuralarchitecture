@@ -7,6 +7,7 @@ import { getMonthBonus } from '../lib/bonus';
 import { getTotalFichas } from '../lib/xp';
 import { showToast } from '../components/ui/Toast';
 import { Badge } from '../components/ui/Badge';
+import { Avatar } from '../components/ui/Avatar';
 import { playAchievement } from '../lib/sounds';
 import { triggerConfetti } from '../components/ui/Confetti';
 
@@ -40,18 +41,6 @@ const PRIZE_DEFS = [
   { id: 'diamond',     label: 'Diamond Month', icon: '💎', metric: 'revenue', description: 'Maior receita total do mes' },
   { id: 'century',     label: 'Century Club', icon: '🚀', metric: 'contacts', description: '100+ contatos em um unico dia' },
 ];
-
-function Avatar({ userId, name, size = 'w-10 h-10' }: { userId: string; name: string; size?: string }) {
-  const url = localStorage.getItem(`vantagem_avatar_${userId}`);
-  const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-  return url ? (
-    <img src={url} alt={name} className={`${size} rounded-full object-cover border border-b1 shrink-0`} />
-  ) : (
-    <div className={`${size} rounded-full bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-[10px] font-bold shrink-0`}>
-      {initials}
-    </div>
-  );
-}
 
 export function PremiacoesPage() {
   const session = getSession();
@@ -149,9 +138,9 @@ export function PremiacoesPage() {
       <div className="flex items-center justify-between border-b border-b1 pb-3">
         <div>
           <h1 className="text-lg font-bold font-mono">PREMIACOES</h1>
-          <p className="text-[11px] text-t4 font-mono">Rankings ao vivo · Aprove vencedores</p>
+          <p className="text-xs text-t4 font-mono">Rankings ao vivo · Aprove vencedores</p>
         </div>
-        <div className="text-[10px] font-mono text-t4">{new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }).toUpperCase()}</div>
+        <div className="text-2xs font-mono text-t4">{new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }).toUpperCase()}</div>
       </div>
 
       {/* Prize Catalog — Fichas Redemption */}
@@ -159,12 +148,12 @@ export function PremiacoesPage() {
         <div className="px-5 py-3 border-b border-b1 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Gift size={14} className="text-vgold" />
-            <span className="text-[11px] font-bold text-vgold uppercase tracking-[0.12em] font-mono">Catalogo de Premios</span>
+            <span className="text-xs font-bold text-vgold uppercase tracking-[0.12em] font-mono">Catalogo de Premios</span>
           </div>
           <div className="flex items-center gap-1.5 bg-vgold/10 border border-vgold/15 rounded-lg px-3 py-1">
             <span className="text-sm">🪙</span>
             <span className="text-sm font-bold font-mono text-vgold">{getTotalFichas(session?.id).toLocaleString()}</span>
-            <span className="text-[10px] text-t4">fichas</span>
+            <span className="text-2xs text-t4">fichas</span>
           </div>
         </div>
         <div className="p-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -178,16 +167,16 @@ export function PremiacoesPage() {
               }`}>
                 <div className="text-2xl mb-2">{prize.icon}</div>
                 <div className="text-xs font-bold truncate">{prize.name}</div>
-                <div className="text-[10px] font-mono text-vgold mt-1">🪙 {prize.fichas.toLocaleString()}</div>
+                <div className="text-2xs font-mono text-vgold mt-1">🪙 {prize.fichas.toLocaleString()}</div>
                 <div className="h-1.5 bg-overlay rounded-full overflow-hidden mt-2">
                   <div className={`h-full rounded-full transition-all ${canRedeem ? 'bg-vgreen' : 'bg-vgold/50'}`}
                     style={{ width: `${pct}%` }} />
                 </div>
-                <div className="text-[9px] text-t4 mt-1">{pct}%</div>
+                <div className="text-2xs text-t4 mt-1">{pct}%</div>
                 {canRedeem && (
                   <button
                     onClick={() => { showToast('success', `Resgate de ${prize.name} solicitado!`); playAchievement(); triggerConfetti(); }}
-                    className="mt-2 w-full text-[10px] font-bold bg-vgreen/15 hover:bg-vgreen/25 text-vgreen border border-vgreen/20 rounded px-2 py-1 transition-colors"
+                    className="mt-2 w-full text-2xs font-bold bg-vgreen/15 hover:bg-vgreen/25 text-vgreen border border-vgreen/20 rounded px-2 py-1 transition-colors"
                   >
                     Resgatar
                   </button>
@@ -209,29 +198,23 @@ export function PremiacoesPage() {
             <div className="px-5 py-3 border-b border-b1 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-sm">🎯</span>
-                <span className="text-[11px] font-bold text-vgold uppercase tracking-[0.12em] font-mono">Bonus Setter — $100 / 10 Reunioes</span>
+                <span className="text-xs font-bold text-vgold uppercase tracking-[0.12em] font-mono">Bonus Setter — $100 / 10 Reunioes</span>
               </div>
               <div className="text-xs font-mono text-vgold">${totalBonusPaid} total pago</div>
             </div>
             <div className="divide-y divide-b1">
               {bonusData.map(s => (
                 <div key={s.id} className="flex items-center gap-3 px-5 py-3 hover:bg-elevated/30 transition-colors">
-                  {(() => {
-                    const av = localStorage.getItem(`vantagem_avatar_${s.id}`);
-                    const ini = s.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2);
-                    return av
-                      ? <img src={av} alt="" className="w-8 h-8 rounded-full object-cover border border-b1 shrink-0" />
-                      : <div className="w-8 h-8 rounded-full bg-gradient-to-br from-vpurp to-vpurp-light flex items-center justify-center text-white text-[10px] font-bold shrink-0">{ini}</div>;
-                  })()}
+                  <Avatar userId={s.id} name={s.name} size="w-8 h-8" />
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-semibold truncate">{s.name}</div>
-                    <div className="text-[10px] text-t4">{s.meetings} reunioes realizadas · {s.cyclesDone} ciclos completos</div>
+                    <div className="text-2xs text-t4">{s.meetings} reunioes realizadas · {s.cyclesDone} ciclos completos</div>
                   </div>
                   <div className="w-24">
                     <div className="h-1.5 bg-overlay rounded-full overflow-hidden">
                       <div className="h-full bg-vgold rounded-full" style={{ width: `${s.progress}%` }} />
                     </div>
-                    <div className="text-[9px] text-t4 text-center mt-0.5">
+                    <div className="text-2xs text-t4 text-center mt-0.5">
                       {s.nextAt > 0 && s.meetings > 0 ? `${s.nextAt} para +$100` : s.meetings > 0 ? 'Ciclo!' : '—'}
                     </div>
                   </div>
@@ -247,10 +230,10 @@ export function PremiacoesPage() {
 
       {/* Month winners summary */}
       {monthWinners.length > 0 && (
-        <div className="bg-surface border border-b1 border-l-[3px] border-l-vgold rounded-lg p-4">
+        <div className="bg-surface border border-b1 border-l-2 border-l-vgold rounded-lg p-4">
           <div className="flex items-center gap-2 mb-3">
             <Crown size={14} className="text-vgold" />
-            <span className="text-[11px] font-bold text-vgold uppercase tracking-[0.12em] font-mono">Vencedores Aprovados</span>
+            <span className="text-xs font-bold text-vgold uppercase tracking-[0.12em] font-mono">Vencedores Aprovados</span>
           </div>
           <div className="flex gap-4 flex-wrap">
             {monthWinners.map(w => {
@@ -261,7 +244,7 @@ export function PremiacoesPage() {
                   <Avatar userId={w.userId} name={w.userName} size="w-8 h-8" />
                   <div>
                     <Link to={`/perfil/${w.userId}`} className="text-xs font-bold hover:text-vred transition-colors">{w.userName}</Link>
-                    <div className="text-[10px] text-vgold">{def?.label} · {w.value}</div>
+                    <div className="text-2xs text-vgold">{def?.label} · {w.value}</div>
                   </div>
                   <CheckCircle2 size={14} className="text-vgreen ml-1" />
                 </div>
@@ -282,7 +265,7 @@ export function PremiacoesPage() {
 
           return (
             <div key={prize.id} className={`rounded-lg overflow-hidden border transition-all hover:border-b2 ${
-              isApproved ? 'bg-surface border-vgreen/20 border-l-[3px] border-l-vgreen' : 'bg-surface border-b1 border-l-[3px] border-l-vgold'
+              isApproved ? 'bg-surface border-vgreen/20 border-l-2 border-l-vgreen' : 'bg-surface border-b1 border-l-2 border-l-vgold'
             }`}>
               {/* Prize header */}
               <div className="px-5 py-4 border-b border-b1">
@@ -291,7 +274,7 @@ export function PremiacoesPage() {
                     <span className="text-xl">{prize.icon}</span>
                     <div>
                       <h3 className="font-bold">{prize.label}</h3>
-                      <p className="text-[11px] text-t4">{prize.description}</p>
+                      <p className="text-xs text-t4">{prize.description}</p>
                     </div>
                   </div>
                   {isApproved ? (
@@ -317,7 +300,7 @@ export function PremiacoesPage() {
                       <div className="text-xs text-vgreen">Vencedor — {winner.value}</div>
                     </div>
                     <div className="text-right">
-                      <div className="text-[10px] text-t4">Aprovado por</div>
+                      <div className="text-2xs text-t4">Aprovado por</div>
                       <div className="text-xs font-semibold">{winner.approvedBy}</div>
                     </div>
                   </div>
@@ -336,7 +319,7 @@ export function PremiacoesPage() {
                           isTop ? 'bg-vgold/5 border border-vgold/10' : 'hover:bg-elevated/50'
                         }`}>
                           <span style={{ fontSize: i < 3 ? '18px' : '13px' }}>
-                            {MEDALS[i] || <span className="text-[10px] text-t4 font-mono">#{i + 1}</span>}
+                            {MEDALS[i] || <span className="text-2xs text-t4 font-mono">#{i + 1}</span>}
                           </span>
                           <Avatar userId={person.id} name={person.name} size={isTop ? 'w-10 h-10' : 'w-8 h-8'} />
                           <div className="flex-1 min-w-0">

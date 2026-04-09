@@ -83,7 +83,7 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
   };
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
-    `flex items-center gap-2 px-2 py-1.5 text-[11px] transition-all duration-100 border-l-2 ${
+    `flex items-center gap-2 px-2 py-1.5 text-xs transition-all duration-100 border-l-2 ${
       isActive
         ? 'bg-elevated text-t1 border-l-vred'
         : 'text-t3 hover:text-t1 hover:bg-elevated/50 border-l-transparent'
@@ -148,7 +148,7 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
               {!collapsed && (
                 <button
                   onClick={() => toggleGroup(group.name)}
-                  className="w-full flex items-center gap-1 px-3 py-1 text-[9px] text-t4 uppercase tracking-[0.15em] hover:text-t3 transition-colors"
+                  className="w-full flex items-center gap-1 px-3 py-1 text-2xs text-t4 uppercase tracking-[0.15em] hover:text-t3 transition-colors"
                 >
                   <ChevronDown size={8} className={`transition-transform ${expanded ? '' : '-rotate-90'}`} />
                   {group.name}
@@ -184,7 +184,7 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
               <button
                 key={t.key}
                 onClick={() => { setTermTab(t.key); if (termCollapsed) setTermCollapsed(false); }}
-                className={`flex-1 px-1 py-1 text-[9px] transition-colors border-r border-b1 last:border-r-0 ${
+                className={`flex-1 px-1 py-1 text-2xs transition-colors border-r border-b1 last:border-r-0 ${
                   termTab === t.key ? 'bg-elevated text-t1 border-b-2 border-b-vred' : 'text-t3 hover:text-t2 hover:bg-elevated/50'
                 }`}
               >
@@ -195,14 +195,14 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
 
           {/* Terminal content */}
           {!termCollapsed && (
-            <div className="h-[200px] overflow-y-auto text-[10px]">
+            <div className="h-[200px] overflow-y-auto text-2xs">
               {termTab === 'vendas' && (
                 <div>
                   {sales.sort((a, b) => b.ts - a.ts).slice(0, 15).map((s, i) => (
                     <div key={s.id} className={`flex items-center justify-between px-2 py-1 ${i % 2 === 0 ? '' : 'bg-elevated/20'} hover:bg-elevated/40 transition-colors`}>
                       <div className="min-w-0 flex-1">
                         <Link to={`/perfil/${s.sellerId}`} className="hover:text-vred transition-colors truncate block">{s.sellerName}</Link>
-                        <span className="text-[8px] text-t4">{s.date}</span>
+                        <span className="text-2xs text-t4">{s.date}</span>
                       </div>
                       <div className="text-right shrink-0 ml-2">
                         <div className="text-t2">${s.setupValue}</div>
@@ -228,9 +228,9 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
                             <span className="text-t4">→</span>
                             <Link to={`/perfil/${s.toId}`} className="hover:text-vred transition-colors text-vred truncate">{s.toName.split(' ')[0]}</Link>
                           </div>
-                          <div className="text-[8px] text-t3 truncate">{s.message}</div>
+                          <div className="text-2xs text-t3 truncate">{s.message}</div>
                         </div>
-                        <span className="text-[8px] text-t4 shrink-0 ml-1">{relTime(s.ts)}</span>
+                        <span className="text-2xs text-t4 shrink-0 ml-1">{relTime(s.ts)}</span>
                       </div>
                     ))
                   )}
@@ -243,13 +243,13 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
                     <div key={j.id} className={`flex items-center justify-between px-2 py-1 ${i % 2 === 0 ? '' : 'bg-elevated/20'} hover:bg-elevated/40 transition-colors`}>
                       <div className="min-w-0 flex-1">
                         <Link to={`/perfil/${j.id}`} className="hover:text-vred transition-colors truncate block">{j.name}</Link>
-                        <span className={`text-[8px] ${j.filled ? 'text-vgreen' : 'text-t4'}`}>
+                        <span className={`text-2xs ${j.filled ? 'text-vgreen' : 'text-t4'}`}>
                           {j.filled ? '● OK' : '○ Pend.'}
                         </span>
                       </div>
                       <div className="text-right shrink-0 ml-2">
                         <div className={`font-bold ${j.score > 0 ? 'text-vred' : 'text-t4'}`}>{j.score > 0 ? `${j.score}pts` : '—'}</div>
-                        <div className="text-[8px] text-t4">{j.time || ''}</div>
+                        <div className="text-2xs text-t4">{j.time || ''}</div>
                       </div>
                     </div>
                   ))}

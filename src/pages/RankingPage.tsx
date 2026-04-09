@@ -1,6 +1,9 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Badge } from '../components/ui/Badge';
+import { Avatar } from '../components/ui/Avatar';
+import { EmptyState } from '../components/ui/EmptyState';
+import { roleVariant } from '../lib/roles';
 import { CHANNELS, getTodayFills, getMonthSales, getUsers, calcScore, fmt$, getSession, db, currentMonth } from '../lib/store';
 import { getTotalFichas } from '../lib/xp';
 import { getStreak } from '../lib/streaks';
@@ -8,7 +11,6 @@ import { getLevel, getLevelByXp } from '../lib/levels';
 import { getUnlocked } from '../lib/achievements';
 
 const MEDALS = ['🥇', '🥈', '🥉'];
-const roleVariant = (r: string) => r === 'Setter' ? 'purp' as const : r === 'Founder' ? 'red' as const : r === 'Social Seller' ? 'pink' as const : 'gold' as const;
 
 type Tab = 'activity' | 'revenue' | 'xp';
 type RoleFilter = 'all' | 'Setter' | 'Vendedor' | 'Partner' | 'Founder' | 'Social Seller';
@@ -50,18 +52,16 @@ export function RankingPage() {
       id: f.userId, name: f.userName, role: f.userRole,
       score: calcScore(f), channels: channelBreakdown,
       streak: getStreak(f.userId).current, level: getLevel(f.userId),
-      avatar: localStorage.getItem(`vantagem_avatar_${f.userId}`) || null,
     };
   }).sort((a, b) => b.score - a.score);
   const actData = filterByRole(actDataAll);
 
   // Revenue ranking
-  const revMapAll: Record<string, { id: string; name: string; role: string; comm: number; sales: number; setterName?: string; avatar: string | null }> = {};
+  const revMapAll: Record<string, { id: string; name: string; role: string; comm: number; sales: number; setterName?: string }> = {};
   sales.forEach(s => {
     const id = s.sellerId || s.sellerName;
     if (!revMapAll[id]) revMapAll[id] = {
       id, name: s.sellerName, role: s.sellerRole, comm: 0, sales: 0,
-      avatar: localStorage.getItem(`vantagem_avatar_${s.sellerId}`) || null,
     };
     revMapAll[id].comm += (s.sellerSetupComm || 0) + (s.sellerRecComm || 0);
     revMapAll[id].sales++;
@@ -83,7 +83,6 @@ export function RankingPage() {
     return {
       id: u.id, name: u.name, role: u.role, xp, level: getLevelByXp(xp),
       streak: getStreak(u.id).current, badges: getUnlocked(u.id).length,
-      avatar: localStorage.getItem(`vantagem_avatar_${u.id}`) || null,
     };
   }).filter(u => u.xp > 0).sort((a, b) => b.xp - a.xp);
   const xpData = filterByRole(xpDataAll);
@@ -98,24 +97,6 @@ export function RankingPage() {
   const myFichas = getTotalFichas();
   const myLevel = getLevel();
   const myStreak = getStreak();
-
-  const emptyMsg = (text: string) => (
-    <div className="text-center py-12">
-      <div className="text-xl mb-2">🏆</div>
-      <p className="text-sm text-t3">{text}</p>
-    </div>
-  );
-
-  const renderAvatar = (name: string, avatarUrl: string | null, size = 'w-8 h-8') => {
-    const initials = name.split(' ').map(n => n[0]).join('').slice(0, 2);
-    return avatarUrl ? (
-      <img src={avatarUrl} alt={name} className={`${size} rounded-full object-cover border border-b1`} />
-    ) : (
-      <div className={`${size} rounded-full bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white text-[10px] font-bold shrink-0`}>
-        {initials}
-      </div>
-    );
-  };
 
   // Role color for donut
   const roleColor = (r: string) =>
@@ -152,7 +133,7 @@ export function RankingPage() {
         ].map((s, i) => (
           <div key={i} className="bg-surface border border-b1 rounded-lg p-2 text-center">
             <div className={`font-mono text-sm font-bold ${s.color}`}>{s.value}</div>
-            <div className="text-[9px] text-t4 uppercase">{s.label}</div>
+            <div className="text-2xs text-t4 uppercase">{s.label}</div>
           </div>
         ))}
       </div>
@@ -167,7 +148,7 @@ export function RankingPage() {
                 : 'text-t3 hover:text-t2 border border-transparent hover:border-b1'
             }`}>
             {rf.icon} {rf.label}
-            {rf.key !== 'all' && roleCounts[rf.key] ? <span className="text-[10px] text-t4 ml-0.5">({roleCounts[rf.key]})</span> : null}
+            {rf.key !== 'all' && roleCounts[rf.key] ? <span className="text-2xs text-t4 ml-0.5">({roleCounts[rf.key]})</span> : null}
           </button>
         ))}
       </div>
@@ -191,7 +172,7 @@ export function RankingPage() {
       {/* Revenue by role mini donut (only on revenue tab) */}
       {tab === 'revenue' && revByRole.length > 1 && (
         <div className="bg-surface border border-b1 rounded-lg p-3">
-          <div className="text-[10px] font-bold text-t3 uppercase tracking-wider mb-2">Receita por tipo</div>
+          <div className="text-2xs font-bold text-t3 uppercase tracking-wider mb-2">Receita por tipo</div>
           <div className="flex items-center gap-4">
             {/* Simple bar chart */}
             <div className="flex-1 space-y-1.5">
@@ -200,12 +181,12 @@ export function RankingPage() {
                 const pct = totalComm > 0 ? Math.round((comm / totalComm) * 100) : 0;
                 return (
                   <div key={role} className="flex items-center gap-2">
-                    <span className="text-[10px] text-t3 w-16 truncate">{role}</span>
+                    <span className="text-2xs text-t3 w-16 truncate">{role}</span>
                     <div className="flex-1 h-3 bg-overlay rounded-sm overflow-hidden">
                       <div className="h-full rounded-sm transition-all" style={{ width: `${pct}%`, backgroundColor: roleColor(role) }} />
                     </div>
-                    <span className="text-[10px] font-mono text-t3 w-12 text-right">{fmt$(comm)}</span>
-                    <span className="text-[10px] text-t4 w-8 text-right">{pct}%</span>
+                    <span className="text-2xs font-mono text-t3 w-12 text-right">{fmt$(comm)}</span>
+                    <span className="text-2xs text-t4 w-8 text-right">{pct}%</span>
                   </div>
                 );
               })}
@@ -217,7 +198,7 @@ export function RankingPage() {
       {/* Content */}
       <div className="bg-surface border border-b1 rounded-lg overflow-hidden">
         {tab === 'activity' && (
-          actData.length === 0 ? emptyMsg('Sem fills registrados hoje' + (roleFilter !== 'all' ? ` (${roleFilter})` : '')) : (
+          actData.length === 0 ? <EmptyState icon="🏆" message={'Sem fills registrados hoje' + (roleFilter !== 'all' ? ` (${roleFilter})` : '')} /> : (
             <div className="divide-y divide-b1">
               {actData.map((person, i) => (
                 <div key={person.id + i} className={`px-3 py-2 hover:bg-elevated/30 transition-colors ${person.id === session?.id ? 'bg-vred/5 border-l-2 border-l-vred' : ''}`}>
@@ -225,19 +206,19 @@ export function RankingPage() {
                     <span className="w-6 text-center" style={{ fontSize: i < 3 ? '16px' : '11px' }}>
                       {MEDALS[i] || <span className="text-t4 font-mono">#{i + 1}</span>}
                     </span>
-                    {renderAvatar(person.name, person.avatar)}
+                    <Avatar userId={person.id} name={person.name} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
                         <Link to={`/perfil/${person.id}`} className="text-sm font-semibold truncate hover:text-vred transition-colors">{person.name}</Link>
                         <Badge variant={roleVariant(person.role)}>{person.role}</Badge>
                       </div>
-                      {person.streak > 0 && <span className="text-[10px] text-orange-400">🔥 {person.streak}d</span>}
+                      {person.streak > 0 && <span className="text-2xs text-orange-400">🔥 {person.streak}d</span>}
                     </div>
                     <span className="font-mono font-bold text-vred">{person.score}</span>
                   </div>
                   <div className="flex gap-2 ml-9">
                     {CHANNELS.map(ch => (
-                      <span key={ch.id} className="text-[10px] text-t4">
+                      <span key={ch.id} className="text-2xs text-t4">
                         {ch.icon} <span className="font-mono">{person.channels[ch.id] || 0}</span>
                       </span>
                     ))}
@@ -252,7 +233,7 @@ export function RankingPage() {
         )}
 
         {tab === 'revenue' && (
-          revData.length === 0 ? emptyMsg('Sem vendas' + (roleFilter !== 'all' ? ` (${roleFilter})` : '')) : (
+          revData.length === 0 ? <EmptyState icon="🏆" message={'Sem vendas' + (roleFilter !== 'all' ? ` (${roleFilter})` : '')} /> : (
             <div className="divide-y divide-b1">
               {revData.map((person, i) => (
                 <div key={person.id + i} className={`px-4 py-3 hover:bg-elevated/30 transition-colors ${person.id === session?.id ? 'bg-vgreen/5 border-l-2 border-l-vgreen' : ''}`}>
@@ -260,13 +241,13 @@ export function RankingPage() {
                     <span className="w-6 text-center" style={{ fontSize: i < 3 ? '16px' : '11px' }}>
                       {MEDALS[i] || <span className="text-t4 font-mono">#{i + 1}</span>}
                     </span>
-                    {renderAvatar(person.name, person.avatar)}
+                    <Avatar userId={person.id} name={person.name} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
                         <Link to={`/perfil/${person.id}`} className="text-sm font-semibold truncate hover:text-vred transition-colors">{person.name}</Link>
                         <Badge variant={roleVariant(person.role)}>{person.role}</Badge>
                       </div>
-                      <div className="text-[10px] text-t4 mt-0.5">
+                      <div className="text-2xs text-t4 mt-0.5">
                         {person.sales} venda(s)
                         {person.setterName && <span className="ml-1 text-vpurp">via {person.setterName}</span>}
                         {i === 0 && prizes.top_closer && <span className="ml-2 text-vgold">🏆 {prizes.top_closer}</span>}
@@ -284,7 +265,7 @@ export function RankingPage() {
         )}
 
         {tab === 'xp' && (
-          xpData.length === 0 ? emptyMsg('Nenhuma ficha' + (roleFilter !== 'all' ? ` (${roleFilter})` : '')) : (
+          xpData.length === 0 ? <EmptyState icon="🏆" message={'Nenhuma ficha' + (roleFilter !== 'all' ? ` (${roleFilter})` : '')} /> : (
             <div className="divide-y divide-b1">
               {xpData.map((person, i) => (
                 <div key={person.id} className={`px-4 py-3 hover:bg-elevated/30 transition-colors ${person.id === session?.id ? 'bg-vgold/5 border-l-2 border-l-vgold' : ''}`}>
@@ -292,7 +273,7 @@ export function RankingPage() {
                     <span className="w-6 text-center" style={{ fontSize: i < 3 ? '16px' : '11px' }}>
                       {MEDALS[i] || <span className="text-t4 font-mono">#{i + 1}</span>}
                     </span>
-                    {renderAvatar(person.name, person.avatar)}
+                    <Avatar userId={person.id} name={person.name} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5">
                         <Link to={`/perfil/${person.id}`} className="text-sm font-semibold truncate hover:text-vred transition-colors">{person.name}</Link>
@@ -300,8 +281,8 @@ export function RankingPage() {
                         <Badge variant={roleVariant(person.role)}>{person.role}</Badge>
                       </div>
                       <div className="flex items-center gap-2 mt-0.5">
-                        {person.streak > 0 && <span className="text-[10px] text-orange-400">🔥 {person.streak}d</span>}
-                        <span className="text-[10px] text-vpurp">{person.badges} badges</span>
+                        {person.streak > 0 && <span className="text-2xs text-orange-400">🔥 {person.streak}d</span>}
+                        <span className="text-2xs text-vpurp">{person.badges} badges</span>
                       </div>
                     </div>
                     <span className="font-mono font-bold text-vgold">🪙 {person.xp.toLocaleString()}</span>

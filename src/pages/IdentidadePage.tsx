@@ -87,19 +87,19 @@ export function IdentidadePage() {
         <div className="bg-surface border border-b1 rounded-lg p-4 space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-[11px] text-t3 uppercase tracking-wider font-semibold">Meta mensal (USD)</label>
+              <label className="text-xs text-t3 uppercase tracking-wider font-semibold">Meta mensal (USD)</label>
               <input type="number" value={form.metaM} onChange={e => setForm({ ...form, metaM: e.target.value })} placeholder="5000"
                 className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-2.5 font-mono text-center text-lg outline-none focus:border-vred/40" />
             </div>
             <div>
-              <label className="text-[11px] text-t3 uppercase tracking-wider font-semibold">Meta 180 dias</label>
+              <label className="text-xs text-t3 uppercase tracking-wider font-semibold">Meta 180 dias</label>
               <div className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-2.5 font-mono text-center text-lg text-t4">
                 {form.metaM ? fmt$(parseFloat(form.metaM) * 6) : '—'}
               </div>
             </div>
           </div>
           <div>
-            <label className="text-[11px] text-t3 uppercase tracking-wider font-semibold">Frase âncora pessoal</label>
+            <label className="text-xs text-t3 uppercase tracking-wider font-semibold">Frase âncora pessoal</label>
             <input value={form.anchor} onChange={e => setForm({ ...form, anchor: e.target.value })} placeholder="Ex: Vim de longe demais para desistir."
               className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-vred/40" />
           </div>
@@ -110,7 +110,7 @@ export function IdentidadePage() {
             { key: 'style', icon: <Sparkles size={16} />, label: 'Estilo de vida', ph: 'Ex: Academia diária' },
           ].map(f => (
             <div key={f.key}>
-              <label className="flex items-center gap-2 text-[11px] text-t3 uppercase tracking-wider font-semibold">
+              <label className="flex items-center gap-2 text-xs text-t3 uppercase tracking-wider font-semibold">
                 {f.icon} {f.label}
               </label>
               <div className="flex gap-3 mt-1">
@@ -130,7 +130,7 @@ export function IdentidadePage() {
             </div>
           ))}
           <div>
-            <label className="flex items-center gap-2 text-[11px] text-t3 uppercase tracking-wider font-semibold">
+            <label className="flex items-center gap-2 text-xs text-t3 uppercase tracking-wider font-semibold">
               <Heart size={16} /> Quem você quer impactar
             </label>
             <textarea value={form.impact} onChange={e => setForm({ ...form, impact: e.target.value })} placeholder="Ex: Minha mãe, minha filha..."
@@ -158,7 +158,7 @@ export function IdentidadePage() {
       <div className="relative bg-gradient-to-br from-vred/15 via-canvas to-canvas border border-vred/15 rounded-lg overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-canvas via-transparent to-transparent" />
         <div className="relative p-4">
-          <div className="text-[10px] text-t4 uppercase tracking-[0.2em] mb-2">SUA NOVA IDENTIDADE</div>
+          <div className="text-2xs text-t4 uppercase tracking-[0.2em] mb-2">SUA NOVA IDENTIDADE</div>
           <h1 className="text-xl font-bold mb-2">{session.name}</h1>
           {profile.car && <p className="text-sm text-t3">→ {profile.car}</p>}
           <div className="flex gap-2 mt-4 flex-wrap">
@@ -220,11 +220,11 @@ export function IdentidadePage() {
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-elevated rounded-lg p-3 text-center">
                 <div className="font-mono text-xl font-bold text-vgold">{days.elapsed}</div>
-                <div className="text-[9px] text-t4 uppercase">Executados</div>
+                <div className="text-2xs text-t4 uppercase">Executados</div>
               </div>
               <div className="bg-vred/8 border border-vred/15 rounded-lg p-3 text-center">
                 <div className="font-mono text-xl font-bold text-vred">{days.remaining}</div>
-                <div className="text-[9px] text-t4 uppercase">Restam</div>
+                <div className="text-2xs text-t4 uppercase">Restam</div>
               </div>
             </div>
           </div>
