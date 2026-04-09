@@ -1,12 +1,12 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { KpiCard } from '../components/ui/KpiCard';
 import { Badge } from '../components/ui/Badge';
 import { Avatar } from '../components/ui/Avatar';
-// PanelHeader available for chart wrappers if needed
 import {
   DollarSign, Users, Target, TrendingUp,
-  AlertTriangle, CheckCircle2, Clock, Activity
+  AlertTriangle, CheckCircle2, Clock, Activity,
+  Settings2, GripVertical, Eye, EyeOff, ChevronUp, ChevronDown, RotateCcw
 } from 'lucide-react';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { getUsers, getTodayFills, getMonthSales, calcScore, db, today, fmt$, CHANNELS, type FillData, getSession } from '../lib/store';
@@ -53,7 +53,74 @@ function getMonthSalesTrend(): { label: string; vendas: number; comissao: number
   return result;
 }
 
+// ── Dashboard Layout System ──
+type SectionId = 'kpis' | 'bonus' | 'charts' | 'scorecard' | 'team' | 'heatmap';
+
+interface SectionConfig { id: SectionId; visible: boolean }
+
+const DEFAULT_SECTIONS: SectionConfig[] = [
+  { id: 'kpis', visible: true },
+  { id: 'bonus', visible: true },
+  { id: 'charts', visible: true },
+  { id: 'scorecard', visible: true },
+  { id: 'team', visible: true },
+  { id: 'heatmap', visible: true },
+];
+
+const SECTION_LABELS: Record<SectionId, { label: string; icon: string }> = {
+  kpis: { label: 'KPIs', icon: '📊' },
+  bonus: { label: 'Bonus Setter', icon: '🎯' },
+  charts: { label: 'Graficos', icon: '📈' },
+  scorecard: { label: 'Scorecard + Metas', icon: '🎯' },
+  team: { label: 'Time + Alertas', icon: '👥' },
+  heatmap: { label: 'Heatmap Atividade', icon: '🔥' },
+};
+
+const LAYOUT_KEY = 'vops_dashboard_layout';
+
+function loadLayout(): SectionConfig[] {
+  try {
+    const saved = localStorage.getItem(LAYOUT_KEY);
+    if (!saved) return DEFAULT_SECTIONS;
+    const parsed = JSON.parse(saved) as SectionConfig[];
+    // Ensure all sections exist (in case new ones were added)
+    const ids = new Set(parsed.map(s => s.id));
+    const merged = [...parsed];
+    for (const def of DEFAULT_SECTIONS) {
+      if (!ids.has(def.id)) merged.push(def);
+    }
+    return merged.filter(s => SECTION_LABELS[s.id]);
+  } catch { return DEFAULT_SECTIONS; }
+}
+
+function saveLayout(sections: SectionConfig[]) {
+  localStorage.setItem(LAYOUT_KEY, JSON.stringify(sections));
+}
+
 export function DashboardPage() {
+  const [editMode, setEditMode] = useState(false);
+  const [sections, setSections] = useState<SectionConfig[]>(loadLayout);
+
+  const moveSection = useCallback((idx: number, dir: -1 | 1) => {
+    const next = idx + dir;
+    if (next < 0 || next >= sections.length) return;
+    const copy = [...sections];
+    [copy[idx], copy[next]] = [copy[next], copy[idx]];
+    setSections(copy);
+    saveLayout(copy);
+  }, [sections]);
+
+  const toggleVisible = useCallback((id: SectionId) => {
+    const copy = sections.map(s => s.id === id ? { ...s, visible: !s.visible } : s);
+    setSections(copy);
+    saveLayout(copy);
+  }, [sections]);
+
+  const resetLayout = useCallback(() => {
+    setSections(DEFAULT_SECTIONS);
+    saveLayout(DEFAULT_SECTIONS);
+  }, []);
+
   const users = useMemo(() => getUsers().filter(u => u.active), []);
   const fills = useMemo(() => getTodayFills(), []);
   const sales = useMemo(() => getMonthSales(), []);
@@ -129,9 +196,62 @@ export function DashboardPage() {
             <span className="relative w-2 h-2"><span className="absolute inset-0 rounded-full bg-vgreen animate-pulse" /><span className="absolute inset-0 rounded-full tv-live-ring text-vgreen" /></span>
             LIVE
           </span>
+          <button onClick={() => setEditMode(!editMode)}
+            className={`p-1.5 rounded-lg transition-colors ${editMode ? 'bg-vred/15 text-vred' : 'text-t4 hover:text-t2'}`}
+            title="Editar layout">
+            <Settings2 size={16} />
+          </button>
         </div>
       </div>
 
+      {/* Edit Mode Panel */}
+      {editMode && (
+        <div className="bg-surface border border-vred/20 rounded-lg p-4 animate-in">
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <h2 className="text-sm font-bold">Editar Dashboard</h2>
+              <p className="text-2xs text-t4">Reordene e mostre/oculte secoes</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <button onClick={resetLayout} className="flex items-center gap-1 text-2xs text-t3 hover:text-t1 px-2 py-1 rounded border border-b1 hover:border-b3 transition-colors">
+                <RotateCcw size={12} /> Reset
+              </button>
+              <button onClick={() => setEditMode(false)} className="flex items-center gap-1 text-2xs text-white bg-vred hover:bg-vred-dark px-3 py-1 rounded-lg transition-colors font-bold">
+                Pronto
+              </button>
+            </div>
+          </div>
+          <div className="space-y-1">
+            {sections.map((sec, idx) => (
+              <div key={sec.id} className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${sec.visible ? 'bg-elevated/50' : 'bg-elevated/20 opacity-60'}`}>
+                <GripVertical size={14} className="text-t4 shrink-0" />
+                <span className="text-sm">{SECTION_LABELS[sec.id].icon}</span>
+                <span className="text-xs font-semibold flex-1">{SECTION_LABELS[sec.id].label}</span>
+                <button onClick={() => moveSection(idx, -1)} disabled={idx === 0}
+                  className="p-1 text-t4 hover:text-t1 disabled:opacity-20 transition-colors" title="Mover acima">
+                  <ChevronUp size={14} />
+                </button>
+                <button onClick={() => moveSection(idx, 1)} disabled={idx === sections.length - 1}
+                  className="p-1 text-t4 hover:text-t1 disabled:opacity-20 transition-colors" title="Mover abaixo">
+                  <ChevronDown size={14} />
+                </button>
+                <button onClick={() => toggleVisible(sec.id)}
+                  className={`p-1 transition-colors ${sec.visible ? 'text-vgreen' : 'text-t4 hover:text-t2'}`}
+                  title={sec.visible ? 'Ocultar' : 'Mostrar'}>
+                  {sec.visible ? <Eye size={14} /> : <EyeOff size={14} />}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── Rendered sections in user-defined order ── */}
+      {sections.filter(s => s.visible).map(sec => {
+        switch (sec.id) {
+
+      case 'kpis': return (
+      <div key="kpis">
       {/* KPIs */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard label="Receita Mês" value={fmt$(totalComm)} icon={DollarSign} color="green" trendLabel={`${totalSalesMonth} vendas`} sparkData={salesTrend.map(d => d.comissao)} />
@@ -139,7 +259,9 @@ export function DashboardPage() {
         <KpiCard label="Time" value={`${filledCount}/${totalMembers}`} icon={Users} color="blue" trendLabel="preencheram" />
         <KpiCard label="Score Total" value={totalScore} icon={TrendingUp} color="red" trendLabel="pts hoje" sparkData={activityTrend.map(d => d.score)} />
       </div>
-
+      </div>
+      ); case 'bonus': return (
+      <div key="bonus">
       {/* Setter Bonus Mini Card */}
       {(session?.role === 'Setter' || session?.role === 'Social Seller') && (() => {
         const b = getMonthBonus(session?.id || 'anon');
@@ -162,7 +284,9 @@ export function DashboardPage() {
           </div>
         );
       })()}
-
+      </div>
+      ); case 'charts': return (
+      <div key="charts">
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Activity trend */}
@@ -209,7 +333,9 @@ export function DashboardPage() {
           ); })()}
         </div>
       </div>
-
+      </div>
+      ); case 'scorecard': return (
+      <div key="scorecard">
       {/* Scorecard + Goals */}
       {(() => {
         const sc = getScorecard();
@@ -269,7 +395,9 @@ export function DashboardPage() {
           </div>
         );
       })()}
-
+      </div>
+      ); case 'team': return (
+      <div key="team">
       {/* Team + Alerts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Team */}
@@ -363,7 +491,9 @@ export function DashboardPage() {
           </div>
         </div>
       </div>
-
+      </div>
+      ); case 'heatmap': return (
+      <div key="heatmap">
       {/* Activity heatmap — last 7 days */}
       <div className="bg-surface border border-b1 rounded-lg p-4">
         <h2 className="text-xs font-bold text-t3 uppercase tracking-wider mb-3">Atividade do Time — 7 dias</h2>
@@ -412,8 +542,10 @@ export function DashboardPage() {
           </div>
         </div>
       </div>
-
-      {/* Vendas recentes + Shoutouts moved to BottomTerminal */}
+      </div>
+      ); default: return null;
+      }
+      })}
     </div>
   );
 }
