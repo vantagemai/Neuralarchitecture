@@ -394,39 +394,38 @@ export function DashboardPage() {
                 </div>
               </div>
 
-              {/* Per-item progress bars */}
-              {predictive.itemPredictions.length > 0 && (
-                <div className="mt-5 pt-4 border-t border-b1 space-y-3">
-                  <div className="text-2xs text-t4 uppercase tracking-wider">Progresso por Objetivo</div>
-                  {predictive.itemPredictions.map(pred => (
-                    <div key={pred.item.id} className="bg-elevated/50 rounded-lg px-3 py-2">
-                      <div className="flex items-center gap-2 mb-1">
-                        {pred.item.image ? (
-                          <img src={pred.item.image} alt={pred.item.label} className="w-6 h-6 rounded object-cover" />
-                        ) : (
-                          <span className="text-sm">{CATEGORY_META[pred.item.category]?.emoji || '🎯'}</span>
-                        )}
-                        <span className="text-xs text-t2 font-semibold flex-1 truncate">{pred.item.label}</span>
-                        <span className="text-2xs font-mono text-t3">{pred.percentComplete}%</span>
+              {/* Per-item progress bars (only items with a value set) */}
+              {(() => {
+                const itemsWithValue = predictive.itemPredictions.filter(p => p.item.value > 0);
+                return itemsWithValue.length > 0 ? (
+                  <div className="mt-5 pt-4 border-t border-b1 space-y-3">
+                    <div className="text-2xs text-t4 uppercase tracking-wider">Progresso por Objetivo</div>
+                    {itemsWithValue.map(pred => (
+                      <div key={pred.item.id} className="bg-elevated/50 rounded-lg px-3 py-2">
+                        <div className="flex items-center gap-2 mb-1">
+                          {pred.item.image ? (
+                            <img src={pred.item.image} alt={pred.item.label} className="w-6 h-6 rounded object-cover" />
+                          ) : (
+                            <span className="text-sm">{CATEGORY_META[pred.item.category]?.emoji || '🎯'}</span>
+                          )}
+                          <span className="text-xs text-t2 font-semibold flex-1 truncate">{pred.item.label}</span>
+                          <span className="text-2xs font-mono text-t3">{pred.percentComplete}%</span>
+                        </div>
+                        <div className="h-1.5 bg-overlay rounded-full overflow-hidden">
+                          <div className="h-full bg-vgold rounded-full transition-all duration-1000" style={{ width: `${pred.percentComplete}%` }} />
+                        </div>
+                        <div className="text-2xs text-t4 mt-1">{fmt$(pred.earnedSoFar)} / {fmt$(pred.item.value)}</div>
                       </div>
-                      {pred.item.value > 0 && (
-                        <>
-                          <div className="h-1.5 bg-overlay rounded-full overflow-hidden">
-                            <div className="h-full bg-vgold rounded-full transition-all duration-1000" style={{ width: `${pred.percentComplete}%` }} />
-                          </div>
-                          <div className="text-2xs text-t4 mt-1">{fmt$(pred.earnedSoFar)} / {fmt$(pred.item.value)}</div>
-                        </>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
+                    ))}
+                  </div>
+                ) : null;
+              })()}
 
-              {/* Other objectives gallery */}
+              {/* Other objectives gallery (items without image in progress bars) */}
               {otherItems.length > 0 && (
                 <div className="mt-5 pt-4 border-t border-b1">
                   <div className="text-2xs text-t4 uppercase tracking-wider mb-3">Outros Objetivos</div>
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {otherItems.map(item => (
                       <div key={item.id} className="text-center">
                         {item.image ? (

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Flame, Heart, Save, Camera, Plus, Trash2, ChevronUp as MoveUp, ChevronDown as MoveDown } from 'lucide-react';
 import { db, today, fmt$, getSession } from '../lib/store';
 import { CardBase } from '../components/ui/CardBase';
@@ -21,6 +21,21 @@ export function IdentidadePage() {
     if (profile?.materials && profile.materials.length > 0) return profile.materials;
     return [{ id: genMaterialId(), label: '', category: 'car' as MaterialCategory, value: 0, priority: 1 }];
   });
+
+  // Reset form + materials when entering edit mode (fixes stale data bug)
+  useEffect(() => {
+    if (editing && profile) {
+      setForm({
+        metaM: profile.metaM.toString(),
+        impact: profile.impact || '',
+        anchor: profile.anchor || '',
+      });
+      setMaterials(profile.materials.length > 0
+        ? profile.materials
+        : [{ id: genMaterialId(), label: '', category: 'car' as MaterialCategory, value: 0, priority: 1 }]
+      );
+    }
+  }, [editing]);
 
   const handleImageUpload = (itemId: string, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -149,16 +164,16 @@ export function IdentidadePage() {
                   <span className="text-2xs text-vgold font-bold">#{idx + 1}</span>
                   <div className="flex items-center gap-1">
                     <button type="button" onClick={() => moveMaterial(idx, -1)} disabled={idx === 0}
-                      className="p-1 text-t4 hover:text-t1 disabled:opacity-20"><MoveUp size={12} /></button>
+                      className="p-1 text-t4 hover:text-t1 disabled:opacity-30 disabled:cursor-not-allowed"><MoveUp size={12} /></button>
                     <button type="button" onClick={() => moveMaterial(idx, 1)} disabled={idx === materials.length - 1}
-                      className="p-1 text-t4 hover:text-t1 disabled:opacity-20"><MoveDown size={12} /></button>
+                      className="p-1 text-t4 hover:text-t1 disabled:opacity-30 disabled:cursor-not-allowed"><MoveDown size={12} /></button>
                     <button type="button" onClick={() => removeMaterial(item.id)} disabled={materials.length <= 1}
-                      className="p-1 text-t4 hover:text-vred disabled:opacity-20"><Trash2 size={12} /></button>
+                      className="p-1 text-t4 hover:text-vred disabled:opacity-30 disabled:cursor-not-allowed"><Trash2 size={12} /></button>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <select value={item.category} onChange={e => updateMaterial(item.id, 'category', e.target.value)}
-                    className="bg-elevated border border-b1 rounded-lg px-3 py-2 text-sm outline-none focus:border-vred/40 cursor-pointer">
+                    className="bg-elevated border border-b1 rounded-lg px-3 py-2 text-sm outline-none focus:border-vred/40 cursor-pointer appearance-none">
                     <option value="car">🚗 Carro</option>
                     <option value="home">🏠 Moradia</option>
                     <option value="style">✨ Estilo de vida</option>
