@@ -8,6 +8,7 @@ import { KpiCard } from '../components/ui/KpiCard';
 import { DollarSign, BarChart3, Download } from 'lucide-react';
 import { exportCommissionsCSV, exportSalesCSV } from '../lib/export';
 import { roleVariant } from '../lib/roles';
+import { CardBase } from '../components/ui/CardBase';
 
 export function ExtratosPage() {
   const [uid, setUid] = useState('all');
@@ -36,7 +37,7 @@ export function ExtratosPage() {
   const filtered = uid === 'all' ? sorted : sorted.filter(r => r.name === uid);
 
   return (
-    <div className="space-y-4 animate-in">
+    <div className="space-y-5 animate-in">
       <div>
         <h1 className="text-lg font-bold">Extratos</h1>
         <p className="text-sm text-t3 mt-1">Comissões detalhadas por membro</p>
@@ -69,7 +70,7 @@ export function ExtratosPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-surface border border-b1 rounded-lg overflow-hidden">
+      <CardBase padding="none" className="overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full" aria-label="Comissoes por membro">
             <thead>
@@ -108,7 +109,7 @@ export function ExtratosPage() {
             </tbody>
           </table>
         </div>
-      </div>
+      </CardBase>
     </div>
   );
 }

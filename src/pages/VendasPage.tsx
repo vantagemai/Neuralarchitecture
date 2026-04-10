@@ -14,6 +14,7 @@ import { playSale } from '../lib/sounds';
 import { exportSalesCSV } from '../lib/export';
 import { chartColors } from '../lib/theme';
 import { roleVariant } from '../lib/roles';
+import { CardBase } from '../components/ui/CardBase';
 import { getMonthMeetings, getMonthBonus, getMonthScheduled } from '../lib/bonus';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 
@@ -194,7 +195,7 @@ export function VendasPage() {
   const cc = chartColors();
 
   return (
-    <div className="space-y-4 animate-in" key={refreshKey}>
+    <div className="space-y-5 animate-in" key={refreshKey}>
       {/* ── Header ── */}
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div>
@@ -232,7 +233,7 @@ export function VendasPage() {
       {mySales.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
           {/* Sales per day */}
-          <div className="bg-surface border border-b1 rounded-lg p-4">
+          <CardBase>
             <h2 className="text-xs font-bold text-t3 uppercase tracking-wider mb-3">Vendas por dia</h2>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={analytics.salesByDay}>
@@ -248,10 +249,10 @@ export function VendasPage() {
                 <Bar dataKey="vendas" fill={cc.green} radius={[2, 2, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
-          </div>
+          </CardBase>
 
           {/* Revenue by role */}
-          <div className="bg-surface border border-b1 rounded-lg p-4">
+          <CardBase>
             <h2 className="text-xs font-bold text-t3 uppercase tracking-wider mb-3">Receita por tipo</h2>
             {analytics.revByRoleSorted.length > 0 ? (
               <div className="space-y-3">
@@ -276,13 +277,13 @@ export function VendasPage() {
             ) : (
               <div className="text-center py-8 text-t4 text-sm">Sem dados</div>
             )}
-          </div>
+          </CardBase>
         </div>
       )}
 
       {/* ── Top Sellers ── */}
       {analytics.topSellers.length > 0 && (
-        <div className="bg-surface border border-b1 rounded-lg p-4">
+        <CardBase>
           <h2 className="text-xs font-bold text-t3 uppercase tracking-wider mb-3">Top Vendedores do Mes</h2>
           <div className="space-y-2">
             {analytics.topSellers.map((seller, i) => {
@@ -310,12 +311,12 @@ export function VendasPage() {
               );
             })}
           </div>
-        </div>
+        </CardBase>
       )}
 
       {/* ── Setter Pipeline Funnel (manager only) ── */}
       {isManager && analytics.setterPipeline.length > 0 && (
-        <div className="bg-surface border border-b1 rounded-lg p-4">
+        <CardBase>
           <h2 className="text-xs font-bold text-t3 uppercase tracking-wider mb-1">Pipeline Setter — Agendamento → Venda</h2>
           <p className="text-2xs text-t4 mb-3">Reunioes agendadas → realizadas → vendas fechadas → bonus</p>
           <div className="space-y-2">
@@ -360,7 +361,7 @@ export function VendasPage() {
               );
             })}
           </div>
-        </div>
+        </CardBase>
       )}
 
       {/* ── Setter → Closer flow (existing, cleaned up) ── */}
@@ -383,7 +384,7 @@ export function VendasPage() {
         });
         if (pairEntries.length === 0) return null;
         return (
-          <div className="bg-surface border border-b1 rounded-lg p-4">
+          <CardBase>
             <h2 className="text-xs font-bold text-t3 uppercase tracking-wider mb-3">Setter → Closer — Quem originou, quem fechou</h2>
             <div className="space-y-3">
               {pairEntries.map(([sid, data]) => {
@@ -415,13 +416,13 @@ export function VendasPage() {
               })}
               {directSales > 0 && <div className="text-2xs text-t4 text-center mt-1">+ {directSales} venda(s) direta(s) sem setter</div>}
             </div>
-          </div>
+          </CardBase>
         );
       })()}
 
       {/* ── Sale form ── */}
       {showForm && (
-        <div className="bg-surface border border-b1 rounded-lg p-4 animate-in">
+        <CardBase className="animate-in">
           <h3 className="font-bold mb-4">{editingId ? 'Editar Venda' : 'Registrar Nova Venda'}</h3>
           {saved && (
             <div className="bg-vgreen/10 border border-vgreen/20 text-vgreen rounded-lg px-4 py-3 mb-4 text-sm font-medium">{saved}</div>
@@ -462,11 +463,11 @@ export function VendasPage() {
           <button onClick={handleSubmit} className="bg-vgreen hover:bg-emerald-600 text-white font-bold px-4 py-2.5 rounded-lg w-full transition-colors">
             {editingId ? '💾 Salvar Alteracoes' : '✅ Confirmar Venda'}
           </button>
-        </div>
+        </CardBase>
       )}
 
       {/* ── Sales list ── */}
-      <div className="bg-surface border border-b1 rounded-lg overflow-hidden">
+      <CardBase padding="none" className="overflow-hidden">
         <div className="px-5 py-4 border-b border-b1 flex items-center justify-between">
           <h2 className="text-xs font-bold">Vendas deste mes ({sales.length})</h2>
         </div>
@@ -502,7 +503,7 @@ export function VendasPage() {
         ) : (
           <div className="text-center py-12 text-t3 text-sm">Nenhuma venda registrada este mes</div>
         )}
-      </div>
+      </CardBase>
     </div>
   );
 }

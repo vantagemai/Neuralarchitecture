@@ -4,6 +4,7 @@ import { db, getSession, getUsers, getMonthSales, getTodayFills, calcScore } fro
 import { Badge } from '../components/ui/Badge';
 import { Avatar } from '../components/ui/Avatar';
 import { showToast } from '../components/ui/Toast';
+import { CardBase } from '../components/ui/CardBase';
 
 interface Challenge {
   id: string;
@@ -114,7 +115,7 @@ export function DesafiosPage() {
   };
 
   return (
-    <div className="space-y-4 animate-in">
+    <div className="space-y-5 animate-in">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-lg font-bold">Desafios</h1>
@@ -178,11 +179,11 @@ export function DesafiosPage() {
 
       {/* Empty state */}
       {active.length === 0 && ended.length === 0 && (
-        <div className="text-center py-16 bg-surface border border-b1 rounded-lg">
+        <CardBase className="text-center py-16">
           <div className="text-3xl mb-3">🎯</div>
           <p className="text-sm text-t3">Nenhum desafio criado ainda</p>
           {isManager && <p className="text-xs text-t4 mt-1">Crie um desafio para motivar o time!</p>}
-        </div>
+        </CardBase>
       )}
 
       {/* Active */}
@@ -272,7 +273,7 @@ export function DesafiosPage() {
             const progress = getProgress(c);
             const top3 = progress.slice(0, 3);
             return (
-              <div key={c.id} className="bg-surface border border-b1 rounded-lg overflow-hidden">
+              <CardBase key={c.id} padding="none" className="overflow-hidden">
                 <div className="px-5 py-4 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-vgold/10 flex items-center justify-center">
@@ -298,7 +299,7 @@ export function DesafiosPage() {
                     ))}
                   </div>
                 )}
-              </div>
+              </CardBase>
             );
           })}
         </div>

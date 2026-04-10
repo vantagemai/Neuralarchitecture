@@ -11,6 +11,7 @@ import {
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { getUsers, getTodayFills, getMonthSales, calcScore, db, today, fmt$, CHANNELS, type FillData, getSession } from '../lib/store';
 
+import { CardBase } from '../components/ui/CardBase';
 import { getScorecard } from '../lib/scorecard';
 import { getGoalProgress } from '../lib/goals';
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
@@ -182,7 +183,7 @@ export function DashboardPage() {
   const myXp = getTotalXp();
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {/* Terminal header bar */}
       <div className="flex items-center justify-between border-b border-b1 pb-3">
         <div className="flex items-center gap-3">
@@ -298,7 +299,7 @@ export function DashboardPage() {
       {/* Charts */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
         {/* Activity trend */}
-        <div className="bg-surface border border-b1 rounded-lg p-4">
+        <CardBase>
           <div className="flex items-center gap-2 mb-4">
             <Activity size={16} className="text-vred" />
             <h2 className="text-sm font-bold">Atividade — Últimos 7 dias</h2>
@@ -317,10 +318,10 @@ export function DashboardPage() {
             </BarChart>
           </ResponsiveContainer>
           ); })()}
-        </div>
+        </CardBase>
 
         {/* Sales trend */}
-        <div className="bg-surface border border-b1 rounded-lg p-4">
+        <CardBase>
           <div className="flex items-center gap-2 mb-4">
             <DollarSign size={16} className="text-vgreen" />
             <h2 className="text-sm font-bold">Comissões — Últimos 7 dias</h2>
@@ -339,7 +340,7 @@ export function DashboardPage() {
             </LineChart>
           </ResponsiveContainer>
           ); })()}
-        </div>
+        </CardBase>
       </div>
       </div>
       ); case 'scorecard': return (
@@ -358,7 +359,7 @@ export function DashboardPage() {
         return (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
             {/* Scorecard */}
-            <div className="bg-surface border border-b1 rounded-lg p-4">
+            <CardBase>
               <div className="flex items-center justify-between mb-2">
                 <h2 className="text-sm font-bold">Scorecard Pessoal</h2>
                 <span className="font-mono text-2xl font-bold text-vred">{sc.overall}<span className="text-xs text-t4">/100</span></span>
@@ -373,10 +374,10 @@ export function DashboardPage() {
                 </RadarChart>
               </ResponsiveContainer>
               ); })()}
-            </div>
+            </CardBase>
 
             {/* Goals progress */}
-            <div className="bg-surface border border-b1 rounded-lg p-4">
+            <CardBase>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-sm font-bold">Metas</h2>
                 <span className="font-mono text-sm font-bold text-vgold">{gp.overall}% geral</span>
@@ -399,7 +400,7 @@ export function DashboardPage() {
                   </div>
                 ))}
               </div>
-            </div>
+            </CardBase>
           </div>
         );
       })()}
@@ -409,8 +410,8 @@ export function DashboardPage() {
       {/* Team + Alerts */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Team */}
-        <div className="lg:col-span-2 bg-surface border border-b1 rounded-lg overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-b1">
+        <CardBase padding="none" className="lg:col-span-2 overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-b1">
             <div>
               <h2 className="text-xs font-bold">Atividade do Time</h2>
               <p className="text-xs text-t3 mt-0.5">Score por canal — hoje</p>
@@ -471,11 +472,11 @@ export function DashboardPage() {
               ))}
             </div>
           )}
-        </div>
+        </CardBase>
 
         {/* Alerts */}
-        <div className="bg-surface border border-b1 rounded-lg overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-b1">
+        <CardBase padding="none" className="overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-b1">
             <h2 className="text-xs font-bold">Alertas</h2>
           </div>
           <div className="divide-y divide-b1">
@@ -497,13 +498,13 @@ export function DashboardPage() {
               ))
             )}
           </div>
-        </div>
+        </CardBase>
       </div>
       </div>
       ); case 'heatmap': return (
       <div key="heatmap">
       {/* Activity heatmap — last 7 days */}
-      <div className="bg-surface border border-b1 rounded-lg p-4">
+      <CardBase>
         <h2 className="text-xs font-bold text-t3 uppercase tracking-wider mb-3">Atividade do Time — 7 dias</h2>
         <div className="overflow-x-auto">
           <div className="min-w-[500px]">
@@ -549,7 +550,7 @@ export function DashboardPage() {
             </div>
           </div>
         </div>
-      </div>
+      </CardBase>
       </div>
       ); default: return null;
       }

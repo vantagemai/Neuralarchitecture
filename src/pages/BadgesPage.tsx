@@ -3,6 +3,7 @@ import { getTotalFichas } from '../lib/xp';
 import { getStreak } from '../lib/streaks';
 import { getLevel, getNextLevel, LEVELS } from '../lib/levels';
 import { Badge } from '../components/ui/Badge';
+import { CardBase } from '../components/ui/CardBase';
 
 export function BadgesPage() {
   checkAchievements();
@@ -24,7 +25,7 @@ export function BadgesPage() {
   const uniqueAchs = ACHIEVEMENTS;
 
   return (
-    <div className="space-y-4 animate-in">
+    <div className="space-y-5 animate-in">
       <div>
         <h1 className="text-lg font-bold">Conquistas & Carreira</h1>
         <p className="text-sm text-t3 mt-1">Seus badges, fichas e plano de carreira</p>
@@ -32,29 +33,29 @@ export function BadgesPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-surface border border-b1 rounded-lg p-3 text-center">
+        <CardBase padding="sm" className="text-center">
           <div className="text-2xl mb-1">{level.icon}</div>
           <div className={`text-base font-bold ${level.color}`}>{level.name}</div>
           <div className="text-2xs text-t4 uppercase">Nivel {level.rank}</div>
-        </div>
-        <div className="bg-surface border border-b1 rounded-lg p-3 text-center">
+        </CardBase>
+        <CardBase padding="sm" className="text-center">
           <div className="text-lg mb-0.5">🪙</div>
           <div className="font-mono text-base font-bold text-vgold">{fichas.toLocaleString()}</div>
           <div className="text-2xs text-t4 uppercase">Fichas Total</div>
-        </div>
-        <div className="bg-surface border border-b1 rounded-lg p-3 text-center">
+        </CardBase>
+        <CardBase padding="sm" className="text-center">
           <div className="font-mono text-base font-bold text-orange-400">{streak.current}d</div>
           <div className="text-2xs text-t4 uppercase">Streak Atual</div>
-        </div>
-        <div className="bg-surface border border-b1 rounded-lg p-3 text-center">
+        </CardBase>
+        <CardBase padding="sm" className="text-center">
           <div className="font-mono text-base font-bold text-vpurp">{unlocked.length}/{uniqueAchs.length}</div>
           <div className="text-2xs text-t4 uppercase">Badges</div>
-        </div>
+        </CardBase>
       </div>
 
       {/* Level progress bar */}
       {next && (
-        <div className="bg-surface border border-b1 rounded-lg p-4">
+        <CardBase>
           <div className="flex justify-between items-center mb-2">
             <div className="flex items-center gap-2">
               <span>{level.icon}</span>
@@ -68,11 +69,11 @@ export function BadgesPage() {
           <div className="h-2 bg-overlay rounded-sm overflow-hidden">
             <div className="h-full bg-gradient-to-r from-vred to-vgold rounded-full transition-all duration-1000" style={{ width: `${progress}%` }} />
           </div>
-        </div>
+        </CardBase>
       )}
 
       {/* Career Staircase — Spark → Diamond */}
-      <div className="bg-surface border border-b1 rounded-lg p-4">
+      <CardBase>
         <h2 className="text-xs font-bold text-t3 uppercase tracking-wider mb-4 flex items-center gap-2">
           🏆 Plano de Carreira
         </h2>
@@ -131,7 +132,7 @@ export function BadgesPage() {
             );
           })}
         </div>
-      </div>
+      </CardBase>
 
       {/* Badge categories */}
       {categories.map(cat => {

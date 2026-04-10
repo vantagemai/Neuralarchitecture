@@ -3,6 +3,7 @@ import { MessageSquare, Star, Save, ChevronDown, ChevronUp } from 'lucide-react'
 import { db, getUsers, getSession, today } from '../lib/store';
 import { showToast } from '../components/ui/Toast';
 import { Avatar } from '../components/ui/Avatar';
+import { CardBase } from '../components/ui/CardBase';
 import { getLevel } from '../lib/levels';
 import { getStreak } from '../lib/streaks';
 import { getTotalXp } from '../lib/xp';
@@ -55,15 +56,29 @@ export function CoachingPage() {
   };
 
   return (
-    <div className="space-y-4 animate-in">
+    <div className="space-y-5 animate-in">
       <div>
         <h1 className="text-lg font-bold">Coaching 1:1</h1>
         <p className="text-sm text-t3 mt-1">Notas de acompanhamento por membro</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {/* Member list */}
-        <div className="space-y-2">
+      {/* Mobile: member dropdown selector */}
+      <div className="md:hidden">
+        <select
+          value={selectedId || ''}
+          onChange={e => setSelectedId(e.target.value || null)}
+          className="w-full bg-elevated border border-b1 rounded-lg px-4 py-2.5 text-sm outline-none cursor-pointer"
+        >
+          <option value="">Selecione um membro...</option>
+          {users.map(u => (
+            <option key={u.id} value={u.id}>{u.name} ({u.role})</option>
+          ))}
+        </select>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Member list — hidden on mobile (uses dropdown above) */}
+        <div className="hidden md:block space-y-2">
           <h2 className="text-xs font-bold text-t3 uppercase tracking-wider mb-2">Selecione um membro</h2>
           {users.map(u => {
             const level = getLevel(u.id);
@@ -97,16 +112,16 @@ export function CoachingPage() {
         </div>
 
         {/* Coaching form + history */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className="md:col-span-2 space-y-4">
           {!selected ? (
-            <div className="text-center py-16 bg-surface border border-b1 rounded-lg">
+            <CardBase className="text-center py-16">
               <MessageSquare size={32} className="mx-auto mb-3 text-t4 opacity-30" />
               <p className="text-sm text-t3">Selecione um membro para registrar coaching</p>
-            </div>
+            </CardBase>
           ) : (
             <>
               {/* New note form */}
-              <div className="bg-surface border border-b1 rounded-lg p-4">
+              <CardBase>
                 <h3 className="font-bold text-sm mb-4">Nova nota para {selected.name}</h3>
 
                 {/* Rating */}
@@ -139,19 +154,19 @@ export function CoachingPage() {
                 <button onClick={saveNote} className="flex items-center gap-2 bg-vred hover:bg-vred-dark text-white font-bold px-5 py-2.5 rounded-lg transition-colors">
                   <Save size={14} /> Salvar Nota
                 </button>
-              </div>
+              </CardBase>
 
               {/* History */}
               <div>
                 <h3 className="font-bold text-sm mb-3">Historico ({history.length})</h3>
                 {history.length === 0 ? (
-                  <div className="text-center py-5 bg-surface border border-b1 rounded-lg text-t4 text-sm">
+                  <CardBase className="text-center py-5 text-t4 text-sm">
                     Primeira sessao de coaching
-                  </div>
+                  </CardBase>
                 ) : (
                   <div className="space-y-2">
                     {history.map(n => (
-                      <div key={n.id} className="bg-surface border border-b1 rounded-lg">
+                      <CardBase key={n.id} padding="none">
                         <button
                           onClick={() => setExpanded(expanded === n.id ? null : n.id)}
                           className="w-full flex items-center justify-between px-5 py-3 text-left"
@@ -177,7 +192,7 @@ export function CoachingPage() {
                             )}
                           </div>
                         )}
-                      </div>
+                      </CardBase>
                     ))}
                   </div>
                 )}

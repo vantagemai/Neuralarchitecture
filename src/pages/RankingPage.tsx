@@ -5,6 +5,7 @@ import { Avatar } from '../components/ui/Avatar';
 import { EmptyState } from '../components/ui/EmptyState';
 import { roleVariant } from '../lib/roles';
 import { CHANNELS, getTodayFills, getMonthSales, getUsers, calcScore, fmt$, getSession, db, currentMonth } from '../lib/store';
+import { CardBase } from '../components/ui/CardBase';
 import { getTotalFichas } from '../lib/xp';
 import { getStreak } from '../lib/streaks';
 import { getLevel, getLevelByXp } from '../lib/levels';
@@ -111,7 +112,7 @@ export function RankingPage() {
   }, [tab, actDataAll, revDataAll, xpDataAll]);
 
   return (
-    <div className="space-y-3 animate-in">
+    <div className="space-y-5 animate-in">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-lg font-bold">Ranking</h1>
@@ -131,10 +132,10 @@ export function RankingPage() {
           { label: 'Streak', value: `🔥 ${myStreak.current}d`, color: 'text-orange-400' },
           { label: 'Filtro', value: roleFilter === 'all' ? 'Todos' : roleFilter, color: 'text-vpurp' },
         ].map((s, i) => (
-          <div key={i} className="bg-surface border border-b1 rounded-lg p-2 text-center">
+          <CardBase key={i} padding="sm" className="text-center">
             <div className={`font-mono text-sm font-bold ${s.color}`}>{s.value}</div>
             <div className="text-2xs text-t4 uppercase">{s.label}</div>
-          </div>
+          </CardBase>
         ))}
       </div>
 
@@ -171,7 +172,7 @@ export function RankingPage() {
 
       {/* Revenue by role mini donut (only on revenue tab) */}
       {tab === 'revenue' && revByRole.length > 1 && (
-        <div className="bg-surface border border-b1 rounded-lg p-3">
+        <CardBase padding="sm">
           <div className="text-2xs font-bold text-t3 uppercase tracking-wider mb-2">Receita por tipo</div>
           <div className="flex items-center gap-4">
             {/* Simple bar chart */}
@@ -192,11 +193,11 @@ export function RankingPage() {
               })}
             </div>
           </div>
-        </div>
+        </CardBase>
       )}
 
       {/* Content */}
-      <div className="bg-surface border border-b1 rounded-lg overflow-hidden">
+      <CardBase padding="none" className="overflow-hidden">
         {tab === 'activity' && (
           actData.length === 0 ? <EmptyState icon="🏆" message={'Sem fills registrados hoje' + (roleFilter !== 'all' ? ` (${roleFilter})` : '')} /> : (
             <div className="divide-y divide-b1">
@@ -295,7 +296,7 @@ export function RankingPage() {
             </div>
           )
         )}
-      </div>
+      </CardBase>
     </div>
   );
 }

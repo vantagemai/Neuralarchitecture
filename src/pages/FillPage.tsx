@@ -12,6 +12,7 @@ import { playSuccess, playAchievement } from '../lib/sounds';
 import { addNotification } from '../lib/notifications';
 import { getGoalProgress } from '../lib/goals';
 import { getMonthBonus } from '../lib/bonus';
+import { CardBase } from '../components/ui/CardBase';
 
 export function FillPage() {
   const session = getSession();

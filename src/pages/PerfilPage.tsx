@@ -12,6 +12,7 @@ import { Badge } from '../components/ui/Badge';
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 import { chartColors } from '../lib/theme';
 import { roleVariant } from '../lib/roles';
+import { CardBase } from '../components/ui/CardBase';
 
 export function PerfilPage() {
   const { userId } = useParams<{ userId: string }>();
@@ -59,7 +60,7 @@ export function PerfilPage() {
   ];
 
   return (
-    <div className="space-y-4 animate-in">
+    <div className="space-y-5 animate-in">
       {/* Back */}
       <Link to="/ranking" className="inline-flex items-center gap-1.5 text-xs text-t3 hover:text-t1 transition-colors">
         <ArrowLeft size={14} /> Voltar ao Ranking
@@ -118,7 +119,7 @@ export function PerfilPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
         {/* Scorecard radar */}
-        <div className="bg-surface border border-b1 rounded-lg p-4">
+        <CardBase>
           <h2 className="text-xs font-bold text-t3 uppercase tracking-wider mb-2">Scorecard</h2>
           <ResponsiveContainer width="100%" height={200}>
             <RadarChart data={radarData}>
@@ -128,10 +129,10 @@ export function PerfilPage() {
               <Radar dataKey="v" stroke={cc.red} fill={cc.red} fillOpacity={0.2} strokeWidth={2} />
             </RadarChart>
           </ResponsiveContainer>
-        </div>
+        </CardBase>
 
         {/* Goals */}
-        <div className="bg-surface border border-b1 rounded-lg p-4">
+        <CardBase>
           <h2 className="text-xs font-bold text-t3 uppercase tracking-wider mb-3">Metas</h2>
           <div className="space-y-3">
             {[
@@ -151,11 +152,11 @@ export function PerfilPage() {
               </div>
             ))}
           </div>
-        </div>
+        </CardBase>
       </div>
 
       {/* Fill heatmap mini */}
-      <div className="bg-surface border border-b1 rounded-lg p-4">
+      <CardBase>
         <div className="flex items-center gap-2 mb-3">
           <Calendar size={14} className="text-t3" />
           <h2 className="text-xs font-bold text-t3 uppercase tracking-wider">Fills — Ultimos 14 dias</h2>
@@ -176,10 +177,10 @@ export function PerfilPage() {
           <span className="text-2xs text-t4 font-mono">14d atras</span>
           <span className="text-2xs text-t4 font-mono">Hoje</span>
         </div>
-      </div>
+      </CardBase>
 
       {/* Badges */}
-      <div className="bg-surface border border-b1 rounded-lg p-4">
+      <CardBase>
         <h2 className="text-xs font-bold text-t3 uppercase tracking-wider mb-3">Conquistas ({badges.length}/{ACHIEVEMENTS.length})</h2>
         <div className="flex flex-wrap gap-2">
           {ACHIEVEMENTS.map(ach => {
@@ -194,7 +195,7 @@ export function PerfilPage() {
             );
           })}
         </div>
-      </div>
+      </CardBase>
     </div>
   );
 }

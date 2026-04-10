@@ -9,6 +9,7 @@ import { getGoals, setGoals, type UserGoals } from '../lib/goals';
 import { getTotalXp } from '../lib/xp';
 import { getStreak } from '../lib/streaks';
 import { ROLES, roleVariant } from '../lib/roles';
+import { CardBase } from '../components/ui/CardBase';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -91,7 +92,7 @@ export function TimePage() {
   };
 
   return (
-    <div className="space-y-4 animate-in">
+    <div className="space-y-5 animate-in">
       <div>
         <h1 className="text-lg font-bold">Time</h1>
         <p className="text-sm text-t3 mt-1">Gerencie os colaboradores do sistema</p>
@@ -99,7 +100,7 @@ export function TimePage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
         {/* Add form */}
-        <div className="bg-surface border border-b1 rounded-lg p-4">
+        <CardBase>
           <h2 className="text-xs font-bold mb-5">➕ Adicionar Membro</h2>
 
           {msg && (
@@ -135,17 +136,17 @@ export function TimePage() {
               <UserPlus size={16} /> Adicionar ao Time
             </button>
           </div>
-        </div>
+        </CardBase>
 
         {/* Member list */}
         <div>
           <h2 className="text-xs font-bold mb-4">👥 Time ({active.length})</h2>
           {active.length === 0 ? (
-            <div className="text-center py-12 text-t3 text-sm bg-surface border border-b1 rounded-lg">Sem colaboradores cadastrados</div>
+            <CardBase className="text-center py-12 text-t3 text-sm">Sem colaboradores cadastrados</CardBase>
           ) : (
             <div className="space-y-2">
               {active.map(u => (
-                <div key={u.id} className="bg-surface border border-b1 rounded-lg px-3 py-1.5 hover:border-b3 transition-colors">
+                <CardBase key={u.id} padding="none" className="px-3 py-1.5 hover:border-b3 transition-colors">
                   {editId === u.id ? (
                     /* Edit mode */
                     <div className="space-y-3">
@@ -224,7 +225,7 @@ export function TimePage() {
                     )}
                   </>
                 )}
-                </div>
+                </CardBase>
               ))}
             </div>
           )}

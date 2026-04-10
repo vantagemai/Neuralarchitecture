@@ -6,6 +6,7 @@ import { isOnline } from '../lib/supabase';
 import { getTheme, toggleTheme } from '../lib/theme';
 import { pushLocalToSupabase, hydrateFromSupabase } from '../lib/supabaseSync';
 import { runDemoSeed, clearAllData } from '../lib/demoSeed';
+import { CardBase } from '../components/ui/CardBase';
 
 const PLANS = [
   { key: 'SETTER',   label: 'Setter',   setup: '10%', rec: '3%',  color: '#8B7EC8' },
@@ -44,7 +45,7 @@ export function ConfigPage() {
   };
 
   return (
-    <div className="space-y-4 animate-in max-w-4xl">
+    <div className="space-y-5 animate-in max-w-4xl">
       <div>
         <h1 className="text-lg font-bold">Configurações</h1>
         <p className="text-sm text-t3 mt-1">PINs, comissões e premiações</p>
@@ -58,7 +59,7 @@ export function ConfigPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
         {/* PIN */}
-        <div className="bg-surface border border-b1 rounded-lg p-4">
+        <CardBase>
           <div className="flex items-center gap-2 mb-5">
             <Shield size={18} className="text-vred" />
             <h2 className="text-sm font-bold">Acesso Head</h2>
@@ -71,10 +72,10 @@ export function ConfigPage() {
           <button onClick={savePin} className="mt-4 w-full flex items-center justify-center gap-2 bg-vred hover:bg-vred-dark text-white font-bold py-3 rounded-lg transition-colors">
             <Save size={16} /> Salvar PIN
           </button>
-        </div>
+        </CardBase>
 
         {/* Commissions */}
-        <div className="bg-surface border border-b1 rounded-lg p-4">
+        <CardBase>
           <h2 className="text-sm font-bold mb-5">💰 Tabela de Comissões</h2>
           <div className="space-y-3">
             {PLANS.map(p => (
@@ -89,11 +90,11 @@ export function ConfigPage() {
           <div className="mt-4 text-xs text-t4 border-t border-b1 pt-3">
             Setter bônus: 10 leads qualificados = $100 bloqueado · 1 venda = $100 liberado
           </div>
-        </div>
+        </CardBase>
       </div>
 
       {/* Cloud Sync */}
-      <div className="bg-surface border border-b1 rounded-lg p-4">
+      <CardBase>
         <div className="flex items-center gap-2 mb-4">
           {isOnline() ? <Cloud size={18} className="text-vgreen" /> : <CloudOff size={18} className="text-t4" />}
           <h2 className="text-sm font-bold">Supabase Cloud</h2>
@@ -128,10 +129,10 @@ export function ConfigPage() {
             <Cloud size={14} /> Baixar Nuvem → Local
           </button>
         </div>
-      </div>
+      </CardBase>
 
       {/* Data Management */}
-      <div className="bg-surface border border-b1 rounded-lg p-4">
+      <CardBase>
         <div className="flex items-center gap-2 mb-4">
           <Users size={18} className="text-vpurp" />
           <h2 className="text-sm font-bold">Gerenciamento de Dados</h2>
@@ -175,10 +176,10 @@ export function ConfigPage() {
           </button>
           <p className="text-2xs text-t4 mt-2">Senha de todos os demo: demo123</p>
         </div>
-      </div>
+      </CardBase>
 
       {/* Sound Effects */}
-      <div className="bg-surface border border-b1 rounded-lg p-4">
+      <CardBase>
         <div className="flex items-center gap-2 mb-4">
           <Volume2 size={18} className="text-vblue" />
           <h2 className="text-sm font-bold">Som</h2>
@@ -200,10 +201,10 @@ export function ConfigPage() {
             <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${soundEnabled ? 'translate-x-6' : 'translate-x-0.5'}`} />
           </button>
         </div>
-      </div>
+      </CardBase>
 
       {/* Theme */}
-      <div className="bg-surface border border-b1 rounded-lg p-4">
+      <CardBase>
         <div className="flex items-center gap-2 mb-4">
           {dark ? <Moon size={18} className="text-vpurp" /> : <Sun size={18} className="text-vgold" />}
           <h2 className="text-sm font-bold">Tema</h2>
@@ -220,10 +221,10 @@ export function ConfigPage() {
             <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${dark ? 'translate-x-6' : 'translate-x-0.5'}`} />
           </button>
         </div>
-      </div>
+      </CardBase>
 
       {/* Prizes */}
-      <div className="bg-surface border border-b1 rounded-lg p-4">
+      <CardBase>
         <div className="flex items-center gap-2 mb-5">
           <Trophy size={18} className="text-vgold" />
           <h2 className="text-sm font-bold">Premiações</h2>
@@ -245,7 +246,7 @@ export function ConfigPage() {
         <button onClick={savePrizes} className="mt-5 flex items-center gap-2 bg-vgold/15 hover:bg-vgold/25 text-vgold border border-vgold/20 font-bold px-5 py-2.5 rounded-lg transition-colors">
           <Trophy size={16} /> Salvar Premiações
         </button>
-      </div>
+      </CardBase>
     </div>
   );
 }

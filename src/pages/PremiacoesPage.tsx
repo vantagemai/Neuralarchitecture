@@ -10,6 +10,7 @@ import { Badge } from '../components/ui/Badge';
 import { Avatar } from '../components/ui/Avatar';
 import { playAchievement } from '../lib/sounds';
 import { triggerConfetti } from '../components/ui/Confetti';
+import { CardBase } from '../components/ui/CardBase';
 
 // Prize catalog — real rewards redeemable with fichas
 const PRIZE_CATALOG = [
@@ -134,7 +135,7 @@ export function PremiacoesPage() {
   const MEDALS = ['🥇', '🥈', '🥉'];
 
   return (
-    <div className="space-y-4 animate-in">
+    <div className="space-y-5 animate-in">
       <div className="flex items-center justify-between border-b border-b1 pb-3">
         <div>
           <h1 className="text-lg font-bold font-mono">PREMIACOES</h1>
@@ -144,7 +145,7 @@ export function PremiacoesPage() {
       </div>
 
       {/* Prize Catalog — Fichas Redemption */}
-      <div className="bg-surface border border-b1 rounded-lg overflow-hidden">
+      <CardBase padding="none" className="overflow-hidden">
         <div className="px-5 py-3 border-b border-b1 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Gift size={14} className="text-vgold" />
@@ -185,7 +186,7 @@ export function PremiacoesPage() {
             );
           })}
         </div>
-      </div>
+      </CardBase>
 
       {/* Setter Bonus — $100/10 meetings */}
       {(() => {
@@ -194,7 +195,7 @@ export function PremiacoesPage() {
         const bonusData = setters.map(u => ({ ...u, ...getMonthBonus(u.id) })).sort((a, b) => b.meetings - a.meetings);
         const totalBonusPaid = bonusData.reduce((t, s) => t + s.bonus, 0);
         return (
-          <div className="bg-surface border border-b1 rounded-lg overflow-hidden">
+          <CardBase padding="none" className="overflow-hidden">
             <div className="px-5 py-3 border-b border-b1 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-sm">🎯</span>
@@ -224,7 +225,7 @@ export function PremiacoesPage() {
                 </div>
               ))}
             </div>
-          </div>
+          </CardBase>
         );
       })()}
 
