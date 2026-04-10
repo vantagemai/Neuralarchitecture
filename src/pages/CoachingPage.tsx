@@ -61,7 +61,7 @@ export function CoachingPage() {
         <p className="text-sm text-t3 mt-1">Notas de acompanhamento por membro</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Member list */}
         <div className="space-y-2">
           <h2 className="text-xs font-bold text-t3 uppercase tracking-wider mb-2">Selecione um membro</h2>

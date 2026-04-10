@@ -12,12 +12,12 @@ interface KpiCardProps {
 }
 
 const COLORS = {
-  red:     { border: 'border-l-vred',   text: 'text-vred',   neon: '',  icon: 'text-vred',   spark: '#D4634B' },
-  green:   { border: 'border-l-vgreen', text: 'text-vgreen', neon: '',  icon: 'text-vgreen', spark: '#5A9E6F' },
-  gold:    { border: 'border-l-vgold',  text: 'text-vgold',  neon: '',  icon: 'text-vgold',  spark: '#C8963E' },
-  purp:    { border: 'border-l-vpurp',  text: 'text-vpurp',  neon: '',  icon: 'text-vpurp',  spark: '#8B7EC8' },
-  blue:    { border: 'border-l-vblue',  text: 'text-vblue',  neon: '',  icon: 'text-vblue',  spark: '#6B8FBF' },
-  default: { border: 'border-l-b3',     text: 'text-t1',     neon: '',  icon: 'text-t2',     spark: '#8F8F8F' },
+  red:     { border: 'border-l-vred',   text: 'text-vred',   icon: 'text-vred',   spark: '#D4634B' },
+  green:   { border: 'border-l-vgreen', text: 'text-vgreen', icon: 'text-vgreen', spark: '#5A9E6F' },
+  gold:    { border: 'border-l-vgold',  text: 'text-vgold',  icon: 'text-vgold',  spark: '#C8963E' },
+  purp:    { border: 'border-l-vpurp',  text: 'text-vpurp',  icon: 'text-vpurp',  spark: '#8B7EC8' },
+  blue:    { border: 'border-l-vblue',  text: 'text-vblue',  icon: 'text-vblue',  spark: '#6B8FBF' },
+  default: { border: 'border-l-b3',     text: 'text-t1',     icon: 'text-t2',     spark: '#8F8F8F' },
 };
 
 function Sparkline({ data, color, width = 80, height = 20 }: { data: number[]; color: string; width?: number; height?: number }) {
@@ -49,7 +49,7 @@ export function KpiCard({ label, value, icon: Icon, trend, trendLabel, color = '
       </div>
       <div className="flex items-end justify-between gap-2">
         <div>
-          <div className={`text-xl font-bold tracking-tight ${c.text} ${c.neon}`}>{value}</div>
+          <div className={`text-xl font-bold tracking-tight ${c.text}`}>{value}</div>
           {(trend !== undefined || trendLabel) && (
             <div className="flex items-center gap-1 mt-0.5">
               {trend !== undefined && (

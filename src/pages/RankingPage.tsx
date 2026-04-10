@@ -124,7 +124,7 @@ export function RankingPage() {
       </div>
 
       {/* My stats */}
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2">
         {[
           { label: myLevel.name, value: myLevel.icon, color: myLevel.color },
           { label: 'Fichas', value: `🪙 ${myFichas.toLocaleString()}`, color: 'text-vgold' },

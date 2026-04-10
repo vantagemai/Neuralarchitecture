@@ -97,7 +97,7 @@ export function TimePage() {
         <p className="text-sm text-t3 mt-1">Gerencie os colaboradores do sistema</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
         {/* Add form */}
         <div className="bg-surface border border-b1 rounded-lg p-4">
           <h2 className="text-xs font-bold mb-5">➕ Adicionar Membro</h2>
@@ -194,7 +194,7 @@ export function TimePage() {
                     {goalsId === u.id && (
                       <div className="mt-3 pt-3 border-t border-b1 animate-in">
                         <div className="text-2xs text-t3 uppercase font-bold mb-2">Metas de {u.name.split(' ')[0]}</div>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2">
                           <div>
                             <label className="text-2xs text-t4 uppercase">Contatos/dia</label>
                             <input type="number" value={editGoals.dailyContacts} onChange={e => setEditGoals({ ...editGoals, dailyContacts: parseInt(e.target.value) || 0 })}

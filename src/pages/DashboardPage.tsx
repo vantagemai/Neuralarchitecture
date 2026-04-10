@@ -261,7 +261,7 @@ export function DashboardPage() {
       case 'kpis': return (
       <div key="kpis">
       {/* KPIs */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard label="Receita Mês" value={fmt$(totalComm)} icon={DollarSign} color="green" trendLabel={`${totalSalesMonth} vendas`} sparkData={salesTrend.map(d => d.comissao)} />
         <KpiCard label="Vendas Mês" value={totalSalesMonth} icon={Target} color="gold" sparkData={salesTrend.map(d => d.vendas)} />
         <KpiCard label="Time" value={`${filledCount}/${totalMembers}`} icon={Users} color="blue" trendLabel="preencheram" />
@@ -296,7 +296,7 @@ export function DashboardPage() {
       ); case 'charts': return (
       <div key="charts">
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
         {/* Activity trend */}
         <div className="bg-surface border border-b1 rounded-lg p-4">
           <div className="flex items-center gap-2 mb-4">
@@ -356,7 +356,7 @@ export function DashboardPage() {
           { metric: 'Badges', value: sc.badges },
         ];
         return (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
             {/* Scorecard */}
             <div className="bg-surface border border-b1 rounded-lg p-4">
               <div className="flex items-center justify-between mb-2">
@@ -407,7 +407,7 @@ export function DashboardPage() {
       ); case 'team': return (
       <div key="team">
       {/* Team + Alerts */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Team */}
         <div className="lg:col-span-2 bg-surface border border-b1 rounded-lg overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-b1">

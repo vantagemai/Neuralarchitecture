@@ -37,9 +37,9 @@ export function AppLayout({ userName, onLogout }: AppLayoutProps) {
           onMobileClose={() => setMobileOpen(false)}
         />
         <div className="flex-1 flex overflow-hidden">
-          <main className="flex-1 overflow-y-auto bg-canvas p-3 sm:p-4 lg:p-6">
+          <main className="flex-1 overflow-y-auto bg-canvas p-3 sm:p-4 lg:p-6"><div className="max-w-7xl mx-auto">
             <Outlet />
-          </main>
+          </div></main>
           {isDashboard && <RightSidebar />}
         </div>
       </div>

@@ -15,7 +15,7 @@ export function Avatar({ userId, name, size = 'w-8 h-8', ring = false, className
   ) : (
     <div
       className={`${size} rounded-full bg-gradient-to-br from-vred to-vred-dark flex items-center justify-center text-white font-bold shrink-0 ${className}`}
-      style={{ fontSize: size.includes('12') ? '16px' : size.includes('10') ? '13px' : '11px' }}
+      style={{ fontSize: parseInt(size.match(/\d+/)?.[0] || '8') > 10 ? '14px' : '11px' }}
     >
       {initials}
     </div>

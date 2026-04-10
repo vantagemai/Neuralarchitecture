@@ -217,7 +217,7 @@ export function VendasPage() {
       </div>
 
       {/* ── KPIs with trends ── */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3">
         <KpiCard label="Vendas no Mes" value={mySales.length} icon={Target} color="gold"
           trend={analytics.trendSales} trendLabel="vs mes anterior" sparkData={analytics.spark} />
         <KpiCard label="Receita Total" value={fmt$(analytics.totalRevenue)} icon={DollarSign} color="green"
@@ -230,7 +230,7 @@ export function VendasPage() {
 
       {/* ── Charts: Vendas/dia + Receita por role ── */}
       {mySales.length > 0 && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
           {/* Sales per day */}
           <div className="bg-surface border border-b1 rounded-lg p-4">
             <h2 className="text-xs font-bold text-t3 uppercase tracking-wider mb-3">Vendas por dia</h2>

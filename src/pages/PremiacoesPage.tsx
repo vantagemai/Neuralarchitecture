@@ -156,7 +156,7 @@ export function PremiacoesPage() {
             <span className="text-2xs text-t4">fichas</span>
           </div>
         </div>
-        <div className="p-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="p-4 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3">
           {PRIZE_CATALOG.map(prize => {
             const myFichas = getTotalFichas(session?.id);
             const pct = Math.min(100, Math.round((myFichas / prize.fichas) * 100));
@@ -255,7 +255,7 @@ export function PremiacoesPage() {
       )}
 
       {/* Prize cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
         {PRIZE_DEFS.map(prize => {
           const prizeValue = prizeValues[prize.id];
           const ranking = getMetricRanking(prize.metric);

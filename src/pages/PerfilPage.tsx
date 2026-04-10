@@ -97,7 +97,7 @@ export function PerfilPage() {
       </div>
 
       {/* Stats grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         {[
           { label: 'Vendas Mes', value: mySales.length, icon: Target, color: 'text-vgold' },
           { label: 'Comissao', value: fmt$(totalComm), icon: DollarSign, color: 'text-vgreen' },
@@ -116,7 +116,7 @@ export function PerfilPage() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
         {/* Scorecard radar */}
         <div className="bg-surface border border-b1 rounded-lg p-4">
           <h2 className="text-xs font-bold text-t3 uppercase tracking-wider mb-2">Scorecard</h2>

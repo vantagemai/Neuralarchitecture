@@ -31,7 +31,7 @@ export function BadgesPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3">
         <div className="bg-surface border border-b1 rounded-lg p-3 text-center">
           <div className="text-2xl mb-1">{level.icon}</div>
           <div className={`text-base font-bold ${level.color}`}>{level.name}</div>
@@ -142,7 +142,7 @@ export function BadgesPage() {
             <h2 className="text-sm font-bold text-t3 uppercase tracking-wider mb-3 flex items-center gap-2">
               {cat.icon} {cat.label}
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {badges.map(ach => {
                 const earned = unlockedIds.has(ach.id);
                 const earnedAt = unlocked.find(a => a.id === ach.id)?.unlockedAt;

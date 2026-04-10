@@ -11,7 +11,7 @@ export function EmptyState({ icon, message, subtext }: EmptyStateProps) {
     <div className="text-center py-12">
       {icon && <div className="text-2xl mb-2">{typeof icon === 'string' ? icon : icon}</div>}
       <p className="text-sm text-t3">{message}</p>
-      {subtext && <p className="text-xs text-t4 mt-1" dangerouslySetInnerHTML={{ __html: subtext }} />}
+      {subtext && <p className="text-xs text-t4 mt-1">{subtext}</p>}
     </div>
   );
 }
