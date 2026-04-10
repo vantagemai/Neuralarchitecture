@@ -11,18 +11,7 @@ import { Avatar } from '../components/ui/Avatar';
 import { playAchievement } from '../lib/sounds';
 import { triggerConfetti } from '../components/ui/Confetti';
 import { CardBase } from '../components/ui/CardBase';
-
-// Prize catalog — real rewards redeemable with fichas
-const PRIZE_CATALOG = [
-  { id: 'caneca',  name: 'Caneca Vantagem',          fichas: 500,    icon: '☕',  tier: 1 },
-  { id: 'jantar',  name: 'Jantar com Acompanhante',   fichas: 2000,   icon: '🍽️', tier: 2 },
-  { id: 'viagem',  name: 'Viagem',                    fichas: 10000,  icon: '✈️',  tier: 3 },
-  { id: 'pcx',     name: 'Honda PCX 160',             fichas: 30000,  icon: '🏍️', tier: 4 },
-  { id: 'iphone',  name: 'iPhone 17 Pro Max',         fichas: 50000,  icon: '📱',  tier: 4 },
-  { id: 'macbook', name: 'MacBook Pro',               fichas: 60000,  icon: '💻',  tier: 5 },
-  { id: 'civic',   name: 'Honda Civic',               fichas: 150000, icon: '🚗',  tier: 6 },
-  { id: 'bmw',     name: 'BMW 320i',                  fichas: 300000, icon: '🏎️', tier: 7 },
-];
+import { PRIZE_CATALOG } from '../lib/prizes';
 
 interface PrizeWinner {
   odId: string;

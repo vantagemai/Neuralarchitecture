@@ -7,10 +7,10 @@ import {
   DollarSign, Users, Target, TrendingUp,
   AlertTriangle, CheckCircle2, Clock, Activity,
   Settings2, GripVertical, Eye, EyeOff, ChevronUp, ChevronDown, RotateCcw,
-  Flame, Zap
+  Flame, Zap, Gift, Star, ArrowRight
 } from 'lucide-react';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
-import { getUsers, getTodayFills, getMonthSales, calcScore, db, today, fmt$, CHANNELS, type FillData, getSession } from '../lib/store';
+import { getUsers, getTodayFills, getMonthSales, calcScore, db, today, fmt$, CHANNELS, type FillData, getSession, getMyMonthCommission } from '../lib/store';
 
 import { CardBase } from '../components/ui/CardBase';
 import { getScorecard } from '../lib/scorecard';
@@ -18,10 +18,13 @@ import { getGoalProgress } from '../lib/goals';
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
 import { chartColors } from '../lib/theme';
 import { getStreak } from '../lib/streaks';
-import { getLevel } from '../lib/levels';
-import { getTotalXp } from '../lib/xp';
+import { getLevel, getNextLevel } from '../lib/levels';
+import { getTotalXp, getTotalFichas } from '../lib/xp';
 import { getMonthBonus } from '../lib/bonus';
 import { roleVariant } from '../lib/roles';
+import { getNextRedeemablePrize } from '../lib/prizes';
+import { getPersonalAlerts } from '../lib/personalAlerts';
+import type { NIProfile } from './IdentidadePage';
 
 const MEDALS = ['🥇', '🥈', '🥉'];
 
@@ -56,34 +59,45 @@ function getMonthSalesTrend(): { label: string; vendas: number; comissao: number
 }
 
 // ── Dashboard Layout System ──
-type SectionId = 'goals' | 'kpis' | 'bonus' | 'charts' | 'scorecard' | 'team' | 'heatmap';
+type SectionId = 'objetivo' | 'goals' | 'ganhos' | 'evolucao' | 'alertas' | 'kpis' | 'charts' | 'team' | 'heatmap';
 
 interface SectionConfig { id: SectionId; visible: boolean }
 
 const DEFAULT_SECTIONS: SectionConfig[] = [
+  { id: 'objetivo', visible: true },
   { id: 'goals', visible: true },
-  { id: 'kpis', visible: true },
-  { id: 'bonus', visible: true },
-  { id: 'charts', visible: true },
-  { id: 'scorecard', visible: true },
-  { id: 'team', visible: true },
-  { id: 'heatmap', visible: true },
+  { id: 'ganhos', visible: true },
+  { id: 'evolucao', visible: true },
+  { id: 'alertas', visible: true },
+  { id: 'kpis', visible: false },
+  { id: 'charts', visible: false },
+  { id: 'team', visible: false },
+  { id: 'heatmap', visible: false },
 ];
 
 const SECTION_LABELS: Record<SectionId, { label: string; icon: string }> = {
-  goals: { label: 'Minhas Metas', icon: '🎯' },
-  kpis: { label: 'KPIs', icon: '📊' },
-  bonus: { label: 'Bonus Setter', icon: '🎯' },
-  charts: { label: 'Graficos', icon: '📈' },
-  scorecard: { label: 'Scorecard + Metas', icon: '🎯' },
-  team: { label: 'Time + Alertas', icon: '👥' },
-  heatmap: { label: 'Heatmap Atividade', icon: '🔥' },
+  objetivo: { label: 'Meu Objetivo', icon: '🎯' },
+  goals: { label: 'Minhas Metas', icon: '📊' },
+  ganhos: { label: 'Meus Ganhos', icon: '💰' },
+  evolucao: { label: 'Minha Evolucao', icon: '⭐' },
+  alertas: { label: 'Alertas Pessoais', icon: '🔔' },
+  kpis: { label: 'KPIs Time', icon: '📊' },
+  charts: { label: 'Graficos Time', icon: '📈' },
+  team: { label: 'Time', icon: '👥' },
+  heatmap: { label: 'Heatmap Time', icon: '🔥' },
 };
 
 const LAYOUT_KEY = 'vops_dashboard_layout';
 
 function loadLayout(): SectionConfig[] {
   try {
+    // v2 migration: reset to personal-first layout
+    const migrated = localStorage.getItem('vops_dashboard_v2');
+    if (!migrated) {
+      localStorage.setItem('vops_dashboard_v2', '1');
+      saveLayout(DEFAULT_SECTIONS);
+      return DEFAULT_SECTIONS;
+    }
     const saved = localStorage.getItem(LAYOUT_KEY);
     if (!saved) return DEFAULT_SECTIONS;
     const parsed = JSON.parse(saved) as SectionConfig[];
@@ -185,6 +199,23 @@ export function DashboardPage() {
   const myStreak = getStreak();
   const myXp = getTotalXp();
 
+  // Personal data for new sections
+  const myId = session?.id || 'anon';
+  const myFillToday = db.get<FillData>(`ops_fill_${todayStr}_${myId}`);
+  const gp = useMemo(() => getGoalProgress(myId), [dataKey]);
+  const myComm = useMemo(() => getMyMonthCommission(myId), [dataKey]);
+  const niProfile = useMemo(() => db.get<NIProfile>(`ni_profile_${myId}`), [dataKey]);
+  const myBonus = useMemo(() => getMonthBonus(myId), [dataKey]);
+  const myFichas = useMemo(() => getTotalFichas(myId), [dataKey]);
+  const nextLevel = useMemo(() => getNextLevel(myId), [dataKey]);
+  const nextPrize = useMemo(() => getNextRedeemablePrize(myId), [dataKey]);
+  const personalAlerts = useMemo(() => getPersonalAlerts(myId), [dataKey]);
+
+  // Today's meetings from fill
+  const meetingsToday = myFillToday?.channels?.visitas
+    ? { agendadas: parseInt(myFillToday.channels.visitas.a) || 0, realizadas: parseInt(myFillToday.channels.visitas.b) || 0 }
+    : { agendadas: 0, realizadas: 0 };
+
   return (
     <div className="space-y-5">
       {/* Terminal header bar */}
@@ -213,6 +244,41 @@ export function DashboardPage() {
             title="Editar layout">
             <Settings2 size={16} />
           </button>
+        </div>
+      </div>
+
+      {/* Daily Activities — Atividades Geradoras de Lucro */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="bg-surface border border-b1 rounded-lg px-3 py-2.5 flex items-center gap-2.5">
+          <span className="text-base">📞</span>
+          <div className="min-w-0">
+            <div className="text-2xs text-t4">Contatos</div>
+            <div className="font-mono text-sm font-bold text-t1">{gp.dailyContacts.current}<span className="text-t4 font-normal">/{gp.dailyContacts.target}</span></div>
+          </div>
+        </div>
+        <div className="bg-surface border border-b1 rounded-lg px-3 py-2.5 flex items-center gap-2.5">
+          <span className="text-base">🤝</span>
+          <div className="min-w-0">
+            <div className="text-2xs text-t4">Reunioes</div>
+            <div className="font-mono text-sm font-bold text-t1">{meetingsToday.realizadas}<span className="text-t4 font-normal">/{meetingsToday.agendadas || '—'}</span></div>
+          </div>
+        </div>
+        <div className="bg-surface border border-b1 rounded-lg px-3 py-2.5 flex items-center gap-2.5">
+          <span className="text-base">📋</span>
+          <div className="min-w-0">
+            <div className="text-2xs text-t4">Fill Diario</div>
+            {myFillToday
+              ? <div className="text-sm font-bold text-vgreen">Feito ✓</div>
+              : <div className="text-sm font-bold text-vred">Pendente</div>
+            }
+          </div>
+        </div>
+        <div className="bg-surface border border-b1 rounded-lg px-3 py-2.5 flex items-center gap-2.5">
+          <span className="text-base">🔥</span>
+          <div className="min-w-0">
+            <div className="text-2xs text-t4">Streak</div>
+            <div className="font-mono text-sm font-bold text-orange-400">{myStreak.current}d</div>
+          </div>
         </div>
       </div>
 
@@ -262,7 +328,95 @@ export function DashboardPage() {
       {sections.filter(s => s.visible).map(sec => {
         switch (sec.id) {
 
-      case 'goals': return (
+      case 'objetivo': return (
+      <div key="objetivo">
+      {/* ── MEU OBJETIVO ── */}
+      {niProfile ? (() => {
+        const fp = niProfile.metaM > 0 ? Math.min(100, Math.round((myComm / niProfile.metaM) * 100)) : 0;
+        const dreamLabel = niProfile.dreamItemLabel || '';
+        const dreamNames: Record<string, string> = { car: '🚗 Carro', home: '🏠 Moradia', body: '💪 Corpo', style: '✨ Estilo' };
+        const dreamImage = dreamLabel && niProfile.images?.[dreamLabel];
+        const dreamText = dreamLabel ? (niProfile as any)[dreamLabel] : '';
+        const dreamValue = niProfile.dreamItemValue;
+        // Ring SVG
+        const radius = 50;
+        const circumference = 2 * Math.PI * radius;
+        const offset = circumference - (fp / 100) * circumference;
+        const ringColor = fp >= 100 ? '#5A9E6F' : fp >= 60 ? '#D4A843' : '#D4634B';
+        return (
+          <CardBase padding="none" className="overflow-hidden">
+            <div className="px-5 py-4 border-b border-b1 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Target size={18} className="text-vgold" />
+                <h2 className="text-sm font-bold">Meu Objetivo</h2>
+              </div>
+              {niProfile.anchor && <span className="text-2xs text-t4 italic hidden sm:block truncate max-w-[200px]">"{niProfile.anchor}"</span>}
+            </div>
+            <div className="px-5 py-5 flex flex-col sm:flex-row items-center gap-5">
+              {/* Image or ring */}
+              <div className="flex items-center gap-4 shrink-0">
+                {dreamImage && (
+                  <img src={dreamImage} alt={dreamText} className="w-20 h-20 rounded-xl object-cover border border-b1 shadow-sm" />
+                )}
+                <div className="relative">
+                  <svg width="120" height="120" viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r={radius} fill="none" stroke="currentColor" strokeWidth="8" className="text-overlay" />
+                    <circle cx="60" cy="60" r={radius} fill="none" stroke={ringColor} strokeWidth="8"
+                      strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={offset}
+                      transform="rotate(-90 60 60)" className="transition-all duration-1000" />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-2xl font-black font-mono" style={{ color: ringColor }}>{fp}%</span>
+                    <span className="text-[9px] text-t4">da meta</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Info */}
+              <div className="flex-1 w-full space-y-3">
+                <div>
+                  <div className="text-xs text-t4">Meta mensal</div>
+                  <div className="text-xl font-black font-mono text-vgold">{fmt$(niProfile.metaM)}</div>
+                  <div className="text-sm text-t3 mt-0.5">Ganho este mes: <span className="font-mono font-bold text-vgreen">{fmt$(myComm)}</span></div>
+                  {niProfile.metaM > myComm && (
+                    <div className="text-xs text-t4 mt-0.5">Faltam <span className="font-mono font-bold text-vred">{fmt$(niProfile.metaM - myComm)}</span></div>
+                  )}
+                </div>
+                {dreamLabel && (
+                  <div className="bg-elevated/50 rounded-lg px-3 py-2">
+                    <div className="text-2xs text-t4 mb-1">{dreamNames[dreamLabel] || 'Objetivo'}: {dreamText}</div>
+                    {dreamValue && dreamValue > 0 && (() => {
+                      const allTimeComm = getMonthSales().filter(s => s.sellerId === myId || s.sellerName === (session?.name || '')).reduce((t, s) => t + (s.sellerSetupComm || 0) + (s.sellerRecComm || 0), 0);
+                      const dreamPct = Math.min(100, Math.round((allTimeComm / dreamValue) * 100));
+                      return (
+                        <div>
+                          <div className="flex justify-between text-2xs mb-1">
+                            <span className="text-t3">Progresso</span>
+                            <span className="font-mono text-t2">{fmt$(allTimeComm)} / {fmt$(dreamValue)} ({dreamPct}%)</span>
+                          </div>
+                          <div className="h-2 bg-overlay rounded-full overflow-hidden">
+                            <div className="h-full bg-vgold rounded-full transition-all duration-1000" style={{ width: `${dreamPct}%` }} />
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                )}
+              </div>
+            </div>
+          </CardBase>
+        );
+      })() : (
+        <CardBase className="text-center py-8">
+          <Target size={32} className="mx-auto mb-3 text-t4 opacity-30" />
+          <p className="text-sm text-t3 mb-3">Configure seu objetivo financeiro</p>
+          <Link to="/identidade" className="inline-flex items-center gap-2 bg-vred hover:bg-vred-dark text-white font-bold px-5 py-2.5 rounded-lg transition-colors text-sm">
+            Ir para Identidade <ArrowRight size={14} />
+          </Link>
+        </CardBase>
+      )}
+      </div>
+      ); case 'goals': return (
       <div key="goals">
       {/* ── HERO: Minhas Metas ── */}
       {(() => {
@@ -379,30 +533,70 @@ export function DashboardPage() {
         <KpiCard label="Score Total" value={totalScore} icon={TrendingUp} color="red" trendLabel="pts hoje" sparkData={activityTrend.map(d => d.score)} />
       </div>
       </div>
-      ); case 'bonus': return (
-      <div key="bonus">
-      {/* Setter Bonus Mini Card */}
-      {(session?.role === 'Setter' || session?.role === 'Social Seller') && (() => {
-        const b = getMonthBonus(session?.id || 'anon');
-        return (
-          <div className="bg-surface border border-vgold/20 border-l-2 border-l-vgold rounded-lg px-4 py-3 flex items-center gap-4">
-            <span className="text-lg">🎯</span>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-vgold">Bonus Setter</span>
-                <span className="text-2xs text-t4">{b.meetings} reunioes realizadas</span>
-              </div>
-              <div className="h-1.5 bg-overlay rounded-full overflow-hidden mt-1 max-w-[200px]">
-                <div className="h-full bg-vgold rounded-full transition-all" style={{ width: `${b.progress}%` }} />
-              </div>
-            </div>
-            <div className="text-right shrink-0">
-              <div className="font-mono font-bold text-vgold">${b.bonus}</div>
-              <div className="text-2xs text-t4">{b.nextAt > 0 && b.meetings > 0 ? `${b.nextAt} para +$100` : ''}</div>
-            </div>
+      ); case 'ganhos': return (
+      <div key="ganhos">
+      {/* ── MEUS GANHOS ── */}
+      <CardBase padding="none" className="overflow-hidden">
+        <div className="px-5 py-3 border-b border-b1 flex items-center gap-2">
+          <DollarSign size={16} className="text-vgreen" />
+          <h2 className="text-sm font-bold">Meus Ganhos</h2>
+        </div>
+        <div className={`grid grid-cols-2 ${(session?.role === 'Setter' || session?.role === 'Social Seller') ? 'lg:grid-cols-4' : 'lg:grid-cols-3'} divide-y sm:divide-y-0 sm:divide-x divide-b1`}>
+          {/* Commission */}
+          <div className="px-4 py-4 text-center">
+            <div className="text-2xs text-t4 uppercase tracking-wider mb-1">Comissao Mes</div>
+            <div className="font-mono text-xl font-black text-vgreen">{fmt$(myComm)}</div>
+            <div className="text-2xs text-t4 mt-1">{sales.filter(s => s.sellerId === myId || s.sellerName === (session?.name || '')).length} vendas</div>
           </div>
-        );
-      })()}
+
+          {/* Bonus (Setter/Social Seller) */}
+          {(session?.role === 'Setter' || session?.role === 'Social Seller') && (
+            <div className="px-4 py-4 text-center">
+              <div className="text-2xs text-t4 uppercase tracking-wider mb-1">Bonus</div>
+              <div className="font-mono text-xl font-black text-vgold">${myBonus.bonus}</div>
+              <div className="h-1.5 bg-overlay rounded-full overflow-hidden mt-2 max-w-[100px] mx-auto">
+                <div className="h-full bg-vgold rounded-full transition-all" style={{ width: `${myBonus.progress}%` }} />
+              </div>
+              <div className="text-2xs text-t4 mt-1">{myBonus.nextAt > 0 ? `${myBonus.nextAt} p/ +$100` : 'Ciclo completo!'}</div>
+            </div>
+          )}
+
+          {/* Fichas + Level */}
+          <div className="px-4 py-4 text-center">
+            <div className="text-2xs text-t4 uppercase tracking-wider mb-1">Fichas</div>
+            <div className="font-mono text-xl font-black text-vpurp">🪙 {myFichas.toLocaleString()}</div>
+            {nextLevel.next && (
+              <>
+                <div className="h-1.5 bg-overlay rounded-full overflow-hidden mt-2 max-w-[100px] mx-auto">
+                  <div className="h-full bg-vpurp rounded-full transition-all" style={{ width: `${nextLevel.progress}%` }} />
+                </div>
+                <div className="text-2xs text-t4 mt-1">{nextLevel.next.icon} {nextLevel.next.name} em {nextLevel.xpNeeded.toLocaleString()}</div>
+              </>
+            )}
+          </div>
+
+          {/* Next Prize */}
+          <div className="px-4 py-4 text-center">
+            <div className="text-2xs text-t4 uppercase tracking-wider mb-1">Proximo Premio</div>
+            {nextPrize ? (
+              <>
+                <div className="text-2xl mb-1">{nextPrize.prize.icon}</div>
+                <div className="text-xs font-semibold text-t2 truncate">{nextPrize.prize.name}</div>
+                <div className="h-1.5 bg-overlay rounded-full overflow-hidden mt-2 max-w-[100px] mx-auto">
+                  <div className="h-full bg-vred rounded-full transition-all" style={{ width: `${nextPrize.pct}%` }} />
+                </div>
+                <div className="text-2xs text-t4 mt-1">{nextPrize.pct}% — faltam {nextPrize.fichasNeeded.toLocaleString()}</div>
+              </>
+            ) : (
+              <>
+                <div className="text-2xl mb-1">🏆</div>
+                <div className="text-xs font-bold text-vgreen">Todos disponiveis!</div>
+                <Link to="/premiacoes" className="text-2xs text-vred hover:underline mt-1 inline-block">Resgatar →</Link>
+              </>
+            )}
+          </div>
+        </div>
+      </CardBase>
       </div>
       ); case 'charts': return (
       <div key="charts">
@@ -453,12 +647,11 @@ export function DashboardPage() {
         </CardBase>
       </div>
       </div>
-      ); case 'scorecard': return (
-      <div key="scorecard">
-      {/* Scorecard + Goals */}
+      ); case 'evolucao': return (
+      <div key="evolucao">
+      {/* ── MINHA EVOLUCAO ── */}
       {(() => {
         const sc = getScorecard();
-        const gp = getGoalProgress();
         const radarData = [
           { metric: 'Atividade', value: sc.activity },
           { metric: 'Receita', value: sc.revenue },
@@ -467,7 +660,7 @@ export function DashboardPage() {
           { metric: 'Badges', value: sc.badges },
         ];
         return (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Scorecard */}
             <CardBase>
               <div className="flex items-center justify-between mb-2">
@@ -486,34 +679,82 @@ export function DashboardPage() {
               ); })()}
             </CardBase>
 
-            {/* Goals progress */}
+            {/* Level progression */}
             <CardBase>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-sm font-bold">Metas</h2>
-                <span className="font-mono text-sm font-bold text-vgold">{gp.overall}% geral</span>
+              <h2 className="text-sm font-bold mb-4">Minha Evolucao</h2>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="text-center">
+                  <span className="text-3xl">{myLevel.icon}</span>
+                  <div className={`text-xs font-bold mt-1 ${myLevel.color}`}>{myLevel.name}</div>
+                </div>
+                {nextLevel.next && (
+                  <>
+                    <div className="flex-1">
+                      <div className="h-2 bg-overlay rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-vpurp to-vred rounded-full transition-all duration-1000" style={{ width: `${nextLevel.progress}%` }} />
+                      </div>
+                      <div className="text-2xs text-t4 mt-1 text-center">{nextLevel.progress}%</div>
+                    </div>
+                    <div className="text-center opacity-50">
+                      <span className="text-3xl">{nextLevel.next.icon}</span>
+                      <div className={`text-xs font-bold mt-1 ${nextLevel.next.color}`}>{nextLevel.next.name}</div>
+                    </div>
+                  </>
+                )}
               </div>
-              <div className="space-y-3">
-                {[
-                  { label: 'Contatos hoje', ...gp.dailyContacts, color: 'bg-vred' },
-                  { label: 'Score hoje', ...gp.dailyScore, color: 'bg-vpurp' },
-                  { label: 'Vendas mes', ...gp.monthlySales, color: 'bg-vgreen' },
-                  { label: 'Receita mes', ...gp.monthlyRevenue, color: 'bg-vgold' },
-                ].map(g => (
-                  <div key={g.label}>
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-t3">{g.label}</span>
-                      <span className="font-mono text-t2">{g.current}/{g.target} ({g.pct}%)</span>
-                    </div>
-                    <div className="h-2 bg-overlay rounded-sm overflow-hidden">
-                      <div className={`h-full ${g.color} rounded-full transition-all duration-1000`} style={{ width: `${g.pct}%` }} />
-                    </div>
+              {nextLevel.next && (
+                <div className="space-y-2">
+                  <div className="bg-elevated/50 rounded-lg px-3 py-2 flex justify-between items-center">
+                    <span className="text-xs text-t3">Fichas atuais</span>
+                    <span className="font-mono text-sm font-bold text-vpurp">🪙 {myFichas.toLocaleString()}</span>
                   </div>
-                ))}
+                  <div className="bg-elevated/50 rounded-lg px-3 py-2 flex justify-between items-center">
+                    <span className="text-xs text-t3">Faltam para {nextLevel.next.name}</span>
+                    <span className="font-mono text-sm font-bold text-t2">{nextLevel.xpNeeded.toLocaleString()}</span>
+                  </div>
+                  {nextLevel.next.award && (
+                    <div className="bg-vgold/5 border border-vgold/15 rounded-lg px-3 py-2 flex items-center gap-2">
+                      <Gift size={14} className="text-vgold shrink-0" />
+                      <span className="text-xs text-t3">Premio: <span className="text-vgold font-semibold">{nextLevel.next.award}</span></span>
+                    </div>
+                  )}
+                </div>
+              )}
+              <div className="mt-4 flex items-center gap-3">
+                <Star size={14} className="text-vgold" />
+                <span className="text-2xs text-t4">Streak: <span className="font-mono font-bold text-orange-400">{myStreak.current}d</span> (melhor: {myStreak.best}d)</span>
               </div>
             </CardBase>
           </div>
         );
       })()}
+      </div>
+      ); case 'alertas': return (
+      <div key="alertas">
+      {/* ── ALERTAS PESSOAIS ── */}
+      <CardBase padding="none" className="overflow-hidden">
+        <div className="px-4 py-3 border-b border-b1 flex items-center gap-2">
+          <span className="text-sm">🔔</span>
+          <h2 className="text-xs font-bold">Alertas Pessoais</h2>
+        </div>
+        <div className="divide-y divide-b1">
+          {personalAlerts.length === 0 ? (
+            <div className="text-center py-8 text-t3 text-sm">
+              <CheckCircle2 size={24} className="mx-auto mb-2 text-vgreen opacity-50" />
+              Tudo em dia! Continue assim 💪
+            </div>
+          ) : (
+            personalAlerts.map((alert, i) => (
+              <div key={i} className="px-4 py-3">
+                <div className="flex items-start gap-3">
+                  <span className="text-base mt-0.5 shrink-0">{alert.icon}</span>
+                  <p className="text-sm text-t2">{alert.msg}</p>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </CardBase>
       </div>
       ); case 'team': return (
       <div key="team">

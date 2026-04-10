@@ -172,7 +172,7 @@ export function RightSidebar() {
         {/* Dream images */}
         {profile && (
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-t3">Seus Sonhos</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-t3">Seus Objetivos</span>
             <div className="grid grid-cols-2 gap-2 mt-2">
               {DREAM_ITEMS.map(d => {
                 const img = profile.images?.[d.key];
@@ -209,7 +209,7 @@ export function RightSidebar() {
         {!profile && (
           <div className="text-center py-4">
             <Sparkles size={24} className="mx-auto mb-2 text-t4 opacity-30" />
-            <p className="text-xs text-t4">Configure sua Identidade 180d para ver seus sonhos aqui</p>
+            <p className="text-xs text-t4">Configure sua Identidade 180d para ver seus objetivos aqui</p>
           </div>
         )}
       </div>

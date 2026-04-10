@@ -3,10 +3,12 @@ import { Flame, Car, Home, Dumbbell, Sparkles, Heart, Save, Camera } from 'lucid
 import { db, today, fmt$, getSession, getMonthSales } from '../lib/store';
 import { CardBase } from '../components/ui/CardBase';
 
-interface NIProfile {
+export interface NIProfile {
   metaM: number; meta180: number; car: string; home: string; body: string;
   style: string; impact: string; anchor: string; startDate: string;
   images?: Record<string, string>; // base64 images for car/home/body/style
+  dreamItemLabel?: string; // which dream item is the primary objective (car/home/body/style)
+  dreamItemValue?: number; // total cost of the dream item
 }
 
 export function IdentidadePage() {
@@ -24,6 +26,8 @@ export function IdentidadePage() {
     style: profile?.style || '',
     impact: profile?.impact || '',
     anchor: profile?.anchor || '',
+    dreamItemLabel: profile?.dreamItemLabel || '',
+    dreamItemValue: profile?.dreamItemValue?.toString() || '',
   });
 
   const [images, setImages] = useState<Record<string, string>>(profile?.images || {});
@@ -58,6 +62,8 @@ export function IdentidadePage() {
       style: form.style, impact: form.impact, anchor: form.anchor,
       startDate: profile?.startDate || today(),
       images,
+      dreamItemLabel: form.dreamItemLabel || undefined,
+      dreamItemValue: parseFloat(form.dreamItemValue) || undefined,
     };
     db.set(profileKey, p);
     setProfile(p);
@@ -104,6 +110,30 @@ export function IdentidadePage() {
             <input value={form.anchor} onChange={e => setForm({ ...form, anchor: e.target.value })} placeholder="Ex: Vim de longe demais para desistir."
               className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-vred/40" />
           </div>
+          {/* Objetivo principal */}
+          <div className="bg-vgold/5 border border-vgold/20 rounded-lg p-4 space-y-3">
+            <label className="text-xs text-vgold uppercase tracking-wider font-bold">🎯 Objetivo Principal</label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="text-2xs text-t4">Qual objetivo?</label>
+                <select value={form.dreamItemLabel} onChange={e => setForm({ ...form, dreamItemLabel: e.target.value })}
+                  className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-vgold/40 cursor-pointer">
+                  <option value="">Selecione...</option>
+                  <option value="car">🚗 Carro</option>
+                  <option value="home">🏠 Moradia</option>
+                  <option value="body">💪 Corpo</option>
+                  <option value="style">✨ Estilo de vida</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-2xs text-t4">Valor do objetivo (R$)</label>
+                <input type="number" value={form.dreamItemValue} onChange={e => setForm({ ...form, dreamItemValue: e.target.value })}
+                  placeholder="Ex: 150000"
+                  className="mt-1 w-full bg-elevated border border-b1 rounded-lg px-4 py-2.5 font-mono text-sm outline-none focus:border-vgold/40" />
+              </div>
+            </div>
+          </div>
+
           {[
             { key: 'car', icon: <Car size={16} />, label: 'Carro desejado', ph: 'Ex: Honda Civic 2023' },
             { key: 'home', icon: <Home size={16} />, label: 'Moradia desejada', ph: 'Ex: Apto 2q Miami' },
@@ -186,7 +216,7 @@ export function IdentidadePage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
         {/* Vision */}
         <CardBase>
-          <h2 className="text-sm font-bold text-t3 uppercase tracking-wider mb-4">Minha vida construída</h2>
+          <h2 className="text-sm font-bold text-t3 uppercase tracking-wider mb-4">Meus Objetivos</h2>
           <div className="space-y-3">
             {[
               { icon: '🚗', val: profile.car, imgKey: 'car' },

@@ -112,6 +112,14 @@ export const fmtDate = (d: string) => {
 };
 export const fmt$ = (n: number) => '$' + Math.round(n).toLocaleString('en-US');
 
+export function getMyMonthCommission(userId?: string): number {
+  const id = userId || getSession()?.id || 'anon';
+  const name = getSession()?.name || '';
+  return getMonthSales()
+    .filter(s => s.sellerId === id || s.sellerName === name)
+    .reduce((t, s) => t + (s.sellerSetupComm || 0) + (s.sellerRecComm || 0), 0);
+}
+
 // Channel definitions
 export const CHANNELS = [
   { id: 'coldcall',  icon: '📵', label: 'Cold Call',  fieldA: 'Contatos',   fieldB: 'Respostas' },
