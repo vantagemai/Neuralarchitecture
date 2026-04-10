@@ -6,7 +6,8 @@ import { Avatar } from '../components/ui/Avatar';
 import {
   DollarSign, Users, Target, TrendingUp,
   AlertTriangle, CheckCircle2, Clock, Activity,
-  Settings2, GripVertical, Eye, EyeOff, ChevronUp, ChevronDown, RotateCcw
+  Settings2, GripVertical, Eye, EyeOff, ChevronUp, ChevronDown, RotateCcw,
+  Flame, Zap
 } from 'lucide-react';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { getUsers, getTodayFills, getMonthSales, calcScore, db, today, fmt$, CHANNELS, type FillData, getSession } from '../lib/store';
@@ -55,11 +56,12 @@ function getMonthSalesTrend(): { label: string; vendas: number; comissao: number
 }
 
 // ── Dashboard Layout System ──
-type SectionId = 'kpis' | 'bonus' | 'charts' | 'scorecard' | 'team' | 'heatmap';
+type SectionId = 'goals' | 'kpis' | 'bonus' | 'charts' | 'scorecard' | 'team' | 'heatmap';
 
 interface SectionConfig { id: SectionId; visible: boolean }
 
 const DEFAULT_SECTIONS: SectionConfig[] = [
+  { id: 'goals', visible: true },
   { id: 'kpis', visible: true },
   { id: 'bonus', visible: true },
   { id: 'charts', visible: true },
@@ -69,6 +71,7 @@ const DEFAULT_SECTIONS: SectionConfig[] = [
 ];
 
 const SECTION_LABELS: Record<SectionId, { label: string; icon: string }> = {
+  goals: { label: 'Minhas Metas', icon: '🎯' },
   kpis: { label: 'KPIs', icon: '📊' },
   bonus: { label: 'Bonus Setter', icon: '🎯' },
   charts: { label: 'Graficos', icon: '📈' },
@@ -259,7 +262,114 @@ export function DashboardPage() {
       {sections.filter(s => s.visible).map(sec => {
         switch (sec.id) {
 
-      case 'kpis': return (
+      case 'goals': return (
+      <div key="goals">
+      {/* ── HERO: Minhas Metas ── */}
+      {(() => {
+        const gp = getGoalProgress();
+        const goalItems = [
+          { label: 'Contatos hoje', icon: '📞', ...gp.dailyContacts, color: 'text-vred', bg: 'bg-vred', border: 'border-vred/25' },
+          { label: 'Score hoje', icon: '⚡', ...gp.dailyScore, color: 'text-vpurp', bg: 'bg-vpurp', border: 'border-vpurp/25' },
+          { label: 'Vendas mês', icon: '🤝', ...gp.monthlySales, color: 'text-vgreen', bg: 'bg-vgreen', border: 'border-vgreen/25' },
+          { label: 'Receita mês', icon: '💰', ...gp.monthlyRevenue, color: 'text-vgold', bg: 'bg-vgold', border: 'border-vgold/25' },
+        ];
+        const completedGoals = goalItems.filter(g => g.pct >= 100).length;
+        const overallPct = gp.overall;
+        // SVG ring params
+        const radius = 54;
+        const circumference = 2 * Math.PI * radius;
+        const offset = circumference - (overallPct / 100) * circumference;
+        const ringColor = overallPct >= 100 ? '#5A9E6F' : overallPct >= 75 ? '#D4A843' : '#D4634B';
+        return (
+          <CardBase padding="none" className="overflow-hidden">
+            {/* Top hero band */}
+            <div className="px-5 py-4 border-b border-b1 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Target size={18} className="text-vred" />
+                <h2 className="text-sm font-bold">Minhas Metas</h2>
+              </div>
+              <div className="flex items-center gap-2 text-2xs text-t4">
+                <span>{completedGoals}/{goalItems.length} concluídas</span>
+                {completedGoals === goalItems.length && <Flame size={14} className="text-vgold" />}
+              </div>
+            </div>
+
+            <div className="px-5 py-5 flex flex-col md:flex-row items-center gap-6">
+              {/* Big ring */}
+              <div className="relative shrink-0">
+                <svg width="140" height="140" viewBox="0 0 140 140">
+                  <circle cx="70" cy="70" r={radius} fill="none" stroke="currentColor" strokeWidth="10"
+                    className="text-overlay" />
+                  <circle cx="70" cy="70" r={radius} fill="none" stroke={ringColor} strokeWidth="10"
+                    strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={offset}
+                    transform="rotate(-90 70 70)"
+                    className="transition-all duration-1000" />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-3xl font-black font-mono" style={{ color: ringColor }}>{overallPct}%</span>
+                  <span className="text-2xs text-t4 -mt-0.5">progresso geral</span>
+                </div>
+              </div>
+
+              {/* Goal bars — full width */}
+              <div className="flex-1 w-full space-y-3">
+                {goalItems.map(g => (
+                  <div key={g.label}>
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-sm">{g.icon}</span>
+                        <span className="text-xs font-semibold text-t2">{g.label}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className={`font-mono text-sm font-bold ${g.color}`}>
+                          {g.label.includes('Receita') ? fmt$(g.current) : g.current}
+                        </span>
+                        <span className="text-2xs text-t4">
+                          / {g.label.includes('Receita') ? fmt$(g.target) : g.target}
+                        </span>
+                        {g.pct >= 100 && <CheckCircle2 size={14} className="text-vgreen" />}
+                      </div>
+                    </div>
+                    <div className="h-3 bg-overlay rounded-full overflow-hidden">
+                      <div
+                        className={`h-full ${g.bg} rounded-full transition-all duration-1000 relative`}
+                        style={{ width: `${Math.min(g.pct, 100)}%` }}
+                      >
+                        {g.pct >= 15 && (
+                          <span className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[9px] font-bold text-white/90 font-mono">
+                            {g.pct}%
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Motivational footer */}
+            {overallPct < 100 && (
+              <div className="px-5 py-2.5 bg-elevated/30 border-t border-b1 flex items-center gap-2">
+                <Zap size={13} className="text-vgold shrink-0" />
+                <span className="text-2xs text-t3">
+                  {overallPct < 25 ? 'Comece forte! Cada contato te aproxima da meta.' :
+                   overallPct < 50 ? 'Bom começo! Continue nesse ritmo.' :
+                   overallPct < 75 ? 'Mais da metade! Falta pouco para bater tudo.' :
+                   'Quase lá! Sprint final para fechar todas as metas!'}
+                </span>
+              </div>
+            )}
+            {overallPct >= 100 && (
+              <div className="px-5 py-2.5 bg-vgreen/10 border-t border-vgreen/20 flex items-center gap-2">
+                <CheckCircle2 size={13} className="text-vgreen shrink-0" />
+                <span className="text-2xs text-vgreen font-bold">Todas as metas batidas! Dia de campeão 🏆</span>
+              </div>
+            )}
+          </CardBase>
+        );
+      })()}
+      </div>
+      ); case 'kpis': return (
       <div key="kpis">
       {/* KPIs */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
