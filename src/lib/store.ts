@@ -200,3 +200,16 @@ export function getMonthSales(ym?: string): SaleData[] {
     .map(k => db.get<SaleData>(k))
     .filter((s): s is SaleData => s !== null && s.date?.startsWith(ym!));
 }
+
+export function getAllSales(): SaleData[] {
+  const keys = db.list('ops_sale_');
+  return keys
+    .map(k => db.get<SaleData>(k))
+    .filter((s): s is SaleData => s !== null);
+}
+
+export function getLifetimeCommission(userId: string, userName?: string): number {
+  return getAllSales()
+    .filter(s => s.sellerId === userId || (userName && s.sellerName === userName))
+    .reduce((t, s) => t + (s.sellerSetupComm || 0) + (s.sellerRecComm || 0), 0);
+}

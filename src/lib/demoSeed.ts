@@ -32,7 +32,7 @@ const SHOUTOUT_MSGS = ['Arrasou na apresentacao!','Top closer merecido!','Maquin
 
 const CARS = ['BMW M3','Porsche 911','Mercedes AMG','Audi RS7','Tesla Model S','Range Rover','Lamborghini Huracan','Corvette C8','Mustang GT','Toyota Supra','Camaro SS','Golf GTI','BMW X6','Mercedes GLE','Audi Q8','Volvo XC90','Jaguar F-Type','McLaren 570S','Ferrari Roma','Maserati Ghibli'];
 const HOMES = ['Apto alto padrao','Casa com piscina','Cobertura duplex','Flat na praia','Casa condominio','Penthouse centro','Sitio moderno','Loft industrial','Casa na serra','Mansao litoral','Triplex urbano','Studio design','Casa campo','Apto jardim','Vila exclusiva','Chacara premium','Terraco panoramico','Casa inteligente','Refugio montanha','Apto beira-mar'];
-const BODIES = ['Shape definido','6 pack abs','Atleta funcional','Crossfit beast','Runner body','Yoga + forca','Swimmer build','MMA fighter','Wellness total','Bodybuilder lean','Calistenia pro','Triatleta','Pilates strong','Funcional elite','Maratonista'];
+// BODIES removed — body objectives no longer part of identity system
 const STYLES = ['Elegante executivo','Streetwear premium','Minimalista chique','Esportivo luxo','CEO casual','Designer fashion','Classic menswear','Tech mogul','Mediterranean','Boho premium','Urban modern','Scandinavian','Avant-garde','Ivy league','Coastal chic'];
 const ANCHORS = ['Cada dia e uma oportunidade.','Disciplina e a ponte entre metas e conquistas.','O sucesso e construido tijolo por tijolo.','Nao pare ate se orgulhar.','A dor e temporaria, a gloria e para sempre.','Foco no processo, resultados vem.','Seja quem voce precisava antes.','Consistencia vence talento.','O caminho e longo mas vale a pena.','Transforme pressao em diamantes.','Sonhe grande, execute maior.','Hoje e o melhor dia pra comecar.','Excelencia e habito, nao ato.','Sua unica competicao e voce de ontem.','O impossivel e questao de tempo.'];
 
@@ -325,12 +325,15 @@ export async function runDemoSeed(): Promise<{ users: number; sales: number; fil
     const metaM = u.role === 'Founder' ? rand(10000, 30000) : u.role === 'Partner' ? rand(5000, 15000) : rand(3000, 8000);
     bulkSet(`ni_profile_${u.id}`, {
       metaM, meta180: metaM * 6,
-      car: CARS[i % CARS.length], home: HOMES[i % HOMES.length],
-      body: BODIES[i % BODIES.length], style: STYLES[i % STYLES.length],
+      materials: [
+        { id: `seed_car_${i}`, label: CARS[i % CARS.length], category: 'car', value: rand(80000, 500000), priority: 1 },
+        { id: `seed_home_${i}`, label: HOMES[i % HOMES.length], category: 'home', value: rand(200000, 2000000), priority: 2 },
+        { id: `seed_style_${i}`, label: STYLES[i % STYLES.length], category: 'style', value: rand(5000, 50000), priority: 3 },
+      ],
       impact: 'Transformar vidas atraves de vendas consultivas',
       anchor: ANCHORS[i % ANCHORS.length],
       startDate: dateStr(new Date(u.createdAt)),
-      images: {},
+      _version: 2,
     });
   });
 

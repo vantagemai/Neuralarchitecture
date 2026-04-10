@@ -25,7 +25,7 @@ import { roleVariant } from '../lib/roles';
 import { getNextRedeemablePrize } from '../lib/prizes';
 import { getPersonalAlerts } from '../lib/personalAlerts';
 import { getPredictiveData, CALLS_PER_SALE } from '../lib/predictiveCalc';
-import type { NIProfile } from './IdentidadePage';
+import { getNIProfile, CATEGORY_META } from '../lib/niProfile';
 
 const MEDALS = ['🥇', '🥈', '🥉'];
 
@@ -205,7 +205,7 @@ export function DashboardPage() {
   const myFillToday = db.get<FillData>(`ops_fill_${todayStr}_${myId}`);
   const gp = useMemo(() => getGoalProgress(myId), [dataKey]);
   const myComm = useMemo(() => getMyMonthCommission(myId), [dataKey]);
-  const niProfile = useMemo(() => db.get<NIProfile>(`ni_profile_${myId}`), [dataKey]);
+  const niProfile = useMemo(() => getNIProfile(myId), [dataKey]);
   const myBonus = useMemo(() => getMonthBonus(myId), [dataKey]);
   const myFichas = useMemo(() => getTotalFichas(myId), [dataKey]);
   const nextLevel = useMemo(() => getNextLevel(myId), [dataKey]);
@@ -335,17 +335,10 @@ export function DashboardPage() {
       {/* ── MEU OBJETIVO ── */}
       {niProfile ? (() => {
         const fp = niProfile.metaM > 0 ? Math.min(100, Math.round((myComm / niProfile.metaM) * 100)) : 0;
-        const dreamLabel = niProfile.dreamItemLabel || '';
-        const dreamItems = [
-          { key: 'car', icon: '🚗', label: 'Carro', text: niProfile.car },
-          { key: 'home', icon: '🏠', label: 'Moradia', text: niProfile.home },
-          { key: 'body', icon: '💪', label: 'Corpo', text: niProfile.body },
-          { key: 'style', icon: '✨', label: 'Estilo', text: niProfile.style },
-        ].filter(d => d.text);
-        const primaryItem = dreamItems.find(d => d.key === dreamLabel) || dreamItems[0];
-        const primaryImage = primaryItem && niProfile.images?.[primaryItem.key];
-        const otherItems = dreamItems.filter(d => d.key !== primaryItem?.key);
-        const dreamValue = niProfile.dreamItemValue;
+        const materials = niProfile.materials || [];
+        const primaryItem = materials.find(m => m.priority === 1) || materials[0];
+        const otherItems = materials.filter(m => m !== primaryItem);
+        const isSetter = session?.role === 'Setter' || session?.role === 'Social Seller';
         // Ring SVG
         const radius = 50;
         const circumference = 2 * Math.PI * radius;
@@ -365,11 +358,11 @@ export function DashboardPage() {
               {/* Top: Ring + Financial info + Primary image */}
               <div className="flex flex-col sm:flex-row items-center gap-5">
                 {/* Primary image — big */}
-                {primaryImage && (
+                {primaryItem?.image && (
                   <div className="shrink-0 relative">
-                    <img src={primaryImage} alt={primaryItem.text} className="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl object-cover border-2 border-vgold/30 shadow-lg" />
+                    <img src={primaryItem.image} alt={primaryItem.label} className="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl object-cover border-2 border-vgold/30 shadow-lg" />
                     <div className="absolute -bottom-1 -right-1 bg-surface border border-vgold/30 rounded-full px-2 py-0.5 text-2xs font-bold text-vgold shadow-sm">
-                      {primaryItem.icon} #{1}
+                      {CATEGORY_META[primaryItem.category]?.emoji || '🎯'} #1
                     </div>
                   </div>
                 )}
@@ -398,56 +391,65 @@ export function DashboardPage() {
                       <div className="text-xs text-t4 mt-0.5">Faltam <span className="font-mono font-bold text-vred">{fmt$(niProfile.metaM - myComm)}</span></div>
                     )}
                   </div>
-                  {dreamValue && dreamValue > 0 && primaryItem && (() => {
-                    const allTimeComm = sales.filter(s => s.sellerId === myId || s.sellerName === (session?.name || '')).reduce((t, s) => t + (s.sellerSetupComm || 0) + (s.sellerRecComm || 0), 0);
-                    const dreamPct = Math.min(100, Math.round((allTimeComm / dreamValue) * 100));
-                    return (
-                      <div className="bg-elevated/50 rounded-lg px-3 py-2">
-                        <div className="flex justify-between text-2xs mb-1">
-                          <span className="text-t3">{primaryItem.icon} {primaryItem.text}</span>
-                          <span className="font-mono text-t2">{dreamPct}%</span>
-                        </div>
-                        <div className="h-2 bg-overlay rounded-full overflow-hidden">
-                          <div className="h-full bg-vgold rounded-full transition-all duration-1000" style={{ width: `${dreamPct}%` }} />
-                        </div>
-                        <div className="text-2xs text-t4 mt-1">{fmt$(allTimeComm)} / {fmt$(dreamValue)}</div>
-                      </div>
-                    );
-                  })()}
                 </div>
               </div>
 
-              {/* Bottom: Other objectives gallery */}
+              {/* Per-item progress bars */}
+              {predictive.itemPredictions.length > 0 && (
+                <div className="mt-5 pt-4 border-t border-b1 space-y-3">
+                  <div className="text-2xs text-t4 uppercase tracking-wider">Progresso por Objetivo</div>
+                  {predictive.itemPredictions.map(pred => (
+                    <div key={pred.item.id} className="bg-elevated/50 rounded-lg px-3 py-2">
+                      <div className="flex items-center gap-2 mb-1">
+                        {pred.item.image ? (
+                          <img src={pred.item.image} alt={pred.item.label} className="w-6 h-6 rounded object-cover" />
+                        ) : (
+                          <span className="text-sm">{CATEGORY_META[pred.item.category]?.emoji || '🎯'}</span>
+                        )}
+                        <span className="text-xs text-t2 font-semibold flex-1 truncate">{pred.item.label}</span>
+                        <span className="text-2xs font-mono text-t3">{pred.percentComplete}%</span>
+                      </div>
+                      {pred.item.value > 0 && (
+                        <>
+                          <div className="h-1.5 bg-overlay rounded-full overflow-hidden">
+                            <div className="h-full bg-vgold rounded-full transition-all duration-1000" style={{ width: `${pred.percentComplete}%` }} />
+                          </div>
+                          <div className="text-2xs text-t4 mt-1">{fmt$(pred.earnedSoFar)} / {fmt$(pred.item.value)}</div>
+                        </>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Other objectives gallery */}
               {otherItems.length > 0 && (
                 <div className="mt-5 pt-4 border-t border-b1">
                   <div className="text-2xs text-t4 uppercase tracking-wider mb-3">Outros Objetivos</div>
                   <div className="grid grid-cols-3 gap-3">
-                    {otherItems.map(item => {
-                      const img = niProfile.images?.[item.key];
-                      return (
-                        <div key={item.key} className="text-center">
-                          {img ? (
-                            <img src={img} alt={item.text} className="w-full aspect-square rounded-xl object-cover border border-b1 mb-1.5" />
-                          ) : (
-                            <div className="w-full aspect-square rounded-xl bg-elevated border border-b1 flex items-center justify-center text-2xl mb-1.5">
-                              {item.icon}
-                            </div>
-                          )}
-                          <div className="text-2xs text-t3 truncate">{item.text}</div>
-                          <div className="text-[10px] text-t4">{item.label}</div>
-                        </div>
-                      );
-                    })}
+                    {otherItems.map(item => (
+                      <div key={item.id} className="text-center">
+                        {item.image ? (
+                          <img src={item.image} alt={item.label} className="w-full aspect-square rounded-xl object-cover border border-b1 mb-1.5" />
+                        ) : (
+                          <div className="w-full aspect-square rounded-xl bg-elevated border border-b1 flex items-center justify-center text-2xl mb-1.5">
+                            {CATEGORY_META[item.category]?.emoji || '🎯'}
+                          </div>
+                        )}
+                        <div className="text-2xs text-t3 truncate">{item.label}</div>
+                        <div className="text-[10px] text-t4">{CATEGORY_META[item.category]?.label || 'Objetivo'}</div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
 
-              {/* Predictive calculator callout — always show when profile exists */}
+              {/* Predictive calculator — per-item predictions */}
               <div className="mt-5 pt-4 border-t border-b1 space-y-2">
                 <div className="text-2xs text-t4 uppercase tracking-wider mb-2">📞 Calculadora Preditiva</div>
 
                 {/* Monthly goal prediction */}
-                {predictive.callsToMonthlyGoal > 0 && (
+                {predictive.callsToMonthlyGoal > 0 ? (
                   <div className="bg-vgreen/5 border border-vgreen/15 rounded-lg px-4 py-3">
                     <div className="flex items-start gap-3">
                       <span className="text-xl mt-0.5">💰</span>
@@ -462,8 +464,7 @@ export function DashboardPage() {
                       </div>
                     </div>
                   </div>
-                )}
-                {predictive.callsToMonthlyGoal === 0 && (
+                ) : (
                   <div className="bg-vgreen/5 border border-vgreen/15 rounded-lg px-4 py-3">
                     <div className="flex items-center gap-3">
                       <span className="text-xl">🏆</span>
@@ -472,23 +473,38 @@ export function DashboardPage() {
                   </div>
                 )}
 
-                {/* Dream item prediction */}
-                {predictive.callsToObjective > 0 && dreamValue && dreamValue > 0 && (
-                  <div className="bg-vred/5 border border-vred/15 rounded-lg px-4 py-3">
+                {/* Per-item material predictions */}
+                {predictive.itemPredictions.filter(p => p.callsNeeded > 0 && p.item.value > 0).map(pred => (
+                  <div key={pred.item.id} className="bg-vred/5 border border-vred/15 rounded-lg px-4 py-3">
                     <div className="flex items-start gap-3">
-                      <span className="text-xl mt-0.5">📞</span>
+                      <span className="text-xl mt-0.5">{CATEGORY_META[pred.item.category]?.emoji || '📞'}</span>
                       <div>
                         <p className="text-sm font-bold text-t1">
-                          Voce esta a <span className="text-vred font-mono">{predictive.callsToObjectiveLabel}</span> do seu {primaryItem?.label?.toLowerCase() || 'objetivo'}
+                          Voce esta a <span className="text-vred font-mono">{pred.callsNeeded.toLocaleString()} ligacoes</span> do seu {pred.item.label.toLowerCase() || 'objetivo'}
                         </p>
                         <p className="text-xs text-t3 mt-1">
-                          ~{Math.ceil(predictive.callsToObjective / CALLS_PER_SALE).toLocaleString()} vendas
-                          {predictive.daysToObjective > 0 && <> · <span className="font-mono text-vgold">{predictive.daysToObjectiveLabel}</span></>}
+                          ~{pred.salesNeeded.toLocaleString()} vendas · ~{pred.meetingsNeeded.toLocaleString()} reunioes
+                          {pred.daysNeeded > 0 && <> · <span className="font-mono text-vgold">~{pred.daysNeeded} dias uteis</span></>}
                         </p>
+                        {isSetter && pred.callsAsPartner < pred.callsNeeded && (
+                          <p className="text-2xs text-vpurp mt-1">
+                            Como Partner: <span className="font-mono font-bold">{pred.callsAsPartner.toLocaleString()} ligacoes</span> (~{pred.daysAsPartner} dias)
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>
-                )}
+                ))}
+
+                {/* Completed items */}
+                {predictive.itemPredictions.filter(p => p.callsNeeded === 0 && p.item.value > 0).map(pred => (
+                  <div key={pred.item.id} className="bg-vgreen/5 border border-vgreen/15 rounded-lg px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">🏆</span>
+                      <p className="text-sm font-bold text-vgreen">{pred.item.label} — Objetivo alcancado!</p>
+                    </div>
+                  </div>
+                ))}
 
                 {/* Next level prediction */}
                 {predictive.callsToNextLevel > 0 && (

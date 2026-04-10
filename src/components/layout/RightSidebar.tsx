@@ -1,18 +1,14 @@
 import { useState } from 'react';
-import { ChevronRight, ChevronLeft, Flame, Target, Star, Car, Home, Dumbbell, Sparkles } from 'lucide-react';
-import { db, getSession, getMonthSales, fmt$ } from '../../lib/store';
+import { ChevronRight, ChevronLeft, Flame, Target, Star, Sparkles } from 'lucide-react';
+import { getSession, fmt$ } from '../../lib/store';
 import { getLevel } from '../../lib/levels';
 import { getStreak } from '../../lib/streaks';
 import { getTotalXp } from '../../lib/xp';
 import { getScorecard } from '../../lib/scorecard';
 import { getGoalProgress } from '../../lib/goals';
+import { getLifetimeCommission } from '../../lib/store';
+import { getNIProfile, CATEGORY_META } from '../../lib/niProfile';
 import { PanelHeader } from '../ui/PanelHeader';
-
-interface NIProfile {
-  metaM: number; meta180: number; car: string; home: string; body: string;
-  style: string; impact: string; anchor: string; startDate: string;
-  images?: Record<string, string>;
-}
 
 export function RightSidebar() {
   const [open, setOpen] = useState(true);
@@ -20,7 +16,7 @@ export function RightSidebar() {
   if (!session) return null;
 
   const userId = session.id;
-  const profile = db.get<NIProfile>(`ni_profile_${userId}`);
+  const profile = getNIProfile(userId);
   const level = getLevel(userId);
   const streak = getStreak(userId);
   const xp = getTotalXp(userId);
@@ -30,10 +26,7 @@ export function RightSidebar() {
   const initials = session.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 
   // Revenue progress toward 180d goal
-  const sales = getMonthSales();
-  const myComm = sales
-    .filter(s => s.sellerId === userId || s.sellerName === session.name)
-    .reduce((t, s) => t + (s.sellerSetupComm || 0) + (s.sellerRecComm || 0), 0);
+  const myComm = getLifetimeCommission(userId, session.name);
   const meta180 = profile?.meta180 || 0;
   const metaProgress = meta180 > 0 ? Math.min(100, Math.round((myComm / meta180) * 100)) : 0;
 
@@ -42,12 +35,7 @@ export function RightSidebar() {
   const daysIn = startDate ? Math.floor((Date.now() - startDate.getTime()) / 86400000) : 0;
   const daysLeft = Math.max(0, 180 - daysIn);
 
-  const DREAM_ITEMS = [
-    { key: 'car', icon: Car, label: 'Carro' },
-    { key: 'home', icon: Home, label: 'Casa' },
-    { key: 'body', icon: Dumbbell, label: 'Corpo' },
-    { key: 'style', icon: Sparkles, label: 'Estilo' },
-  ];
+  const materials = profile?.materials || [];
 
   if (!open) {
     return (
@@ -169,30 +157,27 @@ export function RightSidebar() {
           </div>
         </div>
 
-        {/* Dream images */}
-        {profile && (
+        {/* Material objectives */}
+        {materials.length > 0 && (
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-t3">Seus Objetivos</span>
             <div className="grid grid-cols-2 gap-2 mt-2">
-              {DREAM_ITEMS.map(d => {
-                const img = profile.images?.[d.key];
-                const text = (profile as unknown as Record<string, string>)[d.key];
-                return (
-                  <div key={d.key} className="bg-elevated rounded-lg border border-b1 overflow-hidden">
-                    {img ? (
-                      <img src={img} alt={d.label} className="w-full h-16 object-cover" />
-                    ) : (
-                      <div className="w-full h-16 bg-overlay flex items-center justify-center">
-                        <d.icon size={16} className="text-t4" />
-                      </div>
-                    )}
-                    <div className="px-2 py-1.5">
-                      <div className="text-2xs text-t4 uppercase">{d.label}</div>
-                      {text && <div className="text-2xs text-t2 truncate">{text}</div>}
+              {materials.map(item => (
+                <div key={item.id} className="bg-elevated rounded-lg border border-b1 overflow-hidden">
+                  {item.image ? (
+                    <img src={item.image} alt={item.label} className="w-full h-16 object-cover" />
+                  ) : (
+                    <div className="w-full h-16 bg-overlay flex items-center justify-center text-lg">
+                      {CATEGORY_META[item.category]?.emoji || '🎯'}
                     </div>
+                  )}
+                  <div className="px-2 py-1.5">
+                    <div className="text-2xs text-t4 uppercase">{CATEGORY_META[item.category]?.label || 'Objetivo'}</div>
+                    {item.label && <div className="text-2xs text-t2 truncate">{item.label}</div>}
+                    {item.value > 0 && <div className="text-2xs text-vgold font-mono">{fmt$(item.value)}</div>}
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </div>
           </div>
         )}
@@ -206,7 +191,7 @@ export function RightSidebar() {
         )}
 
         {/* No profile message */}
-        {!profile && (
+        {!profile && materials.length === 0 && (
           <div className="text-center py-4">
             <Sparkles size={24} className="mx-auto mb-2 text-t4 opacity-30" />
             <p className="text-xs text-t4">Configure sua Identidade 180d para ver seus objetivos aqui</p>

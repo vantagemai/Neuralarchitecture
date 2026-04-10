@@ -1,5 +1,5 @@
 /**
- * Calculadora Preditiva — quanto falta para cada objetivo
+ * Calculadora Preditiva V2 — quanto falta para cada objetivo material
  *
  * Funil padrao Setter:
  *   100 ligacoes → 3 reunioes agendadas → ~1 venda (a cada ~10 reunioes)
@@ -8,17 +8,18 @@
  *   Seller: 50% setup + 40% recorrencia
  *   Setter: 5% setup + 5% recorrencia + $100 bonus a cada 10 reunioes
  *
- * Fichas por dia (media):
- *   contacts * 1 + responses * 2 + 10 (fill) + vendas * 500
+ * V2: Per-item predictions + role progression comparison
  */
 
-import { getSession, getMonthSales, db, type FillData } from './store';
+import { getSession, getMonthSales, getLifetimeCommission, db, type FillData } from './store';
 import { getTotalFichas } from './xp';
-// Level thresholds are inlined to avoid circular dependencies
+import { getNIProfile, type MaterialItem } from './niProfile';
+import { LEVELS } from './levels';
+import { PRIZE_CATALOG } from './prizes';
 
-// ── Conversion Rates (padrao da operacao) ──
-const CALLS_PER_MEETING = 33;   // ~100 ligacoes / 3 reunioes
-const MEETINGS_PER_SALE = 10;   // 10 reunioes → 1 venda
+// ── Conversion Rates ──
+const CALLS_PER_MEETING = 33;
+const MEETINGS_PER_SALE = 10;
 export const CALLS_PER_SALE = CALLS_PER_MEETING * MEETINGS_PER_SALE; // 330
 const BONUS_PER_10 = 100;
 
@@ -38,72 +39,90 @@ const FICHAS_PER_RESPONSE = 2;
 const FICHAS_PER_FILL = 10;
 const FICHAS_PER_SALE = 500;
 
+// ── Interfaces ──
+
+export interface ItemPrediction {
+  item: MaterialItem;
+  remainingValue: number;
+  earnedSoFar: number;
+  percentComplete: number;
+  callsNeeded: number;
+  salesNeeded: number;
+  meetingsNeeded: number;
+  daysNeeded: number;
+  callsAsPartner: number;
+  daysAsPartner: number;
+}
+
 export interface PredictiveResult {
   // Per sale (average)
-  avgCommPerSale: number;        // total commission per sale (setup + rec)
-  avgBonusPerSale: number;       // bonus allocation per sale
+  avgCommPerSale: number;
+  avgBonusPerSale: number;
 
   // Calls to targets
-  callsToMonthlyGoal: number;    // ligacoes ate bater a meta mensal
-  callsToObjective: number;      // ligacoes ate o dreamItemValue (bem desejado)
-  callsToNextLevel: number;      // ligacoes ate proximo nivel
-  callsToNextPrize: number;      // ligacoes ate proximo premio (fichas)
+  callsToMonthlyGoal: number;
+  callsToObjective: number;
+  callsToNextLevel: number;
+  callsToNextPrize: number;
 
-  // Days to targets (based on daily call rate)
+  // Days to targets
   daysToMonthlyGoal: number;
   daysToObjective: number;
   daysToNextLevel: number;
 
-  // Readable strings
+  // Labels
   callsToMonthlyGoalLabel: string;
   callsToObjectiveLabel: string;
   callsToNextLevelLabel: string;
   daysToMonthlyGoalLabel: string;
   daysToObjectiveLabel: string;
+
+  // V2: Per-item predictions + lifetime data
+  itemPredictions: ItemPrediction[];
+  lifetimeComm: number;
 }
 
-// CalcParams used internally by getPredictiveData
+// ── Calculation helpers ──
 
-function calcCallsForMoney(targetMoney: number, role: string): number {
-  if (targetMoney <= 0) return 0;
+export function calcPredictionForMoney(targetMoney: number, role: string): {
+  calls: number; sales: number; meetings: number;
+} {
+  if (targetMoney <= 0) return { calls: 0, sales: 0, meetings: 0 };
 
   const isSetter = role === 'Setter' || role === 'Social Seller';
-
-  // Revenue per sale based on role
   const commPerSale = isSetter
     ? (AVG_SETUP * SETTER_SETUP_PCT) + (AVG_REC * SETTER_REC_PCT)
     : (AVG_SETUP * SELLER_SETUP_PCT) + (AVG_REC * SELLER_REC_PCT);
-
-  // Bonus per sale (setter gets $100 per 10 meetings, 10 meetings = 1 sale)
   const bonusPerSale = isSetter ? BONUS_PER_10 : 0;
-
   const totalPerSale = commPerSale + bonusPerSale;
-  if (totalPerSale <= 0) return Infinity;
 
-  const salesNeeded = Math.ceil(targetMoney / totalPerSale);
-  return salesNeeded * CALLS_PER_SALE;
+  if (totalPerSale <= 0) return { calls: Infinity, sales: Infinity, meetings: Infinity };
+
+  const sales = Math.ceil(targetMoney / totalPerSale);
+  const meetings = sales * MEETINGS_PER_SALE;
+  const calls = sales * CALLS_PER_SALE;
+  return { calls, sales, meetings };
 }
 
 function calcCallsForFichas(targetFichas: number, dailyCalls: number): number {
   if (targetFichas <= 0) return 0;
   if (dailyCalls <= 0) return Infinity;
 
-  // Per day: contacts generate fichas + responses + fill + occasional sale
-  const responsesPerDay = dailyCalls * 0.05; // ~5% response rate
+  const responsesPerDay = dailyCalls * 0.05;
   const fichasPerDay = (dailyCalls * FICHAS_PER_CONTACT) +
     (responsesPerDay * FICHAS_PER_RESPONSE) +
     FICHAS_PER_FILL;
-
-  // Sales contribute fichas too: dailyCalls / CALLS_PER_SALE = sales per day fraction
   const salesPerDay = dailyCalls / CALLS_PER_SALE;
   const saleFichasPerDay = salesPerDay * FICHAS_PER_SALE;
-
   const totalFichasPerDay = fichasPerDay + saleFichasPerDay;
+
   if (totalFichasPerDay <= 0) return Infinity;
 
   const daysNeeded = Math.ceil(targetFichas / totalFichasPerDay);
   return daysNeeded * dailyCalls;
 }
+
+// ── Main ──
 
 export function getPredictiveData(userId?: string): PredictiveResult {
   const id = userId || getSession()?.id || 'anon';
@@ -111,35 +130,37 @@ export function getPredictiveData(userId?: string): PredictiveResult {
   const role = session?.role || 'Setter';
   const isSetter = role === 'Setter' || role === 'Social Seller';
 
-  // Get user's real daily call average (last 7 days)
   const dailyCalls = getUserAvgDailyCalls(id);
+  const effectiveDailyCalls = dailyCalls || 50;
 
-  // Current accumulated data
-  const allSales = getMonthSales(); // only this month, but used for estimation
+  // Current month commission (for monthly goal)
+  const allSales = getMonthSales();
   const mySales = allSales.filter(s => s.sellerId === id || s.sellerName === (session?.name || ''));
   const currentMonthComm = mySales.reduce((t, s) => t + (s.sellerSetupComm || 0) + (s.sellerRecComm || 0), 0);
 
-  // NIProfile for goals
-  const niProfile = db.get<any>(`ni_profile_${id}`);
-  const metaM = niProfile?.metaM || 0;            // meta mensal
-  const dreamItemValue = niProfile?.dreamItemValue || 0; // valor do bem (carro, casa, etc)
+  // Lifetime commission (for material items — fixes the monthly reset bug)
+  const lifetimeComm = getLifetimeCommission(id, session?.name);
+
+  // NIProfile
+  const profile = getNIProfile(id);
+  const metaM = profile?.metaM || 0;
 
   // Current fichas and level
   const currentFichas = getTotalFichas(id);
 
-  // Level thresholds
-  const LEVEL_THRESHOLDS = [0, 500, 2000, 8000, 25000, 80000, 250000];
-  const currentLevelIdx = LEVEL_THRESHOLDS.findIndex((_t, i) =>
-    i === LEVEL_THRESHOLDS.length - 1 || currentFichas < LEVEL_THRESHOLDS[i + 1]
+  // Level thresholds from canonical source
+  const levelThresholds = LEVELS.map(l => l.minXp);
+  const currentLevelIdx = levelThresholds.findIndex((_t, i) =>
+    i === levelThresholds.length - 1 || currentFichas < levelThresholds[i + 1]
   );
-  const nextLevelFichas = currentLevelIdx < LEVEL_THRESHOLDS.length - 1
-    ? LEVEL_THRESHOLDS[currentLevelIdx + 1] - currentFichas
+  const nextLevelFichas = currentLevelIdx < levelThresholds.length - 1
+    ? levelThresholds[currentLevelIdx + 1] - currentFichas
     : 0;
 
-  // Next prize (imported from prizes.ts logic inline to avoid circular dep)
-  const PRIZE_THRESHOLDS = [500, 2000, 10000, 30000, 50000, 60000, 150000, 300000];
-  const nextPrizeFichas = PRIZE_THRESHOLDS.find(p => p > currentFichas)
-    ? (PRIZE_THRESHOLDS.find(p => p > currentFichas)! - currentFichas)
+  // Next prize from canonical source
+  const prizeThresholds = PRIZE_CATALOG.map(p => p.fichas);
+  const nextPrizeFichas = prizeThresholds.find(p => p > currentFichas)
+    ? (prizeThresholds.find(p => p > currentFichas)! - currentFichas)
     : 0;
 
   // Average commission per sale
@@ -148,40 +169,58 @@ export function getPredictiveData(userId?: string): PredictiveResult {
     : (AVG_SETUP * SELLER_SETUP_PCT) + (AVG_REC * SELLER_REC_PCT);
   const avgBonusPerSale = isSetter ? BONUS_PER_10 : 0;
 
-  // Remaining money for monthly goal
+  // Monthly goal prediction (uses current month commission)
   const remainingForMonthly = Math.max(0, metaM - currentMonthComm);
+  const monthlyPred = calcPredictionForMoney(remainingForMonthly, role);
 
-  // Remaining money for dream item (long-term, all-time accumulation)
-  const remainingForDream = Math.max(0, dreamItemValue - currentMonthComm);
+  // Per-item predictions (uses lifetime commission)
+  const materials = profile?.materials || [];
+  const itemPredictions: ItemPrediction[] = materials.map(item => {
+    const remaining = Math.max(0, item.value - lifetimeComm);
+    const currentPred = calcPredictionForMoney(remaining, role);
+    const partnerPred = calcPredictionForMoney(remaining, 'Partner');
 
-  // Calls needed
-  const callsToMonthlyGoal = calcCallsForMoney(remainingForMonthly, role);
-  const callsToObjective = dreamItemValue > 0 ? calcCallsForMoney(remainingForDream, role) : 0;
-  const callsToNextLevel = calcCallsForFichas(nextLevelFichas, dailyCalls || 50);
-  const callsToNextPrize = calcCallsForFichas(nextPrizeFichas, dailyCalls || 50);
+    return {
+      item,
+      remainingValue: remaining,
+      earnedSoFar: item.value > 0 ? Math.min(lifetimeComm, item.value) : 0,
+      percentComplete: item.value > 0 ? Math.min(100, Math.round((lifetimeComm / item.value) * 100)) : 0,
+      callsNeeded: currentPred.calls,
+      salesNeeded: currentPred.sales,
+      meetingsNeeded: currentPred.meetings,
+      daysNeeded: currentPred.calls > 0 ? Math.ceil(currentPred.calls / effectiveDailyCalls) : 0,
+      callsAsPartner: partnerPred.calls,
+      daysAsPartner: partnerPred.calls > 0 ? Math.ceil(partnerPred.calls / effectiveDailyCalls) : 0,
+    };
+  });
 
-  // Days to targets
-  const effectiveDailyCalls = dailyCalls || 50;
-  const daysToMonthlyGoal = callsToMonthlyGoal > 0 ? Math.ceil(callsToMonthlyGoal / effectiveDailyCalls) : 0;
-  const daysToObjective = callsToObjective > 0 ? Math.ceil(callsToObjective / effectiveDailyCalls) : 0;
+  // Backward compat: flat fields point to priority-1 item
+  const primary = itemPredictions.find(p => p.item.priority === 1) || itemPredictions[0];
+  const callsToObjective = primary?.callsNeeded || 0;
+  const daysToObjective = primary?.daysNeeded || 0;
+
+  // Level/prize predictions
+  const callsToNextLevel = calcCallsForFichas(nextLevelFichas, effectiveDailyCalls);
+  const callsToNextPrize = calcCallsForFichas(nextPrizeFichas, effectiveDailyCalls);
+  const daysToMonthlyGoal = monthlyPred.calls > 0 ? Math.ceil(monthlyPred.calls / effectiveDailyCalls) : 0;
   const daysToNextLevel = callsToNextLevel > 0 ? Math.ceil(callsToNextLevel / effectiveDailyCalls) : 0;
 
   return {
     avgCommPerSale,
     avgBonusPerSale,
-    callsToMonthlyGoal,
+    callsToMonthlyGoal: monthlyPred.calls,
     callsToObjective,
     callsToNextLevel,
     callsToNextPrize,
     daysToMonthlyGoal,
     daysToObjective,
     daysToNextLevel,
-    callsToMonthlyGoalLabel: callsToMonthlyGoal > 0
-      ? `${callsToMonthlyGoal.toLocaleString()} ligacoes`
+    callsToMonthlyGoalLabel: monthlyPred.calls > 0
+      ? `${monthlyPred.calls.toLocaleString()} ligacoes`
       : 'Meta batida!',
     callsToObjectiveLabel: callsToObjective > 0
       ? `${callsToObjective.toLocaleString()} ligacoes`
-      : dreamItemValue > 0 ? 'Objetivo alcancado!' : '',
+      : primary ? 'Objetivo alcancado!' : '',
     callsToNextLevelLabel: callsToNextLevel > 0
       ? `${callsToNextLevel.toLocaleString()} ligacoes`
       : 'Nivel maximo!',
@@ -191,6 +230,8 @@ export function getPredictiveData(userId?: string): PredictiveResult {
     daysToObjectiveLabel: daysToObjective > 0
       ? `~${daysToObjective} dias uteis`
       : '',
+    itemPredictions,
+    lifetimeComm,
   };
 }
 
