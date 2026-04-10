@@ -8,6 +8,7 @@ import { OnboardingTour, shouldShowOnboarding } from './components/ui/Onboarding
 import { initSupabase, isOnline } from './lib/supabase';
 import { hydrateFromSupabase, subscribeSales, subscribeShoutouts, subscribeNotifications } from './lib/supabaseSync';
 import { playNotification } from './lib/sounds';
+import { authRestoreSession, authLogout } from './lib/auth';
 
 // Lazy-loaded pages (code splitting)
 const DashboardPage = lazy(() => import('./pages/DashboardPage').then(m => ({ default: m.DashboardPage })));
@@ -82,10 +83,21 @@ function App() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [, setSupabaseStatus] = useState<'connecting' | 'online' | 'offline'>('connecting');
 
-  // Initialize Supabase on mount
+  // Initialize Supabase + restore auth session on mount
   useEffect(() => {
     initSupabase().then(async (online) => {
       setSupabaseStatus(online ? 'online' : 'offline');
+
+      // Try to restore Supabase Auth session (persistent across browser restarts)
+      if (online && !user) {
+        const restored = await authRestoreSession();
+        if (restored) {
+          localStorage.setItem('vantagem_session', JSON.stringify(restored));
+          setUser(restored);
+          return; // useEffect will re-run with user set
+        }
+      }
+
       if (online) {
         await hydrateFromSupabase();
         // Set up real-time subscriptions
@@ -116,8 +128,8 @@ function App() {
     if (isOnline()) hydrateFromSupabase();
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('vantagem_session');
+  const handleLogout = async () => {
+    await authLogout();
     setUser(null);
   };
 

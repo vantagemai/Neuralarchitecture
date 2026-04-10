@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Eye, EyeOff, LogIn, UserPlus, Sun, Moon } from 'lucide-react';
+import { Eye, EyeOff, LogIn, UserPlus, Sun, Moon, Loader2 } from 'lucide-react';
 import type { UserSession } from '../App';
-import { db } from '../lib/store';
 import { getTheme, toggleTheme } from '../lib/theme';
 import { Logo } from '../components/ui/Logo';
+import { authLogin, authRegister } from '../lib/auth';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -19,56 +19,47 @@ export function LoginPage({ onLogin }: LoginPageProps) {
   const [role, setRole] = useState('Setter');
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (mode === 'register') {
-      if (!name.trim() || !email.trim() || !password.trim()) {
-        setError('Preencha todos os campos');
-        return;
+    setLoading(true);
+
+    try {
+      if (mode === 'register') {
+        if (!name.trim() || !email.trim() || !password.trim()) {
+          setError('Preencha todos os campos');
+          return;
+        }
+        if (!EMAIL_REGEX.test(email.trim())) {
+          setError('Email invalido');
+          return;
+        }
+        if (password.trim().length < 6) {
+          setError('Senha deve ter no minimo 6 caracteres');
+          return;
+        }
+        const result = await authRegister(name.trim(), email.trim(), password, role);
+        if (!result.success) {
+          setError(result.error || 'Erro ao criar conta');
+          return;
+        }
+        onLogin(result.session!);
+      } else {
+        if (!email.trim() || !password.trim()) {
+          setError('Preencha email e senha');
+          return;
+        }
+        const result = await authLogin(email.trim(), password);
+        if (!result.success) {
+          setError(result.error || 'Email ou senha incorretos');
+          return;
+        }
+        onLogin(result.session!);
       }
-      if (!EMAIL_REGEX.test(email.trim())) {
-        setError('Email invalido');
-        return;
-      }
-      if (password.trim().length < 4) {
-        setError('Senha deve ter no minimo 4 caracteres');
-        return;
-      }
-      const users = db.get<any[]>('ops_users') || [];
-      if (users.find((u: { email: string }) => u.email === email.toLowerCase())) {
-        setError('Email ja cadastrado');
-        return;
-      }
-      const newUser = {
-        id: 'u_' + Date.now(),
-        name: name.trim(),
-        email: email.toLowerCase().trim(),
-        password,
-        role,
-        plan: role === 'Setter' || role === 'Social Seller' ? 'SETTER' : role === 'Founder' ? 'FOUNDER' : 'PARTNER',
-        active: true,
-        createdAt: Date.now(),
-      };
-      users.push(newUser);
-      db.set('ops_users', users);
-      onLogin({ id: newUser.id, name: newUser.name, role: newUser.role, email: newUser.email });
-    } else {
-      if (!email.trim() || !password.trim()) {
-        setError('Preencha email e senha');
-        return;
-      }
-      const users = db.get<any[]>('ops_users') || [];
-      const user = users.find(
-        (u: { email: string; password: string; active: boolean }) =>
-          u.email === email.toLowerCase().trim() && u.password === password && u.active
-      );
-      if (!user) {
-        setError('Email ou senha incorretos');
-        return;
-      }
-      onLogin({ id: user.id, name: user.name, role: user.role, email: user.email });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -190,9 +181,11 @@ export function LoginPage({ onLogin }: LoginPageProps) {
 
             <button
               type="submit"
-              className="w-full bg-vred hover:bg-vred-dark text-white font-bold py-3.5 rounded-lg transition-all duration-200 shadow-sm shadow-vred/15 hover:shadow-vred/40 hover:-translate-y-0.5"
+              disabled={loading}
+              className="w-full bg-vred hover:bg-vred-dark text-white font-bold py-3.5 rounded-lg transition-all duration-200 shadow-sm shadow-vred/15 hover:shadow-vred/40 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              {mode === 'login' ? 'Entrar →' : 'Criar Conta →'}
+              {loading ? <Loader2 size={18} className="animate-spin" /> : null}
+              {loading ? 'Conectando...' : mode === 'login' ? 'Entrar →' : 'Criar Conta →'}
             </button>
           </form>
         </div>
