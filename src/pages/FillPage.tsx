@@ -102,7 +102,7 @@ export function FillPage() {
     : null;
 
   return (
-    <div className="space-y-4 animate-in">
+    <div className="space-y-5 animate-in">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -179,7 +179,7 @@ export function FillPage() {
         const streak = getStreak();
         return (
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3">
-            <div className="bg-surface border border-b1 rounded-lg p-3">
+            <CardBase padding="sm">
               <div className="flex items-center gap-1.5 mb-1">
                 <Target size={12} className="text-vred" />
                 <span className="text-2xs text-t3 uppercase font-bold">Contatos</span>
@@ -191,8 +191,8 @@ export function FillPage() {
               <div className="h-1 bg-overlay rounded-full overflow-hidden mt-1">
                 <div className={`h-full rounded-full transition-all ${gp.dailyContacts.pct >= 100 ? 'bg-vgreen' : 'bg-vred'}`} style={{ width: `${Math.min(100, Math.round((score / gp.dailyContacts.target) * 100))}%` }} />
               </div>
-            </div>
-            <div className="bg-surface border border-b1 rounded-lg p-3">
+            </CardBase>
+            <CardBase padding="sm">
               <div className="flex items-center gap-1.5 mb-1">
                 <Target size={12} className="text-vpurp" />
                 <span className="text-2xs text-t3 uppercase font-bold">Score</span>
@@ -204,8 +204,8 @@ export function FillPage() {
               <div className="h-1 bg-overlay rounded-full overflow-hidden mt-1">
                 <div className={`h-full rounded-full transition-all ${gp.dailyScore.pct >= 100 ? 'bg-vgreen' : 'bg-vpurp'}`} style={{ width: `${Math.min(100, Math.round((score / gp.dailyScore.target) * 100))}%` }} />
               </div>
-            </div>
-            <div className="bg-surface border border-b1 rounded-lg p-3">
+            </CardBase>
+            <CardBase padding="sm">
               <div className="flex items-center gap-1.5 mb-1">
                 <Flame size={12} className="text-orange-400" />
                 <span className="text-2xs text-t3 uppercase font-bold">Streak</span>
@@ -214,8 +214,8 @@ export function FillPage() {
                 {streak.current > 0 ? `🔥 ${streak.current}d` : 'Comece hoje!'}
               </div>
               <div className="text-2xs text-t4 mt-0.5">Recorde: {streak.best}d</div>
-            </div>
-            <div className="bg-surface border border-b1 rounded-lg p-3">
+            </CardBase>
+            <CardBase padding="sm">
               <div className="flex items-center gap-1.5 mb-1">
                 <Target size={12} className="text-vgreen" />
                 <span className="text-2xs text-t3 uppercase font-bold">Vendas Mes</span>
@@ -227,7 +227,7 @@ export function FillPage() {
               <div className="h-1 bg-overlay rounded-full overflow-hidden mt-1">
                 <div className={`h-full rounded-full transition-all ${gp.monthlySales.pct >= 100 ? 'bg-vgreen' : 'bg-vgreen/60'}`} style={{ width: `${gp.monthlySales.pct}%` }} />
               </div>
-            </div>
+            </CardBase>
           </div>
         );
       })()}
@@ -235,9 +235,9 @@ export function FillPage() {
       {/* Channel cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
         {CHANNELS.map(ch => (
-          <div
+          <CardBase
             key={ch.id}
-            className="bg-surface border border-b1 rounded-lg p-4 hover:border-b3 transition-colors focus-within:border-vred/30"
+            className="hover:border-b3 transition-colors focus-within:border-vred/30"
           >
             <div className="flex items-center gap-3 mb-4">
               <span className="text-2xl">{ch.icon}</span>
@@ -267,7 +267,7 @@ export function FillPage() {
                 />
               </div>
             </div>
-          </div>
+          </CardBase>
         ))}
       </div>
 
@@ -285,7 +285,7 @@ export function FillPage() {
       </div>
 
       {/* Submit */}
-      <div className="flex items-center justify-between bg-surface border border-b1 rounded-lg px-6 py-4">
+      <CardBase padding="none" className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-4">
           <span className="text-sm text-t3">Score estimado:</span>
           <span className="font-mono font-bold text-xl text-vred">{score} pts</span>
@@ -306,7 +306,7 @@ export function FillPage() {
             <><Send size={16} /> Enviar Atividades</>
           )}
         </button>
-      </div>
+      </CardBase>
 
       {/* Fill history — last 14 days */}
       {(() => {
@@ -322,7 +322,7 @@ export function FillPage() {
         });
         const streak = history.filter(h => h.fill).length;
         return (
-          <div className="bg-surface border border-b1 rounded-lg overflow-hidden">
+          <CardBase padding="none" className="overflow-hidden">
             <div className="flex items-center justify-between px-4 py-3 border-b border-b1">
               <div className="flex items-center gap-2">
                 <Calendar size={14} className="text-t3" />
@@ -353,7 +353,7 @@ export function FillPage() {
                 </div>
               ))}
             </div>
-          </div>
+          </CardBase>
         );
       })()}
     </div>

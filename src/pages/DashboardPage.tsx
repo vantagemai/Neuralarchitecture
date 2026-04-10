@@ -484,7 +484,7 @@ export function DashboardPage() {
               <div className="text-center py-12 text-t3 text-sm">Sem alertas</div>
             ) : (
               alerts.map((alert, i) => (
-                <div key={i} className="px-5 py-4">
+                <div key={i} className="px-4 py-3">
                   <div className="flex items-start gap-3">
                     {alert.type === 'warn' && <AlertTriangle size={16} className="text-vred mt-0.5 shrink-0" />}
                     {alert.type === 'ok' && <CheckCircle2 size={16} className="text-vgreen mt-0.5 shrink-0" />}

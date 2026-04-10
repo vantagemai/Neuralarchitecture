@@ -124,7 +124,7 @@ export function ConfigPage() {
               setTimeout(() => setSaved(''), 3000);
             }}
             disabled={!isOnline()}
-            className="flex items-center gap-2 bg-elevated border border-b1 text-t2 font-bold px-4 py-2.5 rounded-lg transition-colors hover:border-b3 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 bg-elevated border border-b1 text-t2 font-bold px-4 py-2.5 rounded-lg transition-colors hover:text-t1 hover:border-b3 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <Cloud size={14} /> Baixar Nuvem → Local
           </button>

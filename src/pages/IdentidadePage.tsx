@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Flame, Car, Home, Dumbbell, Sparkles, Heart, Save, Camera } from 'lucide-react';
 import { db, today, fmt$, getSession, getMonthSales } from '../lib/store';
+import { CardBase } from '../components/ui/CardBase';
 
 interface NIProfile {
   metaM: number; meta180: number; car: string; home: string; body: string;
@@ -84,7 +85,7 @@ export function IdentidadePage() {
           "A maioria das pessoas subestima o que pode construir em 180 dias com execução diária."
         </div>
 
-        <div className="bg-surface border border-b1 rounded-lg p-4 space-y-4">
+        <CardBase className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="text-xs text-t3 uppercase tracking-wider font-semibold">Meta mensal (USD)</label>
@@ -139,7 +140,7 @@ export function IdentidadePage() {
           <button onClick={save} className="w-full flex items-center justify-center gap-2 bg-vred hover:bg-vred-dark text-white font-bold py-3.5 rounded-lg transition-colors">
             <Flame size={18} /> ATIVAR MINHA NOVA IDENTIDADE
           </button>
-        </div>
+        </CardBase>
       </div>
     );
   }
@@ -153,7 +154,7 @@ export function IdentidadePage() {
   const fp = profile.metaM > 0 ? Math.min(100, Math.round((revenue / profile.metaM) * 100)) : 0;
 
   return (
-    <div className="space-y-4 animate-in">
+    <div className="space-y-5 animate-in">
       {/* Hero */}
       <div className="relative bg-gradient-to-br from-vred/15 via-canvas to-canvas border border-vred/15 rounded-lg overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-t from-canvas via-transparent to-transparent" />
@@ -184,7 +185,7 @@ export function IdentidadePage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
         {/* Vision */}
-        <div className="bg-surface border border-b1 rounded-lg p-4">
+        <CardBase>
           <h2 className="text-sm font-bold text-t3 uppercase tracking-wider mb-4">Minha vida construída</h2>
           <div className="space-y-3">
             {[
@@ -204,7 +205,7 @@ export function IdentidadePage() {
               </div>
             ))}
           </div>
-        </div>
+        </CardBase>
 
         {/* Progress */}
         <div className="space-y-4">
@@ -230,7 +231,7 @@ export function IdentidadePage() {
           </div>
 
           {/* Financial */}
-          <div className="bg-surface border border-b1 rounded-lg p-4">
+          <CardBase>
             <div className="flex justify-between items-center mb-2">
               <span className="text-xs font-semibold">💰 Financeiro</span>
               <span className="font-mono text-sm font-bold text-vgreen">{fp}%</span>
@@ -238,7 +239,7 @@ export function IdentidadePage() {
             <div className="h-2 bg-overlay rounded-full overflow-hidden">
               <div className={`h-full rounded-full transition-all duration-1000 ${fp >= 80 ? 'bg-vgreen' : fp >= 40 ? 'bg-vgold' : 'bg-vred'}`} style={{ width: `${fp}%` }} />
             </div>
-          </div>
+          </CardBase>
 
           <button onClick={() => setEditing(true)} className="w-full bg-elevated border border-b1 rounded-lg py-2.5 text-sm text-t3 hover:text-t1 hover:border-b3 transition-colors flex items-center justify-center gap-2">
             <Save size={14} /> Editar visão
