@@ -1,0 +1,1 @@
+var e=[`Setter`,`Vendedor`,`Partner`,`Founder`,`Social Seller`],t=e=>e===`Setter`?`purp`:e===`Founder`?`red`:e===`Partner`?`blue`:e===`Social Seller`?`pink`:`gold`;export{t as n,e as t};

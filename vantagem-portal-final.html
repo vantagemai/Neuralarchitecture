@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#080808">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Vantagem.ai — Sistemas de Escala</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{
+  --red:#F11013;--red2:#C90D10;--redg:rgba(241,16,19,.08);
+  --gold:#C8A400;--goldf:#FFD130;
+  --purp:#9B7FE0;--purpf:#C4B2F0;--purpg:rgba(155,127,224,.08);
+  --pain:#F11013;--gain:#FFD130;--done:#00C864;
+  --canvas:#080808;--surface:#101010;--elevated:#191919;--overlay:#222222;--float:#2A2A2A;
+  --bg:var(--canvas);--bg2:var(--surface);--bg3:var(--elevated);--bg4:var(--overlay);
+  --text-primary:#F5F5F5;--text-secondary:#C0C0C0;--text-tertiary:#888888;--text-muted:#555555;
+  --white:var(--text-primary);--gray2:var(--text-secondary);--gray:var(--text-tertiary);
+  --border-subtle:rgba(255,255,255,.06);--border:rgba(255,255,255,.10);--border-strong:rgba(255,255,255,.18);
+  --border-red:rgba(241,16,19,.15);--border-red2:rgba(241,16,19,.30);
+  --bdw:var(--border);--bdr:var(--border-red);--bdr2:var(--border-red2);
+  --radius-sm:5px;--radius-md:8px;--radius-lg:12px;--radius-xl:16px;
+  --font-display:'Bebas Neue',sans-serif;--font-body:'DM Sans',sans-serif;--font-mono:'DM Mono',monospace;
+  --h:var(--font-display);--b:var(--font-body);--m:var(--font-mono);
+  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;
+  --shadow-sm:0 2px 8px rgba(0,0,0,.4);--shadow-md:0 4px 20px rgba(0,0,0,.5);--shadow-red:0 4px 24px rgba(241,16,19,.18);
+}
+[data-theme="light"]{
+  --canvas:#F4F4F4;--surface:#FFFFFF;--elevated:#EDEDED;--overlay:#E2E2E2;--float:#D8D8D8;
+  --bg:#F4F4F4;--bg2:#FFFFFF;--bg3:#EDEDED;--bg4:#E2E2E2;
+  --text-primary:#0A0A0A;--text-secondary:#333333;--text-tertiary:#555555;--text-muted:#888888;
+  --white:#0A0A0A;--gray:#555555;--gray2:#333333;
+  --border-subtle:rgba(0,0,0,.05);--border:rgba(0,0,0,.10);--border-strong:rgba(0,0,0,.18);
+  --bdw:rgba(0,0,0,.10);--bdr:rgba(241,16,19,.18);--bdr2:rgba(241,16,19,.38);
+}
+[data-theme="light"] body{background:#F4F4F4;color:#0A0A0A}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:var(--b);font-size:15px;-webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.5}
+button{font-family:var(--b);cursor:pointer}
+a{color:inherit;text-decoration:none}
+img{max-width:100%}
+@keyframes shake{0%,100%{transform:translateX(0)}25%,75%{transform:translateX(-6px)}50%{transform:translateX(6px)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.anim-up{animation:fadeUp .5s ease both}
+.anim-in{animation:fadeIn .4s ease both}
+
+/* PIN GATE */
+#gate{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .5s,visibility .5s}
+#gate.out{opacity:0;visibility:hidden;pointer-events:none}
+.g-logo{display:flex;align-items:center;gap:14px}
+.g-emblem{width:56px;height:56px}
+.g-wordmark{font-family:var(--h);font-size:34px;color:var(--white);letter-spacing:.06em}
+.g-wordmark span{color:var(--red)}
+.g-tag{font-size:10px;color:var(--gray);letter-spacing:.18em;text-transform:uppercase;margin-bottom:4px;text-align:center}
+.g-label{font-size:12px;color:var(--gray2);text-transform:uppercase;letter-spacing:.12em}
+.g-pins{display:flex;gap:14px;margin:6px 0}
+.g-pin{width:58px;height:68px;text-align:center;font-size:28px;font-family:var(--m);background:var(--bg3);border:1.5px solid var(--bdw);border-radius:12px;color:var(--white);outline:none;transition:all .2s;-webkit-text-security:disc}
+.g-pin:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(241,16,19,.15)}
+.g-pin.ok{border-color:var(--red2);background:var(--redg)}
+.g-err{font-size:12px;color:var(--red);height:16px;opacity:0;transition:opacity .2s}
+.g-err.show{opacity:1}
+.g-hint{font-size:11px;color:var(--gray);opacity:.5;letter-spacing:.04em}
+/* ENTRY SCREEN */
+#entry{display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;background:var(--bg);position:relative;overflow:hidden}
+#entry.act{display:flex}
+.entry-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(241,16,19,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(241,16,19,.025) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+.entry-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:900px;height:900px;background:radial-gradient(circle,rgba(241,16,19,.05),transparent 60%);pointer-events:none}
+.entry-top{position:relative;z-index:1;text-align:center;margin-bottom:52px}
+.entry-logo{display:flex;align-items:center;justify-content:center;gap:18px;margin-bottom:16px}
+.entry-emblem{width:68px;height:68px}
+.entry-name{font-family:var(--h);font-size:42px;color:var(--white);letter-spacing:.06em}
+.entry-name span{color:var(--red)}
+.entry-tagline{font-size:11px;color:var(--gray);letter-spacing:.22em;text-transform:uppercase;margin-bottom:20px}
+.entry-brand{font-size:14px;color:var(--gray2);line-height:1.7;max-width:460px;margin:0 auto}
+.entry-brand strong{color:var(--white)}
+.entry-cards{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;width:100%;max-width:920px}
+.ecard{background:var(--bg2);border:1.5px solid var(--bdw);border-radius:var(--radius-xl);padding:36px 22px;text-align:center;cursor:pointer;transition:all .26s;display:flex;flex-direction:column;align-items:center;gap:14px}
+.ecard:hover{border-color:var(--red);background:rgba(241,16,19,.05);transform:translateY(-5px)}
+.ecard-btn{margin-top:10px;padding:11px 24px;border-radius:8px;font-size:12px;font-weight:700;letter-spacing:.05em;border:none;transition:all .2s;width:100%}
+.ecard.founder .ecard-btn{background:var(--red);color:#fff}
+.ecard.client .ecard-btn{background:var(--gold);color:#000}
+.ecard.field .ecard-btn{background:var(--bg4);color:var(--white);border:1px solid var(--bdw)}
+.entry-lang{position:absolute;top:20px;right:20px;display:flex;gap:6px;z-index:2}
+.lbtn{background:none;border:1px solid var(--bdw);border-radius:6px;padding:6px 11px;font-size:11px;color:var(--gray);transition:all .15s}
+.lbtn.act{background:var(--red);color:#fff;border-color:var(--red)}
+/* APP SHELL */
+#app{display:none}
+#app.act{display:block}
+.app-header{position:sticky;top:0;z-index:100;background:rgba(8,8,8,.96);backdrop-filter:blur(24px);border-bottom:1px solid var(--bdw);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:58px;gap:12px}
+.app-logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.app-emblem{width:30px;height:30px}
+.app-name{font-family:var(--h);font-size:19px;color:var(--white);letter-spacing:.05em}
+.app-name span{color:var(--red)}
+.app-nav{display:flex;gap:4px;flex:1;justify-content:center}
+.mode-btn{padding:7px 15px;border-radius:7px;font-size:12px;font-weight:700;border:1px solid transparent;transition:all .18s;letter-spacing:.03em}
+.mode-btn.founder-btn{background:none;color:var(--gray)}
+.mode-btn.founder-btn.act{background:var(--red);color:#fff}
+.mode-btn.client-btn{background:none;color:var(--gray)}
+.mode-btn.client-btn.act{background:var(--gold);color:#000}
+.mode-btn.field-btn{background:none;color:var(--gray)}
+.mode-btn.field-btn.act{background:var(--bg4);color:var(--white);border-color:var(--bdw)}
+.mode-btn.setter-btn{background:none;color:var(--gray)}
+.mode-btn.setter-btn.act{background:var(--purp);color:#fff}
+.app-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.alb{background:none;border:1px solid var(--bdw);border-radius:5px;padding:5px 9px;font-size:11px;color:var(--gray);transition:all .15s}
+.alb.act{background:var(--red);color:#fff;border-color:var(--red)}
+.home-btn{background:none;border:none;color:var(--gray);font-size:19px;padding:4px 8px;transition:color .15s}
+.home-btn:hover{color:var(--white)}
+.mode{display:none}
+.mode.act{display:block}
+/* TAB BAR */
+.tab-bar{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--bdw);background:rgba(16,16,16,.98);padding:0 24px;position:sticky;top:58px;z-index:90;gap:0;backdrop-filter:blur(16px)}
+.tb{padding:13px 16px;font-size:12px;font-weight:600;color:var(--gray);background:none;border:none;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;letter-spacing:.03em}
+.tb:hover{color:var(--white)}
+.tb.act{color:var(--red);border-bottom-color:var(--red)}
+.tab-pane{display:none;padding:40px 44px;min-height:calc(100dvh - 106px)}
+.tab-pane.act{display:block}
+.tab-pane.act .tab-pane{display:none}
+.tab-pane.act .tab-pane.act{display:block}
+/* LAYOUT */
+.container{max-width:1100px;margin:0 auto}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+/* TYPOGRAPHY */
+.sec-eye{font-size:11px;color:var(--red);text-transform:uppercase;letter-spacing:.16em;margin-bottom:10px;font-weight:600}
+.sec-eye-gold{font-size:11px;color:var(--goldf);text-transform:uppercase;letter-spacing:.16em;margin-bottom:10px;font-weight:600}
+.sec-eye-purp{font-size:11px;color:var(--purpf);text-transform:uppercase;letter-spacing:.16em;margin-bottom:10px;font-weight:600}
+.sec-h{font-family:var(--h);font-size:clamp(30px,4.5vw,52px);letter-spacing:.03em;margin-bottom:12px;line-height:1.04;background:none;border:none}
+.sec-sub{font-size:14px;color:var(--gray2);line-height:1.75;max-width:620px;margin-bottom:36px}
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--bdw);border-radius:var(--radius-xl);padding:28px}
+.card.red{border-color:rgba(241,16,19,.22);background:rgba(241,16,19,.05)}
+.card.gold{border-color:rgba(200,164,0,.22);background:rgba(200,164,0,.04)}
+/* BUTTONS */
+.btn-r{background:var(--red);color:#fff;padding:14px 28px;border-radius:10px;font-size:14px;font-weight:700;border:none;transition:all .22s;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.btn-r:hover{background:var(--red2);transform:translateY(-2px)}
+.btn-o{background:none;color:var(--gray2);padding:13px 24px;border-radius:10px;font-size:13px;border:1.5px solid var(--bdw);transition:all .2s;cursor:pointer}
+.btn-o:hover{color:var(--white);border-color:rgba(255,255,255,.25)}
+/* SLIDERS */
+input[type=range]{-webkit-appearance:none;width:100%;height:5px;background:var(--bg4);border-radius:3px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--red);cursor:pointer}
+/* MISC */
+.badge{display:inline-block;padding:4px 10px;border-radius:var(--radius-xl);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.br{background:rgba(241,16,19,.15);color:var(--red)}
+.bg{background:rgba(200,164,0,.15);color:var(--goldf)}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.09em;padding:11px 14px;border-bottom:1px solid var(--bdw);text-align:left}
+.tbl td{padding:13px 14px;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px}
+.quote{background:rgba(241,16,19,.06);border-left:3px solid var(--red);border-radius:0 12px 12px 0;padding:22px 28px;margin:30px 0}
+.quote-t{font-family:var(--h);font-size:clamp(18px,2.5vw,28px);letter-spacing:.03em;margin-bottom:6px}
+.quote-s{font-size:13px;color:var(--gray)}
+.nps{padding:10px 20px;border-radius:8px;font-size:12px;font-weight:700;border:1.5px solid var(--bdw);background:none;color:var(--gray);transition:all .18s;cursor:pointer}
+.nps.act{background:var(--red);color:#fff;border-color:var(--red)}
+.plan-card{background:var(--bg2);border:1.5px solid var(--bdw);border-radius:var(--radius-xl);padding:30px;transition:all .22s}
+.plan-card.featured{border-color:rgba(200,164,0,.4);background:rgba(200,164,0,.04)}
+.award{background:var(--bg2);border:1px solid var(--bdw);border-radius:var(--radius-lg);margin-bottom:10px;overflow:hidden;cursor:pointer;transition:all .2s}
+.award:hover,.award.open{border-color:var(--bdr2)}
+.award-hd{display:flex;align-items:center;gap:14px;padding:18px 22px}
+.award-arr{margin-left:auto;color:var(--gray);font-size:12px;transition:transform .2s}
+.award.open .award-arr{transform:rotate(180deg)}
+.award-body{display:none;padding:0 22px 20px;border-top:1px solid var(--bdw)}
+.award.open .award-body{display:block}
+.tab-next{display:flex;justify-content:flex-end;margin-top:40px;padding-top:28px;border-top:1px solid rgba(255,255,255,.06)}
+.tab-next-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 24px;background:var(--bg2);border:1.5px solid var(--bdw);border-radius:10px;color:var(--gray2);font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
+.tab-next-btn:hover{border-color:var(--red);color:var(--white);background:rgba(241,16,19,.05)}
+.tb-num{display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;border-radius:4px;font-size:10px;font-weight:700;background:rgba(255,255,255,.08);color:var(--gray);margin-right:6px;font-family:var(--m);transition:all .18s}
+.tb.act .tb-num{background:var(--red);color:#fff}
+/* LANGUAGE */
+[data-lang="en"] [data-pt],[data-lang="en"] [data-es]{display:none}
+[data-lang="pt"] [data-en],[data-lang="pt"] [data-es]{display:none}
+[data-lang="es"] [data-en],[data-lang="es"] [data-pt]{display:none}
+span[data-pt],span[data-en],span[data-es]{display:inline}
+div[data-pt],div[data-en],div[data-es]{display:block}
+/* OPS */
+.ops-tab{padding:11px 16px;font-size:12px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;color:var(--text-tertiary);transition:all .15s;white-space:nowrap;letter-spacing:.03em;background:transparent;border-top:none;border-left:none;border-right:none;font-family:var(--font-body);}
+.ops-tab:hover{color:var(--text-primary);}
+.ops-tab.active{color:var(--purpf);border-bottom-color:var(--purpf);}
+.ops-tab.red.active{color:var(--red);border-bottom-color:var(--red);}
+.ops-role-badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.08em;}
+.ops-role-setter{background:rgba(155,127,224,.12);color:var(--purpf);border:1px solid rgba(155,127,224,.25);}
+.ops-role-founder{background:rgba(241,16,19,.08);color:var(--red);border:1px solid rgba(241,16,19,.2);}
+.ops-role-partner{background:rgba(91,154,245,.1);color:#5B9AF5;border:1px solid rgba(91,154,245,.25);}
+.ops-role-head{background:rgba(200,164,0,.1);color:var(--goldf);border:1px solid rgba(200,164,0,.25);}
+.ops-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--border);transition:all .15s;}
+.ops-dot.on{background:var(--red);border-color:var(--red);box-shadow:0 0 8px rgba(241,16,19,.4);}
+/* MOBILE NAV */
+#bnav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(10,10,10,.97);border-top:1px solid var(--bdw);padding:6px 0;backdrop-filter:blur(16px)}
+.bnav-r{display:flex;justify-content:space-around}
+.bni{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 14px;border:none;background:none;color:var(--gray);font-size:10px;cursor:pointer;transition:all .15s;font-family:var(--b)}
+.bni.act{color:var(--red)}
+.bni-ops{background:rgba(155,127,224,.1)!important;border:1px solid rgba(155,127,224,.3)!important;color:var(--purpf)!important;font-weight:700;}
+@media(max-width:900px){
+  .entry-cards{grid-template-columns:1fr 1fr;max-width:520px;gap:14px}
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  #bnav{display:block}
+  body{padding-bottom:68px}
+  .app-nav{display:none}
+  .tab-pane{padding:24px 16px}
+}
+@media(max-width:600px){
+  .entry-cards{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<!-- EMBLEM SVG -->
+<svg style="display:none">
+  <symbol id="emblem" viewBox="0 0 600 530">
+    <path fill="#F11013" d="M557 143L549 197L541 286C509 267 500 276 471 259C441 241 370 161 365 152L351 54Z"/>
+    <path fill="#F11013" d="M42 143L50 197L58 286C90 267 99 276 129 259C159 241 230 161 234 152L248 54Z"/>
+    <path fill="#F5F5F5" d="M300 299L557 143C557 143 549 261 545 279C540 297 446 364 368 423L344 492L300 528L256 492L232 423C154 364 59 297 55 279C50 261 42 143 42 143Z"/>
+  </symbol>
+</svg>
+
+<!-- PIN GATE -->
+<div id="gate">
+  <div class="g-logo">
+    <svg class="g-emblem" viewBox="0 0 600 530"><use href="#emblem"/></svg>
+    <div class="g-wordmark">VANTAGEM<span>.ai</span></div>
+  </div>
+  <div class="g-tag">Sistemas de Escala</div>
+  <div class="g-label" data-pt>Código de acesso</div>
+  <div class="g-label" data-en>Access code</div>
+  <div class="g-label" data-es>Código de acceso</div>
+  <div class="g-pins" id="gp">
+    <input class="g-pin" id="p0" type="password" inputmode="numeric" maxlength="1" autocomplete="off">
+    <input class="g-pin" id="p1" type="password" inputmode="numeric" maxlength="1" autocomplete="off">
+    <input class="g-pin" id="p2" type="password" inputmode="numeric" maxlength="1" autocomplete="off">
+    <input class="g-pin" id="p3" type="password" inputmode="numeric" maxlength="1" autocomplete="off">
+  </div>
+  <div class="g-err" id="gerr" data-pt>Código incorreto</div>
+  <div class="g-err" data-en>Incorrect code</div>
+  <button id="gbtn" onclick="checkPin()" style="margin-top:8px;background:var(--red);color:#fff;border:none;padding:13px 40px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer">
+    <span data-en>ACCESS →</span><span data-pt>ACESSAR →</span><span data-es>ACCEDER →</span>
+  </button>
+  <div class="g-hint" data-en>Enter the code and press ACCESS</div>
+  <div class="g-hint" data-pt>Digite o código e pressione ACESSAR</div>
+</div>
+
+<!-- ENTRY SCREEN -->
+<div id="entry">
+  <div class="entry-bg"></div>
+  <div class="entry-glow"></div>
+  <div class="entry-lang">
+    <button class="lbtn" onclick="setLang('en',this)">EN</button>
+    <button class="lbtn act" onclick="setLang('pt',this)">PT</button>
+    <button class="lbtn" onclick="setLang('es',this)">ES</button>
+    <button onclick="toggleTheme()" style="padding:4px 10px;border-radius:5px;border:1px solid var(--bdw);background:none;color:var(--gray);font-size:12px;cursor:pointer">DAY</button>
+  </div>
+  <div class="entry-top">
+    <div class="entry-logo">
+      <svg class="entry-emblem" viewBox="0 0 600 530"><use href="#emblem"/></svg>
+      <div class="entry-name">VANTAGEM<span>.ai</span></div>
+    </div>
+    <div class="entry-tagline">Sistemas de Escala</div>
+    <div class="entry-brand">
+      <span data-en><strong>Built by Latinos. For Latinos.</strong><br>Selling worldwide. Earning in hard currency.</span>
+      <span data-pt><strong>Feita por latinos. Para latinos.</strong><br>Vendendo no mundo todo. Ganhando em moeda forte.</span>
+    </div>
+  </div>
+  <div class="entry-cards" style="grid-template-columns:repeat(5,1fr)">
+    <div class="ecard founder" onclick="openMode('founder')">
+      <div style="font-family:var(--m);font-size:16px;font-weight:600;color:var(--red)">FD</div>
+      <div class="ecard-title" data-en>Founder</div><div class="ecard-title" data-pt>Founder</div>
+      <button class="ecard-btn" data-en>See opportunity →</button><button class="ecard-btn" data-pt>Ver oportunidade →</button>
+    </div>
+    <div class="ecard client" onclick="openMode('client')">
+      <div style="font-family:var(--m);font-size:16px;font-weight:600;color:var(--goldf)">CL</div>
+      <div class="ecard-title" data-en>Business Owner</div><div class="ecard-title" data-pt>Dono de Negócio</div>
+      <button class="ecard-btn" data-en>See solution →</button><button class="ecard-btn" data-pt>Ver solução →</button>
+    </div>
+    <div class="ecard field" onclick="openMode('field')">
+      <div style="font-family:var(--m);font-size:16px;font-weight:600;color:var(--gray2)">FM</div>
+      <div class="ecard-title" data-en>Field Mode</div><div class="ecard-title" data-pt>Modo Campo</div>
+      <button class="ecard-btn" data-en>Open tools →</button><button class="ecard-btn" data-pt>Abrir ferramentas →</button>
+    </div>
+    <div class="ecard" onclick="openMode('setter')" style="border-color:rgba(155,127,224,.35)">
+      <div style="font-family:var(--m);font-size:16px;font-weight:600;color:var(--purpf)">ST</div>
+      <div class="ecard-title" style="color:var(--purpf)" data-en>Setter</div><div class="ecard-title" style="color:var(--purpf)" data-pt>Setter</div>
+      <button class="ecard-btn" style="background:var(--purp)" data-en>Start →</button><button class="ecard-btn" style="background:var(--purp)" data-pt>Começar →</button>
+    </div>
+    <div class="ecard" onclick="openOPS()" style="border-color:rgba(155,127,224,.5)">
+      <div style="font-size:22px">⚙</div>
+      <div class="ecard-title" style="color:var(--purpf)" data-en>Team OPS</div><div class="ecard-title" style="color:var(--purpf)" data-pt>OPS do Time</div>
+      <button class="ecard-btn" style="background:var(--purp)" data-en>Enter OPS →</button><button class="ecard-btn" style="background:var(--purp)" data-pt>Entrar no OPS →</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <!-- HEADER -->
+  <div class="app-header">
+    <div class="app-logo" onclick="goHome()" style="cursor:pointer">
+      <svg class="app-emblem" viewBox="0 0 600 530"><use href="#emblem"/></svg>
+      <div class="app-name">VANTAGEM<span>.ai</span></div>
+    </div>
+    <div class="app-nav">
+      <button class="mode-btn founder-btn act" onclick="openMode('founder')"><span data-en>Founder</span><span data-pt>Founder</span></button>
+      <button class="mode-btn client-btn" onclick="openMode('client')"><span data-en>Client</span><span data-pt>Cliente</span></button>
+      <button class="mode-btn field-btn" onclick="openMode('field')"><span data-en>Field</span><span data-pt>Campo</span></button>
+      <button class="mode-btn setter-btn" onclick="openMode('setter')">Setter</button>
+    </div>
+    <div class="app-right">
+      <button class="alb act" onclick="setLang('en',this)">EN</button>
+      <button class="alb" onclick="setLang('pt',this)">PT</button>
+      <button class="alb" onclick="setLang('es',this)">ES</button>
+      <button id="theme-toggle" onclick="toggleTheme()" style="margin-left:8px;padding:5px 10px;border-radius:6px;border:1px solid var(--bdw);background:none;color:var(--gray2);font-size:12px;cursor:pointer">DAY</button>
+      <button onclick="openOPS()" id="ops-header-btn" style="padding:6px 14px;border-radius:7px;border:1px solid rgba(155,127,224,.4);background:rgba(155,127,224,.12);color:var(--purpf);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--b)">⚙ OPS</button>
+      <button class="home-btn" onclick="goHome()" title="Home">⌂</button>
+    </div>
+  </div>
+
+  <!-- FOUNDER MODE (placeholder content) -->
+  <div id="mode-founder" class="mode act">
+    <div class="tab-bar">
+      <button class="tb act" onclick="sTab(this,'f-opp')"><span class="tb-num">1</span><span data-en>Market</span><span data-pt>Mercado</span></button>
+      <button class="tb" onclick="sTab(this,'f-join')"><span class="tb-num" style="background:var(--red);color:#fff">→</span><span data-en>Join</span><span data-pt>Entrar</span></button>
+    </div>
+    <div id="f-opp" class="tab-pane act"><div class="container"><div class="sec-eye" data-en>The Market</div><div class="sec-eye" data-pt>O Mercado</div><h2 class="sec-h"><span data-en>5 million businesses.<br><span style="color:var(--red)">97% are yours.</span></span><span data-pt>5 milhões de negócios.<br><span style="color:var(--red)">97% são seus.</span></span></h2><p class="sec-sub" data-en>The Hispanic and Brazilian small business market in the US is the 5th largest economy in the world.</p><p class="sec-sub" data-pt>O mercado de pequenos negócios hispânicos e brasileiros nos EUA é a 5ª maior economia do mundo.</p></div></div>
+    <div id="f-join" class="tab-pane"><div class="container"><div class="sec-eye" data-en>The Decision</div><div class="sec-eye" data-pt>A Decisão</div><h2 class="sec-h"><span data-en>The Founder who starts this week closes first.</span><span data-pt>O Founder que começa esta semana fecha primeiro.</span></h2></div></div>
+  </div>
+
+  <!-- CLIENT MODE -->
+  <div id="mode-client" class="mode">
+    <div class="tab-bar">
+      <button class="tb act" onclick="sTab(this,'c-prob')"><span class="tb-num">1</span><span data-en>Problem</span><span data-pt>Problema</span></button>
+      <button class="tb" onclick="sTab(this,'c-sol')"><span class="tb-num">2</span><span data-en>Solution</span><span data-pt>Solução</span></button>
+    </div>
+    <div id="c-prob" class="tab-pane act"><div class="container"><div class="sec-eye" data-en>The Real Cost</div><div class="sec-eye" data-pt>O Custo Real</div><h2 class="sec-h"><span data-en>Don't lose clients who are <span style="color:var(--red)">already looking for you.</span></span><span data-pt>Não perca clientes que já estão <span style="color:var(--red)">te procurando.</span></span></h2></div></div>
+    <div id="c-sol" class="tab-pane"><div class="container"><div class="sec-eye" data-en>The Solution</div><div class="sec-eye" data-pt>A Solução</div><h2 class="sec-h"><span data-en>One system. Three results.</span><span data-pt>Um sistema. Três resultados.</span></h2></div></div>
+  </div>
+
+  <!-- FIELD MODE -->
+  <div id="mode-field" class="mode">
+    <div class="tab-bar">
+      <button class="tb act" onclick="sTab(this,'fd-seg')"><span data-en>Select Business</span><span data-pt>Selecionar</span></button>
+    </div>
+    <div id="fd-seg" class="tab-pane act"><div class="container"><div class="sec-eye" data-en>Field Tools</div><div class="sec-eye" data-pt>Ferramentas de Campo</div><h2 class="sec-h"><span data-en>Select the segment.</span><span data-pt>Selecione o segmento.</span></h2></div></div>
+  </div>
+
+  <!-- SETTER MODE -->
+  <div id="mode-setter" class="mode">
+    <div class="tab-bar">
+      <button class="tb act" onclick="sTab(this,'st-hoje')"><span class="tb-num" style="background:rgba(155,127,224,.2);color:var(--purpf)">1</span><span data-en>Today</span><span data-pt>Hoje</span></button>
+      <button class="tb" onclick="sTab(this,'st-playbook')"><span class="tb-num">2</span>Playbook</button>
+    </div>
+    <div id="st-hoje" class="tab-pane act"><div class="container"><div class="sec-eye" style="color:var(--purpf)" data-en>Today</div><div class="sec-eye" style="color:var(--purpf)" data-pt>Hoje</div><h2 class="sec-h"><span data-en>Your daily execution starts here.</span><span data-pt>Sua execução diária começa aqui.</span></h2></div></div>
+    <div id="st-playbook" class="tab-pane"><div class="container"><div class="sec-eye" style="color:var(--purpf)">Playbook</div><h2 class="sec-h"><span data-en>You sell 20 minutes with the Founder.</span><span data-pt>Você vende 20 minutos com o Founder.</span></h2></div></div>
+  </div>
+
+  <!-- OPS MODE -->
+  <div id="mode-ops" class="mode">
+    <!-- LOGIN VIEW -->
+    <div id="ops-login-view">
+      <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;">
+        <div style="width:100%;max-width:380px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:32px;box-shadow:0 8px 40px rgba(0,0,0,.4);">
+          <div style="text-align:center;margin-bottom:28px;">
+            <svg viewBox="0 0 600 530" style="width:48px;height:42px;margin-bottom:10px"><use href="#emblem"/></svg>
+            <div style="font-family:var(--font-display);font-size:28px;letter-spacing:.06em;">VANTAGEM<span style="color:var(--red)">.ai</span></div>
+            <div style="font-size:11px;color:var(--text-tertiary);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.16em;margin-top:4px;">OPS · Sistema Operacional</div>
+          </div>
+          <div id="ops-login-error" style="display:none;background:rgba(241,16,19,.08);border:1px solid rgba(241,16,19,.2);border-radius:var(--radius-md);padding:10px 14px;font-size:12px;color:var(--red);margin-bottom:16px;text-align:center;"></div>
+          <div style="margin-bottom:14px;">
+            <div style="font-size:11px;color:var(--text-tertiary);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;">Email</div>
+            <input type="email" id="ops-email" placeholder="seu@email.com" autocomplete="email" style="width:100%;background:var(--elevated);border:1px solid var(--border);border-radius:var(--radius-md);padding:12px 14px;color:var(--text-primary);font-size:14px;outline:none;" onkeydown="if(event.key==='Enter')document.getElementById('ops-pass').focus()">
+          </div>
+          <div style="margin-bottom:24px;">
+            <div style="font-size:11px;color:var(--text-tertiary);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;">Senha</div>
+            <input type="password" id="ops-pass" placeholder="••••••••" autocomplete="current-password" style="width:100%;background:var(--elevated);border:1px solid var(--border);border-radius:var(--radius-md);padding:12px 14px;color:var(--text-primary);font-size:14px;outline:none;" onkeydown="if(event.key==='Enter')opsDoLogin()">
+          </div>
+          <button onclick="opsDoLogin()" id="ops-login-btn" style="width:100%;padding:14px;background:var(--purp);color:#fff;border:none;border-radius:var(--radius-md);font-size:14px;font-weight:700;cursor:pointer;">Entrar</button>
+          <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);text-align:center;">
+            <button onclick="openOPSHead()" style="background:transparent;border:1px solid var(--border);border-radius:var(--radius-md);padding:8px 16px;font-size:11px;color:var(--text-tertiary);cursor:pointer;font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.1em;">Head Access</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- HEAD PIN VIEW -->
+    <div id="ops-head-view" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;">
+        <div style="width:100%;max-width:380px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:32px;">
+          <div style="text-align:center;margin-bottom:24px;">
+            <div style="font-size:32px;margin-bottom:8px;">🎯</div>
+            <div style="font-family:var(--font-display);font-size:22px;letter-spacing:.06em;color:var(--red);">HEAD ACCESS</div>
+          </div>
+          <div style="display:flex;gap:12px;justify-content:center;margin-bottom:20px;" id="ops-head-dots">
+            <div class="ops-dot" id="ohd0"></div><div class="ops-dot" id="ohd1"></div><div class="ops-dot" id="ohd2"></div><div class="ops-dot" id="ohd3"></div>
+          </div>
+          <input type="password" id="ops-head-pin" maxlength="4" inputmode="numeric" style="text-align:center;letter-spacing:12px;font-size:24px;font-family:var(--font-mono);width:100%;background:var(--elevated);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;color:var(--text-primary);outline:none;" oninput="opsHeadPinInput(this.value)" autofocus>
+          <div id="ops-head-error" style="min-height:18px;text-align:center;font-size:12px;color:var(--red);margin-top:8px;"></div>
+          <button onclick="opsCheckHeadPin()" style="width:100%;margin-top:12px;padding:13px;background:var(--red);color:#fff;border:none;border-radius:var(--radius-md);font-size:14px;font-weight:700;cursor:pointer;">Entrar</button>
+          <button onclick="opsShowLogin()" style="width:100%;margin-top:8px;padding:10px;background:transparent;border:1px solid var(--border);border-radius:var(--radius-md);font-size:13px;color:var(--text-tertiary);cursor:pointer;">← Voltar</button>
+        </div>
+      </div>
+    </div>
+    <!-- APP VIEW (logged in) -->
+    <div id="ops-app-view" style="display:none">
+      <div style="max-width:980px;margin:0 auto;padding:20px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border);">
+          <div>
+            <div style="font-family:var(--font-display);font-size:22px;letter-spacing:.06em;">OPS <span style="color:var(--purpf);" id="ops-user-name">—</span></div>
+            <div style="font-size:11px;color:var(--text-tertiary);font-family:var(--font-mono);margin-top:2px;"><span id="ops-user-role-badge"></span><span id="ops-user-date" style="margin-left:8px;"></span></div>
+          </div>
+          <button onclick="opsLogout()" style="background:transparent;border:1px solid var(--border);border-radius:var(--radius-md);padding:7px 14px;font-size:12px;color:var(--text-tertiary);cursor:pointer;font-family:var(--font-mono);">Sair</button>
+        </div>
+        <div id="ops-tabs" style="display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:24px;overflow-x:auto;"></div>
+        <div id="ops-tab-body"></div>
+      </div>
+    </div>
+    <!-- HEAD APP VIEW -->
+    <div id="ops-head-app-view" style="display:none">
+      <div style="max-width:980px;margin:0 auto;padding:20px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border);">
+          <div>
+            <div style="font-family:var(--font-display);font-size:22px;letter-spacing:.06em;color:var(--red);">HEAD PANEL</div>
+            <div style="font-size:11px;color:var(--text-tertiary);font-family:var(--font-mono);margin-top:2px;" id="ops-head-date"></div>
+          </div>
+          <button onclick="opsHeadLogout()" style="background:transparent;border:1px solid var(--border);border-radius:var(--radius-md);padding:7px 14px;font-size:12px;color:var(--text-tertiary);cursor:pointer;font-family:var(--font-mono);">Sair</button>
+        </div>
+        <div id="ops-head-tabs" style="display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:24px;overflow-x:auto;"></div>
+        <div id="ops-head-body"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE BOTTOM NAV -->
+<div id="bnav">
+  <div class="bnav-r">
+    <button class="bni" onclick="goHome()"><span data-en>Home</span><span data-pt>Início</span></button>
+    <button class="bni" onclick="openMode('founder')">Founder</button>
+    <button class="bni" onclick="openMode('client')"><span data-en>Client</span><span data-pt>Cliente</span></button>
+    <button class="bni" onclick="openMode('field')">Field</button>
+    <button class="bni" onclick="openMode('setter')">Setter</button>
+    <button class="bni bni-ops" onclick="openOPS()">⚙ OPS</button>
+  </div>
+</div>
+<script>
+/* ══ PORTAL CORE JS ══════════════════════════════════════════════ */
+
+/* ── CONSTANTS ──────────────────────────────────────────────── */
+const PLANS = {
+  founder: { commS:0.50, commR:0.40, overrideS:0.10, overrideR:0.10, name:'FOUNDER', entry:18000 },
+  partner: { commS:0.30, commR:0.20, name:'PARTNER', entry:3000 },
+  setter:  { commS:0.05, commR:0.05, meetingBonus:100, meetingsPerBonus:10, name:'SETTER', entry:497 },
+  user:    { commS:0, commR:0, name:'AFILIADO', entry:0 },
+};
+const CLIENT_PRODUCTS = {
+  starter:    { name:'STARTER', mrr:97, setup:197 },
+  core:       { name:'CORE', mrr:197, setup:397 },
+  pro:        { name:'PRO', mrr:297, setup:789 },
+  enterprise: { name:'ENTERPRISE', mrr:497, setup:1497 },
+};
+const DEFAULT_PRODUCT = CLIENT_PRODUCTS.pro;
+const SETUP_PRICE = DEFAULT_PRODUCT.setup;
+const REC_PRICE = DEFAULT_PRODUCT.mrr;
+const AWARDS = [];
+
+/* ── PIN GATE ──────────────────────────────────────────────── */
+function checkPin(){window.checkPin&&window.checkPin();}
+(function(){
+  var CODE='1172';
+  var gate=document.getElementById('gate');
+  var pins=[].slice.call(document.querySelectorAll('.g-pin'));
+  var err=document.getElementById('gerr');
+  var wrap=document.getElementById('gp');
+  if(sessionStorage.getItem('v_ok')==='1'){gate.classList.add('out');showEntry();return;}
+  document.body.style.overflow='hidden';
+  setTimeout(function(){pins[0]&&pins[0].focus();},300);
+  pins.forEach(function(p,i){
+    p.addEventListener('input',function(e){
+      var v=e.target.value.replace(/\D/g,'').slice(-1);p.value=v;
+      if(v){p.classList.add('ok');if(i<3)pins[i+1].focus();}
+      else p.classList.remove('ok');
+    });
+    p.addEventListener('keydown',function(e){
+      if(e.key==='Backspace'&&!p.value&&i>0){pins[i-1].value='';pins[i-1].classList.remove('ok');pins[i-1].focus();}
+      if(e.key==='Enter') window.checkPin && window.checkPin();
+    });
+  });
+  window.checkPin=function(){
+    var v=pins.map(function(p){return p.value;}).join('');
+    if(v.length<4){pins[v.length]&&pins[v.length].focus();return;}
+    if(v===CODE){
+      var btn=document.getElementById('gbtn');
+      if(btn){btn.textContent='';btn.style.background='#16a34a';}
+      setTimeout(function(){gate.classList.add('out');document.body.style.overflow='';sessionStorage.setItem('v_ok','1');showEntry();if(typeof _portalInit==='function')_portalInit();},380);
+    } else {
+      if(wrap)wrap.classList.add('shake');
+      if(err)err.classList.add('show');
+      setTimeout(function(){if(wrap)wrap.classList.remove('shake');pins.forEach(function(p){p.value='';p.classList.remove('ok');});if(err)err.classList.remove('show');pins[0].focus();},500);
+    }
+  };
+})();
+
+/* ── NAVIGATION ──────────────────────────────────────────────── */
+function showEntry(){
+  document.getElementById('entry').classList.add('act');
+  document.getElementById('app').classList.remove('act');
+  document.getElementById('bnav').style.display='none';
+  if(typeof opsAutoRestore==='function')setTimeout(opsAutoRestore,100);
+}
+
+function openMode(mode){
+  var opsHdr=document.getElementById('ops-header-btn');
+  if(opsHdr){opsHdr.style.background='rgba(155,127,224,.12)';opsHdr.style.borderColor='rgba(155,127,224,.4)';}
+  document.getElementById('entry').classList.remove('act');
+  document.getElementById('app').classList.add('act');
+  document.getElementById('bnav').style.display='';
+  document.querySelectorAll('.mode').forEach(function(m){m.classList.remove('act');});
+  document.getElementById('mode-'+mode).classList.add('act');
+  document.querySelectorAll('.mode-btn').forEach(function(b){b.classList.remove('act');});
+  var btn=document.querySelector('.'+mode+'-btn');
+  if(btn)btn.classList.add('act');
+  window.scrollTo(0,0);
+}
+
+function goHome(){
+  document.getElementById('app').classList.remove('act');
+  document.getElementById('entry').classList.add('act');
+  document.getElementById('bnav').style.display='none';
+  window.scrollTo(0,0);
+}
+
+function sTab(btn,paneId){
+  var bar=btn.closest('.tab-bar');
+  if(bar){bar.querySelectorAll('.tb').forEach(function(b){b.classList.remove('act');});btn.classList.add('act');}
+  var mode=btn.closest('.mode');
+  if(mode)mode.querySelectorAll('.tab-pane').forEach(function(p){p.classList.remove('act');});
+  var pane=document.getElementById(paneId);
+  if(pane){pane.classList.add('act');var el=pane.parentElement;while(el&&!el.classList.contains('mode')){if(el.classList.contains('tab-pane')&&!el.classList.contains('act')){var modeTabIds=mode?Array.from(mode.querySelectorAll('.tb')).map(function(b){var m=(b.getAttribute('onclick')||'').match(/sTab\(this,'([^']+)'\)/);return m?m[1]:'';}):[]; if(modeTabIds.indexOf(el.id)===-1)el.classList.add('act');}el=el.parentElement;}}
+}
+
+function setLang(code,btn){
+  document.documentElement.setAttribute('data-lang',code);
+  document.querySelectorAll('.lbtn,.alb').forEach(function(b){
+    var t=b.textContent.trim();
+    b.classList.toggle('act',t.toUpperCase().includes(code.toUpperCase()));
+  });
+}
+
+function toggleTheme(){
+  var html=document.documentElement;
+  var isLight=html.getAttribute('data-theme')==='light';
+  html.setAttribute('data-theme',isLight?'dark':'light');
+  document.querySelectorAll('#theme-toggle,[onclick="toggleTheme()"]').forEach(function(b){b.textContent=isLight?'DAY':'NIGHT';});
+}
+
+/* ── ODB STORAGE ──────────────────────────────────────────────── */
+var ODB=(function(){
+  var useCloud=typeof window!=='undefined'&&window.storage&&typeof window.storage.get==='function';
+  var LSK=function(k){return'vops_'+k;};
+  var LS={
+    get:function(k){try{var v=localStorage.getItem(LSK(k));return v?JSON.parse(v):null;}catch(e){return null;}},
+    set:function(k,v){try{localStorage.setItem(LSK(k),JSON.stringify(v));return true;}catch(e){return false;}},
+    list:function(pfx){var keys=[],pre='vops_'+(pfx||'');for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.startsWith(pre))keys.push(k.slice(5));}return keys;}
+  };
+  return{
+    get:async function(k){if(useCloud){try{var r=await window.storage.get(k,true);return r?JSON.parse(r.value):null;}catch(e){return null;}}return LS.get(k);},
+    set:async function(k,v){if(useCloud){try{await window.storage.set(k,JSON.stringify(v),true);return true;}catch(e){return false;}}return LS.set(k,v);},
+    list:async function(p){if(useCloud){try{var r=await window.storage.list(p||'',true);return r?r.keys:[];}catch(e){return[];}}return LS.list(p||'');}
+  };
+})();
+
+/* ── OPS SESSION ──────────────────────────────────────────────── */
+var OPS_SESSION_KEY='vantagem_ops_session';
+var OPS_HEAD_KEY='vantagem_ops_head';
+function opsGetSession(){try{return JSON.parse(localStorage.getItem(OPS_SESSION_KEY));}catch(e){return null;}}
+function opsSetSession(s){try{localStorage.setItem(OPS_SESSION_KEY,JSON.stringify(s));}catch(e){}}
+function opsClearSession(){localStorage.removeItem(OPS_SESSION_KEY);}
+function opsIsHeadSession(){return localStorage.getItem(OPS_HEAD_KEY)==='1';}
+function opsSetHeadSession(){localStorage.setItem(OPS_HEAD_KEY,'1');}
+function opsClearHeadSession(){localStorage.removeItem(OPS_HEAD_KEY);}
+function opsToday(){return new Date().toISOString().split('T')[0];}
+function opsFmtDate(d){if(!d)return'';var p=d.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
+function opsRoleName(r){return{setter:'Setter',founder:'Founder',partner:'Partner',head:'Head'}[r]||r;}
+function opsRoleBadge(r){return'<span class="ops-role-badge ops-role-'+r+'">'+opsRoleName(r)+'</span>';}
+
+/* ── OPS LOGIN / HEAD PIN ──────────────────────────────────────── */
+function openOPS(){
+  document.querySelectorAll('.mode-btn').forEach(function(b){b.classList.remove('act');});
+  document.getElementById('entry').classList.remove('act');
+  document.getElementById('app').classList.add('act');
+  document.getElementById('bnav').style.display='';
+  document.querySelectorAll('.mode').forEach(function(m){m.classList.remove('act');});
+  document.getElementById('mode-ops').classList.add('act');
+  if(opsIsHeadSession()){opsShowHeadApp();return;}
+  var session=opsGetSession();
+  if(session&&session.userId){opsShowApp(session);return;}
+  opsShowLogin();
+}
+function opsShowLogin(){
+  document.getElementById('ops-login-view').style.display='';
+  document.getElementById('ops-head-view').style.display='none';
+  document.getElementById('ops-app-view').style.display='none';
+  document.getElementById('ops-head-app-view').style.display='none';
+  setTimeout(function(){var e=document.getElementById('ops-email');if(e)e.focus();},100);
+}
+function openOPSHead(){
+  document.getElementById('ops-login-view').style.display='none';
+  document.getElementById('ops-head-view').style.display='';
+  document.getElementById('ops-app-view').style.display='none';
+  document.getElementById('ops-head-app-view').style.display='none';
+  setTimeout(function(){var p=document.getElementById('ops-head-pin');if(p){p.value='';p.focus();}},100);
+}
+async function opsDoLogin(){
+  var email=(document.getElementById('ops-email')?.value||'').trim().toLowerCase();
+  var pass=document.getElementById('ops-pass')?.value||'';
+  var err=document.getElementById('ops-login-error');
+  if(!email||!pass){if(err){err.textContent='Preencha os dois campos.';err.style.display='';}return;}
+  var users=await ODB.get('ops_users')||[];
+  var user=users.find(function(u){return u.email.toLowerCase()===email&&u.password===pass&&u.active;});
+  if(!user){if(err){err.textContent='Email ou senha incorretos.';err.style.display='';}document.getElementById('ops-pass').value='';return;}
+  if(err)err.style.display='none';
+  var session={userId:user.id,name:user.name,role:user.role,email:user.email,loggedAt:Date.now()};
+  opsSetSession(session);opsShowApp(session);
+}
+function opsHeadPinInput(v){for(var i=0;i<4;i++){var d=document.getElementById('ohd'+i);if(d)d.className='ops-dot'+(i<v.length?' on':'');}if(v.length===4)opsCheckHeadPin();}
+async function opsCheckHeadPin(){
+  var cfg=await ODB.get('ops_config')||{};
+  var headPin=cfg.headPin||'1111';
+  var pin=document.getElementById('ops-head-pin')?.value||'';
+  var err=document.getElementById('ops-head-error');
+  if(pin===headPin){opsSetHeadSession();if(err)err.textContent='';opsShowHeadApp();}
+  else{if(err)err.textContent='PIN incorreto.';var inp=document.getElementById('ops-head-pin');if(inp){inp.value='';inp.focus();}for(var i=0;i<4;i++){var d=document.getElementById('ohd'+i);if(d)d.className='ops-dot';}}
+}
+function opsShowApp(session){
+  document.getElementById('ops-login-view').style.display='none';
+  document.getElementById('ops-head-view').style.display='none';
+  document.getElementById('ops-app-view').style.display='';
+  document.getElementById('ops-head-app-view').style.display='none';
+  var nameEl=document.getElementById('ops-user-name');if(nameEl)nameEl.textContent=session.name;
+  var roleEl=document.getElementById('ops-user-role-badge');if(roleEl)roleEl.innerHTML=opsRoleBadge(session.role);
+  var dateEl=document.getElementById('ops-user-date');if(dateEl)dateEl.textContent=opsFmtDate(opsToday());
+  opsRenderTabs(session.role);
+}
+function opsShowHeadApp(){
+  document.getElementById('ops-login-view').style.display='none';
+  document.getElementById('ops-head-view').style.display='none';
+  document.getElementById('ops-app-view').style.display='none';
+  document.getElementById('ops-head-app-view').style.display='';
+  var d=document.getElementById('ops-head-date');if(d)d.textContent=opsFmtDate(opsToday());
+  opsRenderHeadTabs();
+}
+function opsLogout(){opsClearSession();opsShowLogin();}
+function opsHeadLogout(){opsClearHeadSession();opsShowLogin();}
+
+/* ── OPS TABS ──────────────────────────────────────────────────── */
+var OPS_TABS={
+  setter:  [{id:'fill',label:'📋 Hoje'},{id:'painel',label:'📊 Painel'},{id:'ranking',label:'🏆 Ranking'},{id:'identidade',label:'🔥 Identidade'}],
+  founder: [{id:'fill',label:'📋 Hoje'},{id:'aprovar',label:'✅ Aprovar'},{id:'venda',label:'💰 Venda'},{id:'painel',label:'📊 Painel'},{id:'ranking',label:'🏆 Ranking'},{id:'identidade',label:'🔥 Identidade'}],
+  partner: [{id:'fill',label:'📋 Hoje'},{id:'aprovar',label:'✅ Aprovar'},{id:'venda',label:'💰 Venda'},{id:'painel',label:'📊 Painel'},{id:'ranking',label:'🏆 Ranking'},{id:'identidade',label:'🔥 Identidade'}],
+  head:    [{id:'live',label:'📡 Ao Vivo'},{id:'auditoria',label:'🔍 Auditoria'},{id:'ranking',label:'🏆 Ranking'},{id:'extratos',label:'💰 Extratos'},{id:'time',label:'👥 Time'},{id:'config',label:'⚙ Config'}],
+};
+var _opsCurrentTab='';
+function opsRenderTabs(role){
+  var tabs=OPS_TABS[role]||OPS_TABS.setter;
+  var container=document.getElementById('ops-tabs');if(!container)return;
+  container.innerHTML=tabs.map(function(t){return'<button class="ops-tab'+(t.id===_opsCurrentTab?' active':'')+'" onclick="opsSwitchTab(\''+t.id+'\')">'+t.label+'</button>';}).join('');
+  if(tabs.length)opsSwitchTab(tabs[0].id);
+}
+function opsRenderHeadTabs(){
+  var tabs=OPS_TABS.head;
+  var container=document.getElementById('ops-head-tabs');if(!container)return;
+  container.innerHTML=tabs.map(function(t){return'<button class="ops-tab red'+(t.id===_opsCurrentTab?' active':'')+'" onclick="opsHeadSwitchTab(\''+t.id+'\')">'+t.label+'</button>';}).join('');
+  if(tabs.length)opsHeadSwitchTab(tabs[0].id);
+}
+async function opsSwitchTab(id){
+  _opsCurrentTab=id;
+  document.querySelectorAll('#ops-tabs .ops-tab').forEach(function(b){var m=b.getAttribute('onclick')?.match(/'([^']+)'/);if(m)b.className='ops-tab'+(m[1]===id?' active':'');});
+  await opsRenderTabContent(id);
+}
+async function opsHeadSwitchTab(id){
+  _opsCurrentTab=id;
+  document.querySelectorAll('#ops-head-tabs .ops-tab').forEach(function(b){var m=b.getAttribute('onclick')?.match(/'([^']+)'/);if(m)b.className='ops-tab red'+(m[1]===id?' active':'');});
+  await opsRenderHeadTabContent(id);
+}
+
+/* ── OPS TAB CONTENT (stubs — v2.js overrides these) ──────────── */
+async function opsRenderTabContent(id){
+  var body=document.getElementById('ops-tab-body');if(!body)return;
+  body.innerHTML='<div style="text-align:center;padding:60px;color:var(--text-tertiary);"><div style="font-size:32px;margin-bottom:12px;">🔧</div><div style="font-size:14px;">'+id+' — carregando v2...</div></div>';
+}
+async function opsRenderHeadTabContent(id){
+  var body=document.getElementById('ops-head-body');if(!body)return;
+  body.innerHTML='<div style="text-align:center;padding:60px;color:var(--text-tertiary);"><div style="font-size:32px;margin-bottom:12px;">🔧</div><div style="font-size:14px;">'+id+' — carregando v2...</div></div>';
+}
+
+/* ── USER MANAGEMENT (basic — v2.js enhances) ──────────────────── */
+async function opsRenderUserManagement(body){
+  var users=await ODB.get('ops_users')||[];
+  var active=users.filter(function(u){return u.active;});
+  body.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-tertiary);">'+active.length+' membros ativos. Use o v2 para gerenciamento completo.</div>';
+}
+
+/* ── AUTO-RESTORE ──────────────────────────────────────────────── */
+function opsAutoRestore(){
+  var modeOps=document.getElementById('mode-ops');
+  if(modeOps&&modeOps.classList.contains('act')){
+    if(opsIsHeadSession()){opsShowHeadApp();return;}
+    var s=opsGetSession();
+    if(s&&s.userId){opsShowApp(s);return;}
+    opsShowLogin();
+  }
+}
+
+/* ── _portalInit ──────────────────────────────────────────────── */
+function _portalInit(){
+  setLang('en',document.querySelector('.lbtn'));
+  // Move modes to be direct children of #app if nested wrong
+  var appEl=document.getElementById('app');
+  if(appEl){
+    ['mode-client','mode-field','mode-setter','mode-ops'].forEach(function(id){
+      var modeEl=document.getElementById(id);
+      if(modeEl&&modeEl.parentElement!==appEl)appEl.appendChild(modeEl);
+    });
+  }
+  // Re-activate first tab in each mode
+  document.querySelectorAll('.mode').forEach(function(mode){
+    var panes=Array.from(mode.querySelectorAll('.tab-pane'));
+    if(!panes.some(function(p){return p.classList.contains('act');})){
+      if(panes.length>0)panes[0].classList.add('act');
+    }
+  });
+  opsAutoRestore();
+}
+
+setTimeout(function(){if(typeof _portalInit==='function')_portalInit();},0);
+</script>
+
+<!-- OPS DIARIO V2 INTEGRATION -->
+<link rel="stylesheet" href="ops-diario-v2.css">
+<script src="ops-diario-v2.js"></script>
+
+</body>
+</html>

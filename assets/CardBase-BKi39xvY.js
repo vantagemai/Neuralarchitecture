@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime-D-oznMWL.js";var t=e();function n({children:e,className:n=``,padding:r=`md`}){let i={none:``,sm:`p-3`,md:`p-4`,lg:`px-5 py-4`}[r];return(0,t.jsx)(`div`,{className:`bg-surface border border-b1 rounded-lg ${i} ${n}`,children:e})}export{n as t};
