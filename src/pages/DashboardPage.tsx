@@ -442,44 +442,74 @@ export function DashboardPage() {
                 </div>
               )}
 
-              {/* Predictive calculator callout */}
-              {predictive.callsToObjective > 0 && dreamValue && dreamValue > 0 && (
-                <div className="mt-5 pt-4 border-t border-b1 space-y-2">
-                  <div className="text-2xs text-t4 uppercase tracking-wider mb-2">📞 Calculadora Preditiva</div>
+              {/* Predictive calculator callout — always show when profile exists */}
+              <div className="mt-5 pt-4 border-t border-b1 space-y-2">
+                <div className="text-2xs text-t4 uppercase tracking-wider mb-2">📞 Calculadora Preditiva</div>
+
+                {/* Monthly goal prediction */}
+                {predictive.callsToMonthlyGoal > 0 && (
+                  <div className="bg-vgreen/5 border border-vgreen/15 rounded-lg px-4 py-3">
+                    <div className="flex items-start gap-3">
+                      <span className="text-xl mt-0.5">💰</span>
+                      <div>
+                        <p className="text-sm font-bold text-t1">
+                          Faltam <span className="text-vgreen font-mono">{predictive.callsToMonthlyGoalLabel}</span> para bater sua meta mensal
+                        </p>
+                        <p className="text-xs text-t3 mt-1">
+                          ~{Math.ceil(predictive.callsToMonthlyGoal / CALLS_PER_SALE).toLocaleString()} vendas necessarias
+                          {predictive.daysToMonthlyGoal > 0 && <> · <span className="font-mono text-vgold">{predictive.daysToMonthlyGoalLabel}</span></>}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {predictive.callsToMonthlyGoal === 0 && (
+                  <div className="bg-vgreen/5 border border-vgreen/15 rounded-lg px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xl">🏆</span>
+                      <p className="text-sm font-bold text-vgreen">Meta mensal batida!</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Dream item prediction */}
+                {predictive.callsToObjective > 0 && dreamValue && dreamValue > 0 && (
                   <div className="bg-vred/5 border border-vred/15 rounded-lg px-4 py-3">
                     <div className="flex items-start gap-3">
                       <span className="text-xl mt-0.5">📞</span>
                       <div>
                         <p className="text-sm font-bold text-t1">
-                          Voce esta a <span className="text-vred font-mono">{predictive.callsToObjective.toLocaleString()}</span> ligacoes do seu objetivo
+                          Voce esta a <span className="text-vred font-mono">{predictive.callsToObjectiveLabel}</span> do seu {primaryItem?.label?.toLowerCase() || 'objetivo'}
                         </p>
                         <p className="text-xs text-t3 mt-1">
-                          ~{Math.ceil(predictive.callsToObjective / CALLS_PER_SALE).toLocaleString()} vendas necessarias
+                          ~{Math.ceil(predictive.callsToObjective / CALLS_PER_SALE).toLocaleString()} vendas
                           {predictive.daysToObjective > 0 && <> · <span className="font-mono text-vgold">{predictive.daysToObjectiveLabel}</span></>}
                         </p>
                       </div>
                     </div>
                   </div>
-                  {predictive.callsToNextLevel > 0 && (
-                    <div className="bg-vpurp/5 border border-vpurp/15 rounded-lg px-4 py-3">
-                      <div className="flex items-start gap-3">
-                        <span className="text-xl mt-0.5">{nextLevel.next?.icon || '⭐'}</span>
-                        <div>
-                          <p className="text-sm font-bold text-t1">
-                            Quando voce for <span className={`${nextLevel.next?.color || 'text-vpurp'}`}>{nextLevel.next?.name || 'proximo nivel'}</span>: <span className="font-mono text-vpurp">{predictive.callsToNextLevelLabel}</span>
+                )}
+
+                {/* Next level prediction */}
+                {predictive.callsToNextLevel > 0 && (
+                  <div className="bg-vpurp/5 border border-vpurp/15 rounded-lg px-4 py-3">
+                    <div className="flex items-start gap-3">
+                      <span className="text-xl mt-0.5">{nextLevel.next?.icon || '⭐'}</span>
+                      <div>
+                        <p className="text-sm font-bold text-t1">
+                          Quando voce for <span className={`${nextLevel.next?.color || 'text-vpurp'}`}>{nextLevel.next?.name || 'proximo nivel'}</span>: <span className="font-mono text-vpurp">{predictive.callsToNextLevelLabel}</span>
+                        </p>
+                        {nextLevel.next?.award && (
+                          <p className="text-xs text-t3 mt-1">
+                            Premio: <span className="text-vgold font-semibold">{nextLevel.next.award}</span>
+                            {predictive.daysToNextLevel > 0 && <> · ~{predictive.daysToNextLevel} dias uteis</>}
                           </p>
-                          {nextLevel.next?.award && (
-                            <p className="text-xs text-t3 mt-1">
-                              Premio: <span className="text-vgold font-semibold">{nextLevel.next.award}</span>
-                              {predictive.daysToNextLevel > 0 && <> · ~{predictive.daysToNextLevel} dias uteis</>}
-                            </p>
-                          )}
-                        </div>
+                        )}
                       </div>
                     </div>
-                  )}
-                </div>
-              )}
+                  </div>
+                )}
+              </div>
             </div>
           </CardBase>
         );

@@ -44,17 +44,21 @@ export interface PredictiveResult {
   avgBonusPerSale: number;       // bonus allocation per sale
 
   // Calls to targets
-  callsToObjective: number;      // ligacoes ate o dreamItemValue
+  callsToMonthlyGoal: number;    // ligacoes ate bater a meta mensal
+  callsToObjective: number;      // ligacoes ate o dreamItemValue (bem desejado)
   callsToNextLevel: number;      // ligacoes ate proximo nivel
   callsToNextPrize: number;      // ligacoes ate proximo premio (fichas)
 
   // Days to targets (based on daily call rate)
+  daysToMonthlyGoal: number;
   daysToObjective: number;
   daysToNextLevel: number;
 
   // Readable strings
+  callsToMonthlyGoalLabel: string;
   callsToObjectiveLabel: string;
   callsToNextLevelLabel: string;
+  daysToMonthlyGoalLabel: string;
   daysToObjectiveLabel: string;
 }
 
@@ -115,9 +119,10 @@ export function getPredictiveData(userId?: string): PredictiveResult {
   const mySales = allSales.filter(s => s.sellerId === id || s.sellerName === (session?.name || ''));
   const currentMonthComm = mySales.reduce((t, s) => t + (s.sellerSetupComm || 0) + (s.sellerRecComm || 0), 0);
 
-  // NIProfile for dream item
+  // NIProfile for goals
   const niProfile = db.get<any>(`ni_profile_${id}`);
-  const dreamItemValue = niProfile?.dreamItemValue || 0;
+  const metaM = niProfile?.metaM || 0;            // meta mensal
+  const dreamItemValue = niProfile?.dreamItemValue || 0; // valor do bem (carro, casa, etc)
 
   // Current fichas and level
   const currentFichas = getTotalFichas(id);
@@ -143,33 +148,46 @@ export function getPredictiveData(userId?: string): PredictiveResult {
     : (AVG_SETUP * SELLER_SETUP_PCT) + (AVG_REC * SELLER_REC_PCT);
   const avgBonusPerSale = isSetter ? BONUS_PER_10 : 0;
 
-  // Remaining money needed for dream objective
-  const remainingForObjective = Math.max(0, dreamItemValue - currentMonthComm);
+  // Remaining money for monthly goal
+  const remainingForMonthly = Math.max(0, metaM - currentMonthComm);
+
+  // Remaining money for dream item (long-term, all-time accumulation)
+  const remainingForDream = Math.max(0, dreamItemValue - currentMonthComm);
 
   // Calls needed
-  const callsToObjective = calcCallsForMoney(remainingForObjective, role);
+  const callsToMonthlyGoal = calcCallsForMoney(remainingForMonthly, role);
+  const callsToObjective = dreamItemValue > 0 ? calcCallsForMoney(remainingForDream, role) : 0;
   const callsToNextLevel = calcCallsForFichas(nextLevelFichas, dailyCalls || 50);
   const callsToNextPrize = calcCallsForFichas(nextPrizeFichas, dailyCalls || 50);
 
   // Days to targets
   const effectiveDailyCalls = dailyCalls || 50;
+  const daysToMonthlyGoal = callsToMonthlyGoal > 0 ? Math.ceil(callsToMonthlyGoal / effectiveDailyCalls) : 0;
   const daysToObjective = callsToObjective > 0 ? Math.ceil(callsToObjective / effectiveDailyCalls) : 0;
   const daysToNextLevel = callsToNextLevel > 0 ? Math.ceil(callsToNextLevel / effectiveDailyCalls) : 0;
 
   return {
     avgCommPerSale,
     avgBonusPerSale,
+    callsToMonthlyGoal,
     callsToObjective,
     callsToNextLevel,
     callsToNextPrize,
+    daysToMonthlyGoal,
     daysToObjective,
     daysToNextLevel,
+    callsToMonthlyGoalLabel: callsToMonthlyGoal > 0
+      ? `${callsToMonthlyGoal.toLocaleString()} ligacoes`
+      : 'Meta batida!',
     callsToObjectiveLabel: callsToObjective > 0
       ? `${callsToObjective.toLocaleString()} ligacoes`
-      : 'Objetivo alcancado!',
+      : dreamItemValue > 0 ? 'Objetivo alcancado!' : '',
     callsToNextLevelLabel: callsToNextLevel > 0
       ? `${callsToNextLevel.toLocaleString()} ligacoes`
       : 'Nivel maximo!',
+    daysToMonthlyGoalLabel: daysToMonthlyGoal > 0
+      ? `~${daysToMonthlyGoal} dias uteis`
+      : '',
     daysToObjectiveLabel: daysToObjective > 0
       ? `~${daysToObjective} dias uteis`
       : '',
