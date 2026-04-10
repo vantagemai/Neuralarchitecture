@@ -334,9 +334,15 @@ export function DashboardPage() {
       {niProfile ? (() => {
         const fp = niProfile.metaM > 0 ? Math.min(100, Math.round((myComm / niProfile.metaM) * 100)) : 0;
         const dreamLabel = niProfile.dreamItemLabel || '';
-        const dreamNames: Record<string, string> = { car: '🚗 Carro', home: '🏠 Moradia', body: '💪 Corpo', style: '✨ Estilo' };
-        const dreamImage = dreamLabel && niProfile.images?.[dreamLabel];
-        const dreamText = dreamLabel ? (niProfile as any)[dreamLabel] : '';
+        const dreamItems = [
+          { key: 'car', icon: '🚗', label: 'Carro', text: niProfile.car },
+          { key: 'home', icon: '🏠', label: 'Moradia', text: niProfile.home },
+          { key: 'body', icon: '💪', label: 'Corpo', text: niProfile.body },
+          { key: 'style', icon: '✨', label: 'Estilo', text: niProfile.style },
+        ].filter(d => d.text);
+        const primaryItem = dreamItems.find(d => d.key === dreamLabel) || dreamItems[0];
+        const primaryImage = primaryItem && niProfile.images?.[primaryItem.key];
+        const otherItems = dreamItems.filter(d => d.key !== primaryItem?.key);
         const dreamValue = niProfile.dreamItemValue;
         // Ring SVG
         const radius = 50;
@@ -350,15 +356,24 @@ export function DashboardPage() {
                 <Target size={18} className="text-vgold" />
                 <h2 className="text-sm font-bold">Meu Objetivo</h2>
               </div>
-              {niProfile.anchor && <span className="text-2xs text-t4 italic hidden sm:block truncate max-w-[200px]">"{niProfile.anchor}"</span>}
+              {niProfile.anchor && <span className="text-2xs text-t4 italic hidden sm:block truncate max-w-[250px]">"{niProfile.anchor}"</span>}
             </div>
-            <div className="px-5 py-5 flex flex-col sm:flex-row items-center gap-5">
-              {/* Image or ring */}
-              <div className="flex items-center gap-4 shrink-0">
-                {dreamImage && (
-                  <img src={dreamImage} alt={dreamText} className="w-20 h-20 rounded-xl object-cover border border-b1 shadow-sm" />
+
+            <div className="px-5 py-5">
+              {/* Top: Ring + Financial info + Primary image */}
+              <div className="flex flex-col sm:flex-row items-center gap-5">
+                {/* Primary image — big */}
+                {primaryImage && (
+                  <div className="shrink-0 relative">
+                    <img src={primaryImage} alt={primaryItem.text} className="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl object-cover border-2 border-vgold/30 shadow-lg" />
+                    <div className="absolute -bottom-1 -right-1 bg-surface border border-vgold/30 rounded-full px-2 py-0.5 text-2xs font-bold text-vgold shadow-sm">
+                      {primaryItem.icon} #{1}
+                    </div>
+                  </div>
                 )}
-                <div className="relative">
+
+                {/* Ring */}
+                <div className="relative shrink-0">
                   <svg width="120" height="120" viewBox="0 0 120 120">
                     <circle cx="60" cy="60" r={radius} fill="none" stroke="currentColor" strokeWidth="8" className="text-overlay" />
                     <circle cx="60" cy="60" r={radius} fill="none" stroke={ringColor} strokeWidth="8"
@@ -370,39 +385,60 @@ export function DashboardPage() {
                     <span className="text-[9px] text-t4">da meta</span>
                   </div>
                 </div>
+
+                {/* Financial info */}
+                <div className="flex-1 w-full space-y-2">
+                  <div>
+                    <div className="text-xs text-t4">Meta mensal</div>
+                    <div className="text-xl font-black font-mono text-vgold">{fmt$(niProfile.metaM)}</div>
+                    <div className="text-sm text-t3 mt-0.5">Ganho este mes: <span className="font-mono font-bold text-vgreen">{fmt$(myComm)}</span></div>
+                    {niProfile.metaM > myComm && (
+                      <div className="text-xs text-t4 mt-0.5">Faltam <span className="font-mono font-bold text-vred">{fmt$(niProfile.metaM - myComm)}</span></div>
+                    )}
+                  </div>
+                  {dreamValue && dreamValue > 0 && primaryItem && (() => {
+                    const allTimeComm = sales.filter(s => s.sellerId === myId || s.sellerName === (session?.name || '')).reduce((t, s) => t + (s.sellerSetupComm || 0) + (s.sellerRecComm || 0), 0);
+                    const dreamPct = Math.min(100, Math.round((allTimeComm / dreamValue) * 100));
+                    return (
+                      <div className="bg-elevated/50 rounded-lg px-3 py-2">
+                        <div className="flex justify-between text-2xs mb-1">
+                          <span className="text-t3">{primaryItem.icon} {primaryItem.text}</span>
+                          <span className="font-mono text-t2">{dreamPct}%</span>
+                        </div>
+                        <div className="h-2 bg-overlay rounded-full overflow-hidden">
+                          <div className="h-full bg-vgold rounded-full transition-all duration-1000" style={{ width: `${dreamPct}%` }} />
+                        </div>
+                        <div className="text-2xs text-t4 mt-1">{fmt$(allTimeComm)} / {fmt$(dreamValue)}</div>
+                      </div>
+                    );
+                  })()}
+                </div>
               </div>
 
-              {/* Info */}
-              <div className="flex-1 w-full space-y-3">
-                <div>
-                  <div className="text-xs text-t4">Meta mensal</div>
-                  <div className="text-xl font-black font-mono text-vgold">{fmt$(niProfile.metaM)}</div>
-                  <div className="text-sm text-t3 mt-0.5">Ganho este mes: <span className="font-mono font-bold text-vgreen">{fmt$(myComm)}</span></div>
-                  {niProfile.metaM > myComm && (
-                    <div className="text-xs text-t4 mt-0.5">Faltam <span className="font-mono font-bold text-vred">{fmt$(niProfile.metaM - myComm)}</span></div>
-                  )}
-                </div>
-                {dreamLabel && (
-                  <div className="bg-elevated/50 rounded-lg px-3 py-2">
-                    <div className="text-2xs text-t4 mb-1">{dreamNames[dreamLabel] || 'Objetivo'}: {dreamText}</div>
-                    {dreamValue && dreamValue > 0 && (() => {
-                      const allTimeComm = getMonthSales().filter(s => s.sellerId === myId || s.sellerName === (session?.name || '')).reduce((t, s) => t + (s.sellerSetupComm || 0) + (s.sellerRecComm || 0), 0);
-                      const dreamPct = Math.min(100, Math.round((allTimeComm / dreamValue) * 100));
+              {/* Bottom: Other objectives gallery */}
+              {otherItems.length > 0 && (
+                <div className="mt-5 pt-4 border-t border-b1">
+                  <div className="text-2xs text-t4 uppercase tracking-wider mb-3">Outros Objetivos</div>
+                  <div className="grid grid-cols-3 gap-3">
+                    {otherItems.map(item => {
+                      const img = niProfile.images?.[item.key];
                       return (
-                        <div>
-                          <div className="flex justify-between text-2xs mb-1">
-                            <span className="text-t3">Progresso</span>
-                            <span className="font-mono text-t2">{fmt$(allTimeComm)} / {fmt$(dreamValue)} ({dreamPct}%)</span>
-                          </div>
-                          <div className="h-2 bg-overlay rounded-full overflow-hidden">
-                            <div className="h-full bg-vgold rounded-full transition-all duration-1000" style={{ width: `${dreamPct}%` }} />
-                          </div>
+                        <div key={item.key} className="text-center">
+                          {img ? (
+                            <img src={img} alt={item.text} className="w-full aspect-square rounded-xl object-cover border border-b1 mb-1.5" />
+                          ) : (
+                            <div className="w-full aspect-square rounded-xl bg-elevated border border-b1 flex items-center justify-center text-2xl mb-1.5">
+                              {item.icon}
+                            </div>
+                          )}
+                          <div className="text-2xs text-t3 truncate">{item.text}</div>
+                          <div className="text-[10px] text-t4">{item.label}</div>
                         </div>
                       );
-                    })()}
+                    })}
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </CardBase>
         );
