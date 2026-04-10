@@ -62,7 +62,7 @@ export function ExtratosPage() {
       </div>
 
       {/* Summary */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <KpiCard label="Vendas Período" value={sales.length} icon={BarChart3} color="gold" />
         <KpiCard label="Comissões Totais" value={fmt$(grandTotal)} icon={DollarSign} color="green" highlight />
         <KpiCard label="Membros com Venda" value={sorted.length} color="blue" />

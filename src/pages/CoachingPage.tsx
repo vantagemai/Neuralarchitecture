@@ -115,7 +115,7 @@ export function CoachingPage() {
                   <div className="flex gap-1 mt-1">
                     {[1, 2, 3, 4, 5].map(n => (
                       <button key={n} onClick={() => setRating(n)}
-                        className={`p-1.5 rounded transition-colors ${rating >= n ? 'text-vgold' : 'text-t4 hover:text-t3'}`}>
+                        className={`p-2 rounded transition-colors ${rating >= n ? 'text-vgold' : 'text-t4 hover:text-t3'}`}>
                         <Star size={20} fill={rating >= n ? 'currentColor' : 'none'} />
                       </button>
                     ))}

@@ -426,7 +426,7 @@ export function VendasPage() {
           {saved && (
             <div className="bg-vgreen/10 border border-vgreen/20 text-vgreen rounded-lg px-4 py-3 mb-4 text-sm font-medium">{saved}</div>
           )}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
             <div>
               <label className="text-xs text-t3 uppercase tracking-wider font-semibold">Setup ($) <span className="text-t4 normal-case">({MIN_SETUP}-{MAX_SETUP})</span></label>
               <input type="number" min={MIN_SETUP} max={MAX_SETUP} value={setup} onChange={e => setSetup(e.target.value)}
@@ -488,10 +488,10 @@ export function VendasPage() {
                 </div>
                 {canEditSale(s) && (
                   <div className="flex items-center gap-1">
-                    <button onClick={() => handleEdit(s)} className="p-1.5 text-t4 hover:text-vblue transition-colors" title="Editar">
+                    <button onClick={() => handleEdit(s)} className="p-2 text-t4 hover:text-vblue transition-colors" title="Editar">
                       <Pencil size={13} />
                     </button>
-                    <button onClick={() => handleDelete(s)} className="p-1.5 text-t4 hover:text-vred transition-colors" title="Deletar">
+                    <button onClick={() => handleDelete(s)} className="p-2 text-t4 hover:text-vred transition-colors" title="Deletar">
                       <Trash2 size={13} />
                     </button>
                   </div>

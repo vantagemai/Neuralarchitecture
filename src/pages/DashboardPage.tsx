@@ -205,7 +205,7 @@ export function DashboardPage() {
             LIVE
           </span>
           <button onClick={() => setEditMode(!editMode)}
-            className={`p-1.5 rounded-lg transition-colors ${editMode ? 'bg-vred/15 text-vred' : 'text-t4 hover:text-t2'}`}
+            className={`p-2 rounded-lg transition-colors ${editMode ? 'bg-vred/15 text-vred' : 'text-t4 hover:text-t2'}`}
             title="Editar layout">
             <Settings2 size={16} />
           </button>
