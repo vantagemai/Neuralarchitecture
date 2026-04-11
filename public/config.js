@@ -8,5 +8,5 @@
  * 4. Copie "anon public" (em Project API keys) e cole em SUPABASE_ANON_KEY
  * 5. Salve o arquivo e faça push para o repositório
  */
-window.SUPABASE_URL      = 'https://SEU-PROJETO.supabase.co';
-window.SUPABASE_ANON_KEY = 'SUA-ANON-KEY-AQUI';
+window.SUPABASE_URL      = 'https://pdcxzwghickstyetnbmu.supabase.co';
+window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBkY3h6d2doaWNrc3R5ZXRuYm11Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTE0MDcsImV4cCI6MjA5MTQ2NzQwN30.tGXCab5IgKatDmhoOOGaCyxMDAwsMc-fSGU_UPatu48';
