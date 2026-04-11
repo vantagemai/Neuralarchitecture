@@ -16,7 +16,7 @@ export function HourlyActivityChart() {
             <YAxis tick={{ fontSize: 12 }} stroke="#9ca3af" />
             <Tooltip
               contentStyle={{ borderRadius: '12px', border: '1px solid #e5e7eb', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-              formatter={(value: number) => [value, 'Engajamento']}
+              formatter={(value) => [value as number, 'Engajamento']}
             />
             <Bar dataKey="engagement" radius={[4, 4, 0, 0]}>
               {hourlyActivity.map((entry) => (

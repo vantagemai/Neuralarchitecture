@@ -14,7 +14,7 @@ export function DemographicsChart() {
             <YAxis type="category" dataKey="ageGroup" tick={{ fontSize: 12 }} stroke="#9ca3af" width={50} />
             <Tooltip
               contentStyle={{ borderRadius: '12px', border: '1px solid #e5e7eb', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-              formatter={(value: number) => [`${value}%`]}
+              formatter={(value) => [`${value}%`]}
             />
             <Legend iconType="circle" wrapperStyle={{ fontSize: '13px' }} />
             <Bar dataKey="male" name="Masculino" fill="#833AB4" radius={[0, 4, 4, 0]} />

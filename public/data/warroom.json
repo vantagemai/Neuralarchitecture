@@ -1,0 +1,102 @@
+[
+  {
+    "id": "W01",
+    "format": "curso",
+    "tema": "mentalidade",
+    "title": "Mentalidade de Construtor",
+    "desc": "Como pensar como quem está construindo algo do zero, sem atalho e sem ilusão.",
+    "dur": "4 aulas · 1h20",
+    "featured": true,
+    "recent": 9
+  },
+  {
+    "id": "W02",
+    "format": "ebook",
+    "tema": "empreendedorismo",
+    "title": "Modelos de Negócio Que Funcionam em 2026",
+    "desc": "Os modelos que estão ganhando dinheiro de verdade na nova economia.",
+    "dur": "PDF · 32 páginas",
+    "featured": true,
+    "recent": 10
+  },
+  {
+    "id": "W03",
+    "format": "workshop",
+    "tema": "mercado",
+    "title": "Nova Economia da IA",
+    "desc": "O mapa de oportunidade pra próxima década, sem hype e sem tecnicismo.",
+    "dur": "Workshop · 1h30",
+    "featured": true,
+    "recent": 8
+  },
+  {
+    "id": "W04",
+    "format": "planner",
+    "tema": "execucao",
+    "title": "Planner Semanal de Operação",
+    "desc": "7 dias de guerra organizada — template pronto pra editar e imprimir.",
+    "dur": "Template · editável",
+    "featured": false,
+    "recent": 7
+  },
+  {
+    "id": "W05",
+    "format": "aula",
+    "tema": "lideranca",
+    "title": "A Decisão Que Muda Tudo",
+    "desc": "Como tomar decisões sob pressão sem travar e sem fugir.",
+    "dur": "Aula · 38 min",
+    "featured": true,
+    "recent": 10
+  },
+  {
+    "id": "W06",
+    "format": "formacao",
+    "tema": "empreendedorismo",
+    "title": "Fundamentos do Negócio Próprio",
+    "desc": "Trilha aberta certificada com 8 módulos sobre o que sustenta um negócio próprio.",
+    "dur": "8 módulos · 6h",
+    "featured": true,
+    "recent": 6
+  },
+  {
+    "id": "W07",
+    "format": "curso",
+    "tema": "execucao",
+    "title": "Disciplina Diária",
+    "desc": "O sistema de execução que separa quem consegue de quem só fala.",
+    "dur": "6 aulas · 2h",
+    "featured": false,
+    "recent": 5
+  },
+  {
+    "id": "W08",
+    "format": "ebook",
+    "tema": "mentalidade",
+    "title": "Identidade e Crescimento",
+    "desc": "Como sua identidade limita ou destrava seu crescimento real.",
+    "dur": "PDF · 18 páginas",
+    "featured": false,
+    "recent": 4
+  },
+  {
+    "id": "W09",
+    "format": "workshop",
+    "tema": "lideranca",
+    "title": "Liderar Sob Pressão",
+    "desc": "Postura, decisão e direção em momentos críticos da operação.",
+    "dur": "Workshop · 1h30",
+    "featured": false,
+    "recent": 3
+  },
+  {
+    "id": "W10",
+    "format": "aula",
+    "tema": "mercado",
+    "title": "Posicionamento Premium",
+    "desc": "Como ser percebido como autoridade antes de falar de preço.",
+    "dur": "Aula · 45 min",
+    "featured": true,
+    "recent": 2
+  }
+]

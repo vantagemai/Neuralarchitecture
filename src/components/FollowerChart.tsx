@@ -20,7 +20,7 @@ export function FollowerChart() {
             <YAxis tick={{ fontSize: 12 }} stroke="#9ca3af" domain={['dataMin - 50', 'dataMax + 50']} />
             <Tooltip
               contentStyle={{ borderRadius: '12px', border: '1px solid #e5e7eb', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-              formatter={(value: number) => [value.toLocaleString('pt-BR'), 'Seguidores']}
+              formatter={(value) => [(value as number).toLocaleString('pt-BR'), 'Seguidores']}
             />
             <Area type="monotone" dataKey="followers" stroke="#833AB4" strokeWidth={2.5} fill="url(#followerGradient)" />
           </AreaChart>
