@@ -11726,6 +11726,7 @@ window._opsBuildUserRow = function(u) {
   '</div>';
 };
 </script>
+<script src="/config.js"></script>
 </head>
 <body>
 <div class="app-shell">
@@ -29024,6 +29025,43 @@ window.builderTab = function(key){
   });
 })();
 
+</script>
+<script>
+/* ── Supabase live data overlay ──
+   Fetches lesson_updates table and patches videoId/material
+   into the in-memory lesson dictionaries. Works silently —
+   portal still loads from /data/*.js as usual. */
+(function() {
+  var url = window.SUPABASE_URL;
+  var key = window.SUPABASE_ANON_KEY;
+  if (!url || !key || url.indexOf('SEU-PROJETO') !== -1) return;
+
+  fetch(url + '/rest/v1/lesson_updates', {
+    headers: {
+      'apikey': key,
+      'Authorization': 'Bearer ' + key,
+      'Accept': 'application/json'
+    }
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(rows) {
+    if (!Array.isArray(rows)) return;
+    var dicts = [];
+    try { dicts.push(SETTER_LESSONS); }  catch(e) {}
+    try { dicts.push(PARTNER_LESSONS); } catch(e) {}
+    try { dicts.push(BUILDER_LESSONS); } catch(e) {}
+    try { dicts.push(VANTAGEM_LESSONS); }catch(e) {}
+    rows.forEach(function(row) {
+      dicts.forEach(function(dict) {
+        if (dict && dict[row.id]) {
+          dict[row.id].videoId  = row.video_id  || '';
+          dict[row.id].material = row.material  || [];
+        }
+      });
+    });
+  })
+  .catch(function(e) { /* silent fail — static data still works */ });
+})();
 </script>
 </body>
 </html>
